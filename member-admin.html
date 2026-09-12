@@ -8,6 +8,9 @@
 
   <script src="https://cdn.tailwindcss.com"></script>
 
+  <!-- Supabase -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
   <link
     href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600;700&display=swap"
     rel="stylesheet"
@@ -59,6 +62,12 @@
 
     .btn:hover {
       transform: translateY(-1px);
+    }
+
+    .btn:disabled {
+      opacity: 0.55;
+      cursor: not-allowed;
+      transform: none;
     }
 
     .stamp-preview {
@@ -132,18 +141,80 @@
     .hidden {
       display: none !important;
     }
+
+    .loading-screen {
+      position: fixed;
+      inset: 0;
+      z-index: 99999;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: #fff8fb;
+      padding: 24px;
+    }
+
+    .loading-box {
+      width: min(420px, 100%);
+      text-align: center;
+      background: rgba(255,255,255,.92);
+      border-radius: 28px;
+      padding: 35px 25px;
+      box-shadow: 0 20px 60px rgba(100,60,80,.12);
+    }
+
+    .spinner {
+      width: 38px;
+      height: 38px;
+      border: 3px solid #f5dce6;
+      border-top-color: #ff72a8;
+      border-radius: 50%;
+      animation: spin .8s linear infinite;
+      margin: 0 auto 16px;
+    }
+
+    @keyframes spin {
+      to {
+        transform: rotate(360deg);
+      }
+    }
   </style>
 </head>
 
 <body>
 
   <!-- =========================
+       AUTH LOADING
+  ========================== -->
+
+  <div id="loadingScreen" class="loading-screen">
+
+    <div class="loading-box">
+
+      <div class="spinner"></div>
+
+      <div class="font-bold text-lg">
+        กำลังตรวจสอบสิทธิ์...
+      </div>
+
+      <div id="loadingText" class="text-sm text-gray-500 mt-2">
+        กรุณารอสักครู่
+      </div>
+
+    </div>
+
+  </div>
+
+
+  <!-- =========================
        HEADER
   ========================== -->
+
   <header class="sticky top-0 z-40 bg-white/80 backdrop-blur-xl border-b border-pink-100">
+
     <div class="max-w-6xl mx-auto px-4 py-4 flex items-center justify-between gap-3">
 
       <div>
+
         <div class="text-xl font-bold text-[#8b5e3c]">
           bennie choco
         </div>
@@ -151,9 +222,11 @@
         <div class="text-xs text-gray-500 mt-0.5">
           Member & Stamp Admin
         </div>
+
       </div>
 
-      <div class="flex gap-2">
+
+      <div class="flex gap-2 flex-wrap justify-end">
 
         <a
           href="admin.html"
@@ -162,6 +235,7 @@
           Website Admin
         </a>
 
+
         <a
           href="index.html"
           class="btn px-3 py-2 rounded-xl bg-gray-100 text-gray-600 text-sm font-medium"
@@ -169,8 +243,18 @@
           หน้าเว็บ
         </a>
 
+
+        <button
+          onclick="logout()"
+          class="btn px-3 py-2 rounded-xl bg-gray-100 text-gray-600 text-sm font-medium"
+        >
+          ออกจากระบบ
+        </button>
+
       </div>
+
     </div>
+
   </header>
 
 
@@ -185,6 +269,7 @@
       <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
 
         <div>
+
           <h1 class="text-xl font-bold">
             ระบบสมาชิก / สะสมแสตมป์
           </h1>
@@ -192,7 +277,9 @@
           <p class="text-sm text-gray-500 mt-1">
             ซื้อ 1 ครั้ง = 1 แสตมป์ · ครบ 10 แสตมป์
           </p>
+
         </div>
+
 
         <div
           id="memberCount"
@@ -228,11 +315,13 @@
       <div class="grid md:grid-cols-2 gap-5">
 
         <!-- Filled Stamp -->
+
         <div class="border border-pink-100 rounded-2xl p-4">
 
           <div class="font-medium mb-3">
             รูปแสตมป์ที่ปั้มแล้ว
           </div>
+
 
           <div class="flex items-center gap-4">
 
@@ -243,11 +332,13 @@
               alt="stamp preview"
             />
 
+
             <div class="flex-1">
 
               <label
                 class="btn inline-flex items-center justify-center px-4 py-2 rounded-xl bg-[#ff72a8] text-white text-sm font-medium"
               >
+
                 เลือกไฟล์ PNG
 
                 <input
@@ -256,7 +347,9 @@
                   accept="image/png,image/webp,image/jpeg"
                   class="hidden"
                 />
+
               </label>
+
 
               <div class="text-xs text-gray-400 mt-2">
                 รูปนี้จะถูกใช้กับช่องแสตมป์ที่ได้รับแล้ว
@@ -270,11 +363,13 @@
 
 
         <!-- Empty Stamp -->
+
         <div class="border border-gray-100 rounded-2xl p-4">
 
           <div class="font-medium mb-3">
             รูปช่องแสตมป์ที่ยังไม่ได้รับ
           </div>
+
 
           <div class="flex items-center gap-4">
 
@@ -285,11 +380,13 @@
               alt="empty stamp preview"
             />
 
+
             <div class="flex-1">
 
               <label
                 class="btn inline-flex items-center justify-center px-4 py-2 rounded-xl bg-gray-700 text-white text-sm font-medium"
               >
+
                 เลือกไฟล์
 
                 <input
@@ -298,7 +395,9 @@
                   accept="image/png,image/webp,image/jpeg"
                   class="hidden"
                 />
+
               </label>
+
 
               <div class="text-xs text-gray-400 mt-2">
                 ใช้เป็นพื้นหลังของช่องที่ยังไม่ได้แสตมป์
@@ -316,6 +415,7 @@
       <div class="flex justify-end mt-5">
 
         <button
+          id="saveStampButton"
           onclick="saveStampSettings()"
           class="btn px-5 py-3 rounded-xl bg-[#8b5e3c] text-white text-sm font-medium"
         >
@@ -349,6 +449,7 @@
       <div class="grid md:grid-cols-2 gap-4">
 
         <div>
+
           <label class="text-sm font-medium block mb-2">
             ชื่อลูกค้า
           </label>
@@ -358,10 +459,12 @@
             class="input"
             placeholder="เช่น น้องมิ้น"
           />
+
         </div>
 
 
         <div>
+
           <label class="text-sm font-medium block mb-2">
             ช่องทางการสั่งซื้อ
           </label>
@@ -371,10 +474,12 @@
             class="input"
             placeholder="เช่น LINE / IG / TikTok"
           />
+
         </div>
 
 
         <div>
+
           <label class="text-sm font-medium block mb-2">
             จำนวนแสตมป์เริ่มต้น
           </label>
@@ -387,6 +492,7 @@
             max="10"
             value="0"
           />
+
         </div>
 
       </div>
@@ -429,6 +535,7 @@
         class="grid lg:grid-cols-2 gap-5"
       ></div>
 
+
       <div
         id="emptyState"
         class="hidden glass rounded-3xl p-10 text-center"
@@ -468,11 +575,39 @@
 <script>
 
   /* =========================================================
-     STORAGE
+     SUPABASE CONFIG
   ========================================================= */
 
-  const MEMBER_KEY = "bennieChocoMembers";
-  const STORE_KEY = "bennieChocoPaymentData";
+  const SUPABASE_URL =
+    "https://jlcjcfhdvrbdihzwbdhu.supabase.co";
+
+  const SUPABASE_PUBLISHABLE_KEY =
+    "sb_publishable_bTlJbTM1h2Kl9Z1n7wVfaw_SRJLocBg";
+
+  const supabaseClient =
+    window.supabase.createClient(
+      SUPABASE_URL,
+      SUPABASE_PUBLISHABLE_KEY
+    );
+
+
+  /* =========================================================
+     CONSTANTS
+  ========================================================= */
+
+  const SETTINGS_ID = 1;
+
+  let members = [];
+
+  let storeData = {
+    shopName: "bennie choco",
+    memberStampImage: "",
+    memberStampEmptyImage: ""
+  };
+
+  let pendingStampImage = "";
+
+  let pendingEmptyStampImage = "";
 
 
   /* =========================================================
@@ -480,38 +615,269 @@
   ========================================================= */
 
   const defaultStore = {
+
     shopName: "bennie choco",
 
     memberStampImage: "",
 
     memberStampEmptyImage: ""
+
   };
 
 
   /* =========================================================
-     HELPERS
+     LOADING
   ========================================================= */
 
-  function getStoreData() {
+  function setLoadingText(text) {
+
+    const el =
+      document.getElementById("loadingText");
+
+    if (el) {
+      el.textContent = text;
+    }
+
+  }
+
+
+  function hideLoading() {
+
+    const loading =
+      document.getElementById("loadingScreen");
+
+    if (loading) {
+      loading.classList.add("hidden");
+    }
+
+  }
+
+
+  function showLoading() {
+
+    const loading =
+      document.getElementById("loadingScreen");
+
+    if (loading) {
+      loading.classList.remove("hidden");
+    }
+
+  }
+
+
+  /* =========================================================
+     TOAST
+  ========================================================= */
+
+  function showToast(message) {
+
+    const toast =
+      document.getElementById("toast");
+
+    toast.textContent =
+      message;
+
+    toast.classList.add("show");
+
+    clearTimeout(window.toastTimer);
+
+    window.toastTimer =
+      setTimeout(() => {
+
+        toast.classList.remove("show");
+
+      }, 2200);
+
+  }
+
+
+  /* =========================================================
+     AUTH
+  ========================================================= */
+
+  async function checkAdminAccess() {
 
     try {
 
-      const saved = localStorage.getItem(STORE_KEY);
+      setLoadingText(
+        "กำลังตรวจสอบบัญชีแอดมิน..."
+      );
 
-      if (!saved) {
-        return { ...defaultStore };
+
+      const {
+        data: {
+          session
+        },
+        error
+      } =
+        await supabaseClient.auth.getSession();
+
+
+      if (error) {
+
+        console.error(error);
+
+        window.location.href =
+          "admin-login.html";
+
+        return false;
+
       }
 
-      return {
-        ...defaultStore,
-        ...JSON.parse(saved)
-      };
+
+      if (!session) {
+
+        window.location.href =
+          "admin-login.html?next=member-admin.html";
+
+        return false;
+
+      }
+
+
+      /*
+       * ตรวจสอบว่า user นี้อยู่ใน admin_users จริง
+       */
+
+      const {
+        data: adminRecord,
+        error: adminError
+      } =
+        await supabaseClient
+          .from("admin_users")
+          .select("user_id, username")
+          .eq(
+            "user_id",
+            session.user.id
+          )
+          .maybeSingle();
+
+
+      if (adminError) {
+
+        console.error(adminError);
+
+        showLoading();
+
+        setLoadingText(
+          "ตรวจสอบสิทธิ์ไม่สำเร็จ กรุณาตรวจสอบ admin_users"
+        );
+
+        return false;
+
+      }
+
+
+      if (!adminRecord) {
+
+        await supabaseClient.auth.signOut();
+
+        window.location.href =
+          "admin-login.html?error=not-admin";
+
+        return false;
+
+      }
+
+
+      return true;
 
     } catch (error) {
 
       console.error(error);
 
-      return {
+      setLoadingText(
+        "เกิดข้อผิดพลาดในการตรวจสอบสิทธิ์"
+      );
+
+      return false;
+
+    }
+
+  }
+
+
+  async function logout() {
+
+    try {
+
+      await supabaseClient.auth.signOut();
+
+    } catch (error) {
+
+      console.error(error);
+
+    }
+
+    window.location.href =
+      "admin-login.html";
+
+  }
+
+
+  /* =========================================================
+     LOAD SITE SETTINGS
+  ========================================================= */
+
+  async function loadStoreData() {
+
+    try {
+
+      const {
+        data,
+        error
+      } =
+        await supabaseClient
+          .from("site_settings")
+          .select("id, data")
+          .eq("id", SETTINGS_ID)
+          .maybeSingle();
+
+
+      if (error) {
+
+        console.error(
+          "loadStoreData:",
+          error
+        );
+
+        /*
+         * ถ้ายังไม่มีข้อมูล ให้ใช้ค่า default
+         */
+
+        storeData = {
+          ...defaultStore
+        };
+
+        return;
+
+      }
+
+
+      if (
+        data &&
+        data.data &&
+        typeof data.data === "object"
+      ) {
+
+        storeData = {
+          ...defaultStore,
+          ...data.data
+        };
+
+      } else {
+
+        storeData = {
+          ...defaultStore
+        };
+
+      }
+
+    } catch (error) {
+
+      console.error(error);
+
+      storeData = {
         ...defaultStore
       };
 
@@ -520,75 +886,111 @@
   }
 
 
-  function saveStoreData(data) {
+  /* =========================================================
+     SAVE SITE SETTINGS
+  ========================================================= */
 
-    localStorage.setItem(
-      STORE_KEY,
-      JSON.stringify(data)
-    );
+  async function saveStoreData(data) {
 
-  }
+    const {
+      data: result,
+      error
+    } =
+      await supabaseClient
+        .from("site_settings")
+        .upsert(
+          {
+            id: SETTINGS_ID,
+            data: data,
+            updated_at: new Date().toISOString()
+          },
+          {
+            onConflict: "id"
+          }
+        )
+        .select()
+        .single();
 
 
-  function getMembers() {
+    if (error) {
 
-    try {
+      console.error(
+        "saveStoreData:",
+        error
+      );
 
-      const saved = localStorage.getItem(MEMBER_KEY);
-
-      if (!saved) {
-        return {};
-      }
-
-      return JSON.parse(saved);
-
-    } catch (error) {
-
-      console.error(error);
-
-      return {};
+      throw error;
 
     }
 
-  }
+
+    storeData = {
+      ...defaultStore,
+      ...(result.data || data)
+    };
 
 
-  function saveMembers(members) {
-
-    localStorage.setItem(
-      MEMBER_KEY,
-      JSON.stringify(members)
-    );
-
-  }
-
-
-  function showToast(message) {
-
-    const toast = document.getElementById("toast");
-
-    toast.textContent = message;
-
-    toast.classList.add("show");
-
-    clearTimeout(window.toastTimer);
-
-    window.toastTimer = setTimeout(() => {
-
-      toast.classList.remove("show");
-
-    }, 2200);
+    return result;
 
   }
 
 
   /* =========================================================
-     MEMBER ID
+     LOAD MEMBERS
+  ========================================================= */
+
+  async function loadMembers() {
+
+    setLoadingText(
+      "กำลังโหลดข้อมูลสมาชิก..."
+    );
+
+
+    const {
+      data,
+      error
+    } =
+      await supabaseClient
+        .from("members")
+        .select(
+          "id, member_code, name, channel, stamps, created_at, updated_at"
+        )
+        .order(
+          "updated_at",
+          {
+            ascending: false
+          }
+        );
+
+
+    if (error) {
+
+      console.error(
+        "loadMembers:",
+        error
+      );
+
+      throw error;
+
+    }
+
+
+    members =
+      Array.isArray(data)
+        ? data
+        : [];
+
+
+    return members;
+
+  }
+
+
+  /* =========================================================
+     GENERATE MEMBER ID
   ========================================================= */
 
   function generateMemberId() {
-
-    const members = getMembers();
 
     let id = "";
 
@@ -600,9 +1002,17 @@
           .substring(2, 8)
           .toUpperCase();
 
-      id = "BC-" + random;
+      id =
+        "BC-" +
+        random;
 
-    } while (members[id]);
+    } while (
+      members.some(
+        member =>
+          String(member.member_code).toUpperCase() === id
+      )
+    );
+
 
     return id;
 
@@ -615,13 +1025,18 @@
 
   function getMemberUrl(memberId) {
 
-    return (
-      window.location.origin +
-      window.location.pathname
-        .replace("member-admin.html", "member.html") +
-      "?id=" +
-      encodeURIComponent(memberId)
+    const url =
+      new URL(
+        "member.html",
+        window.location.href
+      );
+
+    url.searchParams.set(
+      "id",
+      memberId
     );
+
+    return url.href;
 
   }
 
@@ -630,7 +1045,7 @@
      ADD MEMBER
   ========================================================= */
 
-  function addMember() {
+  async function addMember() {
 
     const name =
       document
@@ -638,11 +1053,13 @@
         .value
         .trim();
 
+
     const channel =
       document
         .getElementById("newMemberChannel")
         .value
         .trim();
+
 
     let stamps =
       Number(
@@ -651,64 +1068,115 @@
           .value
       );
 
+
     if (!name) {
 
-      showToast("กรุณาใส่ชื่อลูกค้าก่อน");
+      showToast(
+        "กรุณาใส่ชื่อลูกค้าก่อน"
+      );
 
       return;
 
     }
 
 
-    if (Number.isNaN(stamps)) {
+    if (
+      Number.isNaN(stamps)
+    ) {
+
       stamps = 0;
+
     }
 
 
-    stamps = Math.max(
-      0,
-      Math.min(10, stamps)
-    );
+    stamps =
+      Math.max(
+        0,
+        Math.min(
+          10,
+          stamps
+        )
+      );
 
 
-    const members = getMembers();
-
-    const id = generateMemberId();
-
-
-    members[id] = {
-
-      id,
-
-      name,
-
-      channel:
-        channel || "-",
-
-      stamps,
-
-      createdAt:
-        new Date().toISOString(),
-
-      updatedAt:
-        new Date().toISOString()
-
-    };
+    const memberCode =
+      generateMemberId();
 
 
-    saveMembers(members);
+    try {
+
+      const {
+        data,
+        error
+      } =
+        await supabaseClient
+          .from("members")
+          .insert(
+            {
+              member_code: memberCode,
+              name: name,
+              channel:
+                channel || "-",
+              stamps: stamps
+            }
+          )
+          .select()
+          .single();
 
 
-    document.getElementById("newMemberName").value = "";
+      if (error) {
 
-    document.getElementById("newMemberChannel").value = "";
+        console.error(
+          "addMember:",
+          error
+        );
 
-    document.getElementById("newMemberStamps").value = "0";
+        showToast(
+          "เพิ่มสมาชิกไม่สำเร็จ: " +
+          error.message
+        );
+
+        return;
+
+      }
 
 
-    renderMembers();
+      members.unshift(
+        data
+      );
 
-    showToast("เพิ่มสมาชิกเรียบร้อยแล้ว");
+
+      document
+        .getElementById("newMemberName")
+        .value = "";
+
+
+      document
+        .getElementById("newMemberChannel")
+        .value = "";
+
+
+      document
+        .getElementById("newMemberStamps")
+        .value = "0";
+
+
+      renderMembers();
+
+
+      showToast(
+        "เพิ่มสมาชิกเรียบร้อยแล้ว"
+      );
+
+    } catch (error) {
+
+      console.error(error);
+
+      showToast(
+        "เกิดข้อผิดพลาดในการเพิ่มสมาชิก"
+      );
+
+    }
 
   }
 
@@ -717,34 +1185,101 @@
      UPDATE STAMPS
   ========================================================= */
 
-  function changeStamp(memberId, amount) {
+  async function changeStamp(
+    memberId,
+    amount
+  ) {
 
-    const members = getMembers();
+    const member =
+      members.find(
+        item =>
+          String(item.member_code) ===
+          String(memberId)
+      );
 
-    if (!members[memberId]) {
+
+    if (!member) {
+
+      showToast(
+        "ไม่พบสมาชิก"
+      );
+
       return;
+
     }
 
 
     let stamps =
-      Number(members[memberId].stamps || 0);
-
-    stamps += amount;
-
-
-    stamps = Math.max(
-      0,
-      Math.min(10, stamps)
-    );
+      Number(
+        member.stamps || 0
+      );
 
 
-    members[memberId].stamps = stamps;
-
-    members[memberId].updatedAt =
-      new Date().toISOString();
+    stamps +=
+      Number(amount);
 
 
-    saveMembers(members);
+    stamps =
+      Math.max(
+        0,
+        Math.min(
+          10,
+          stamps
+        )
+      );
+
+
+    const {
+      data,
+      error
+    } =
+      await supabaseClient
+        .from("members")
+        .update(
+          {
+            stamps: stamps,
+            updated_at:
+              new Date().toISOString()
+          }
+        )
+        .eq(
+          "id",
+          member.id
+        )
+        .select()
+        .single();
+
+
+    if (error) {
+
+      console.error(
+        "changeStamp:",
+        error
+      );
+
+      showToast(
+        "บันทึกแสตมป์ไม่สำเร็จ"
+      );
+
+      return;
+
+    }
+
+
+    const index =
+      members.findIndex(
+        item =>
+          item.id === member.id
+      );
+
+
+    if (index !== -1) {
+
+      members[index] =
+        data;
+
+    }
+
 
     renderMembers();
 
@@ -759,7 +1294,9 @@
 
     } else {
 
-      showToast("ลดแสตมป์แล้ว");
+      showToast(
+        "ลดแสตมป์แล้ว"
+      );
 
     }
 
@@ -770,11 +1307,19 @@
      RESET STAMPS
   ========================================================= */
 
-  function resetStamps(memberId) {
+  async function resetStamps(
+    memberId
+  ) {
 
-    const members = getMembers();
+    const member =
+      members.find(
+        item =>
+          String(item.member_code) ===
+          String(memberId)
+      );
 
-    if (!members[memberId]) {
+
+    if (!member) {
       return;
     }
 
@@ -790,17 +1335,64 @@
     }
 
 
-    members[memberId].stamps = 0;
+    const {
+      data,
+      error
+    } =
+      await supabaseClient
+        .from("members")
+        .update(
+          {
+            stamps: 0,
+            updated_at:
+              new Date().toISOString()
+          }
+        )
+        .eq(
+          "id",
+          member.id
+        )
+        .select()
+        .single();
 
-    members[memberId].updatedAt =
-      new Date().toISOString();
+
+    if (error) {
+
+      console.error(
+        "resetStamps:",
+        error
+      );
+
+      showToast(
+        "รีเซ็ตไม่สำเร็จ"
+      );
+
+      return;
+
+    }
 
 
-    saveMembers(members);
+    const index =
+      members.findIndex(
+        item =>
+          item.id === member.id
+      );
+
+
+    if (index !== -1) {
+
+      members[index] =
+        data;
+
+    }
+
 
     renderMembers();
 
-    showToast("รีเซ็ตแสตมป์แล้ว");
+
+    showToast(
+      "รีเซ็ตแสตมป์แล้ว"
+    );
 
   }
 
@@ -809,22 +1401,26 @@
      DELETE MEMBER
   ========================================================= */
 
-  function deleteMember(memberId) {
+  async function deleteMember(
+    memberId
+  ) {
 
-    const members = getMembers();
+    const member =
+      members.find(
+        item =>
+          String(item.member_code) ===
+          String(memberId)
+      );
 
-    if (!members[memberId]) {
+
+    if (!member) {
       return;
     }
 
 
-    const name =
-      members[memberId].name;
-
-
     const confirmed =
       confirm(
-        `ต้องการลบสมาชิก "${name}" ใช่ไหม?\nการลบนี้ไม่สามารถย้อนกลับได้`
+        `ต้องการลบสมาชิก "${member.name}" ใช่ไหม?\nการลบนี้ไม่สามารถย้อนกลับได้`
       );
 
 
@@ -833,13 +1429,47 @@
     }
 
 
-    delete members[memberId];
+    const {
+      error
+    } =
+      await supabaseClient
+        .from("members")
+        .delete()
+        .eq(
+          "id",
+          member.id
+        );
 
-    saveMembers(members);
+
+    if (error) {
+
+      console.error(
+        "deleteMember:",
+        error
+      );
+
+      showToast(
+        "ลบสมาชิกไม่สำเร็จ"
+      );
+
+      return;
+
+    }
+
+
+    members =
+      members.filter(
+        item =>
+          item.id !== member.id
+      );
+
 
     renderMembers();
 
-    showToast("ลบสมาชิกแล้ว");
+
+    showToast(
+      "ลบสมาชิกแล้ว"
+    );
 
   }
 
@@ -848,11 +1478,17 @@
      EDIT MEMBER
   ========================================================= */
 
-  function editMember(memberId) {
+  async function editMember(
+    memberId
+  ) {
 
-    const members = getMembers();
+    const member =
+      members.find(
+        item =>
+          String(item.member_code) ===
+          String(memberId)
+      );
 
-    const member = members[memberId];
 
     if (!member) {
       return;
@@ -883,21 +1519,75 @@
     }
 
 
-    member.name =
-      newName.trim() || member.name;
-
-    member.channel =
-      newChannel.trim() || "-";
-
-    member.updatedAt =
-      new Date().toISOString();
+    const finalName =
+      newName.trim() ||
+      member.name;
 
 
-    saveMembers(members);
+    const finalChannel =
+      newChannel.trim() ||
+      "-";
+
+
+    const {
+      data,
+      error
+    } =
+      await supabaseClient
+        .from("members")
+        .update(
+          {
+            name: finalName,
+            channel: finalChannel,
+            updated_at:
+              new Date().toISOString()
+          }
+        )
+        .eq(
+          "id",
+          member.id
+        )
+        .select()
+        .single();
+
+
+    if (error) {
+
+      console.error(
+        "editMember:",
+        error
+      );
+
+      showToast(
+        "แก้ไขข้อมูลไม่สำเร็จ"
+      );
+
+      return;
+
+    }
+
+
+    const index =
+      members.findIndex(
+        item =>
+          item.id === member.id
+      );
+
+
+    if (index !== -1) {
+
+      members[index] =
+        data;
+
+    }
+
 
     renderMembers();
 
-    showToast("แก้ไขข้อมูลแล้ว");
+
+    showToast(
+      "แก้ไขข้อมูลแล้ว"
+    );
 
   }
 
@@ -906,17 +1596,25 @@
      COPY MEMBER URL
   ========================================================= */
 
-  async function copyMemberUrl(memberId) {
+  async function copyMemberUrl(
+    memberId
+  ) {
 
     const url =
-      getMemberUrl(memberId);
+      getMemberUrl(
+        memberId
+      );
 
 
     try {
 
-      await navigator.clipboard.writeText(url);
+      await navigator.clipboard.writeText(
+        url
+      );
 
-      showToast("คัดลอกลิงก์สมาชิกแล้ว");
+      showToast(
+        "คัดลอกลิงก์สมาชิกแล้ว"
+      );
 
     } catch (error) {
 
@@ -934,10 +1632,15 @@
      OPEN MEMBER PAGE
   ========================================================= */
 
-  function openMember(memberId) {
+  function openMember(
+    memberId
+  ) {
 
     const url =
-      getMemberUrl(memberId);
+      getMemberUrl(
+        memberId
+      );
+
 
     window.open(
       url,
@@ -951,18 +1654,16 @@
      RENDER STAMPS
   ========================================================= */
 
-  function renderMiniStamps(stamps) {
-
-    const store =
-      getStoreData();
-
+  function renderMiniStamps(
+    stamps
+  ) {
 
     const filled =
-      store.memberStampImage;
+      storeData.memberStampImage;
 
 
     const empty =
-      store.memberStampEmptyImage;
+      storeData.memberStampEmptyImage;
 
 
     let html = "";
@@ -986,7 +1687,7 @@
         html += `
           <div class="stamp-dot">
             <img
-              src="${filled}"
+              src="${escapeHtml(filled)}"
               alt="stamp"
             >
           </div>
@@ -1000,13 +1701,15 @@
         html += `
           <div class="stamp-dot">
             <img
-              src="${empty}"
+              src="${escapeHtml(empty)}"
               alt="empty stamp"
             >
           </div>
         `;
 
-      } else if (isFilled) {
+      } else if (
+        isFilled
+      ) {
 
         html += `
           <div class="stamp-dot bg-pink-100 border-pink-300 text-pink-600 text-xs">
@@ -1038,10 +1741,6 @@
 
   function renderMembers() {
 
-    const members =
-      getMembers();
-
-
     const search =
       document
         .getElementById("searchMember")
@@ -1051,53 +1750,72 @@
 
 
     const list =
-      document.getElementById("memberList");
+      document.getElementById(
+        "memberList"
+      );
+
 
     const emptyState =
-      document.getElementById("emptyState");
+      document.getElementById(
+        "emptyState"
+      );
 
 
     const memberArray =
-      Object.values(members)
-        .filter(member => {
+      members
+        .filter(
+          member => {
 
-          if (!search) {
-            return true;
+            if (!search) {
+              return true;
+            }
+
+
+            return (
+
+              String(
+                member.name || ""
+              )
+                .toLowerCase()
+                .includes(search)
+
+              ||
+
+              String(
+                member.channel || ""
+              )
+                .toLowerCase()
+                .includes(search)
+
+              ||
+
+              String(
+                member.member_code || ""
+              )
+                .toLowerCase()
+                .includes(search)
+
+            );
+
           }
-
-
-          return (
-
-            String(member.name || "")
-              .toLowerCase()
-              .includes(search)
-
-            ||
-
-            String(member.channel || "")
-              .toLowerCase()
-              .includes(search)
-
-            ||
-
-            String(member.id || "")
-              .toLowerCase()
-              .includes(search)
-
-          );
-
-        })
+        )
         .sort(
           (a, b) =>
-            new Date(b.updatedAt || b.createdAt) -
-            new Date(a.updatedAt || a.createdAt)
+            new Date(
+              b.updated_at ||
+              b.created_at
+            ) -
+            new Date(
+              a.updated_at ||
+              a.created_at
+            )
         );
 
 
     document.getElementById(
       "memberCount"
     ).textContent =
-      `สมาชิก ${Object.keys(members).length} คน`;
+      `สมาชิก ${members.length} คน`;
 
 
     list.innerHTML = "";
@@ -1119,243 +1837,219 @@
     );
 
 
-    memberArray.forEach(member => {
+    memberArray.forEach(
+      member => {
 
-      const stamps =
-        Math.max(
-          0,
-          Math.min(
-            10,
-            Number(member.stamps || 0)
-          )
-        );
-
-
-      const completed =
-        stamps >= 10;
-
-
-      const url =
-        getMemberUrl(member.id);
+        const stamps =
+          Math.max(
+            0,
+            Math.min(
+              10,
+              Number(
+                member.stamps || 0
+              )
+            )
+          );
 
 
-      const card =
-        document.createElement("div");
+        const completed =
+          stamps >= 10;
 
 
-      card.className =
-        "member-card glass rounded-3xl p-5";
+        const memberId =
+          member.member_code;
 
 
-      card.innerHTML = `
+        const url =
+          getMemberUrl(
+            memberId
+          );
 
-        <div class="flex items-start justify-between gap-3">
 
-          <div>
+        const card =
+          document.createElement(
+            "div"
+          );
 
-            <div class="font-bold text-lg">
-              ${escapeHtml(member.name)}
+
+        card.className =
+          "member-card glass rounded-3xl p-5";
+
+
+        card.innerHTML = `
+
+          <div class="flex items-start justify-between gap-3">
+
+            <div>
+
+              <div class="font-bold text-lg">
+                ${escapeHtml(member.name)}
+              </div>
+
+              <div class="text-sm text-gray-500 mt-1">
+                ช่องทาง: ${escapeHtml(member.channel || "-")}
+              </div>
+
+              <div class="text-xs text-gray-400 mt-1">
+                ID: ${escapeHtml(memberId)}
+              </div>
+
             </div>
 
-            <div class="text-sm text-gray-500 mt-1">
-              ช่องทาง: ${escapeHtml(member.channel || "-")}
+
+            ${
+              completed
+                ? `
+                  <div class="completed px-3 py-1.5 rounded-full text-xs font-medium text-pink-600">
+                    ครบ 10 ดวง 🎉
+                  </div>
+                `
+                : `
+                  <div class="px-3 py-1.5 rounded-full bg-gray-50 text-gray-500 text-xs">
+                    ${stamps}/10
+                  </div>
+                `
+            }
+
+          </div>
+
+
+          <!-- STAMPS -->
+
+          <div class="mt-5">
+
+            <div class="flex flex-wrap gap-2">
+
+              ${renderMiniStamps(stamps)}
+
             </div>
 
-            <div class="text-xs text-gray-400 mt-1">
-              ID: ${escapeHtml(member.id)}
+          </div>
+
+
+          <!-- COUNT -->
+
+          <div class="mt-4">
+
+            <div class="flex justify-between text-xs text-gray-500 mb-2">
+
+              <span>
+                สะสมแสตมป์
+              </span>
+
+              <span>
+                ${stamps} / 10
+              </span>
+
+            </div>
+
+
+            <div class="h-2 bg-gray-100 rounded-full overflow-hidden">
+
+              <div
+                class="h-full bg-[#ff72a8] rounded-full"
+                style="width:${stamps * 10}%"
+              ></div>
+
             </div>
 
           </div>
 
 
-          ${
-            completed
-              ? `
-                <div class="completed px-3 py-1.5 rounded-full text-xs font-medium text-pink-600">
-                  ครบ 10 ดวง 🎉
-                </div>
-              `
-              : `
-                <div class="px-3 py-1.5 rounded-full bg-gray-50 text-gray-500 text-xs">
-                  ${stamps}/10
-                </div>
-              `
-          }
+          <!-- MEMBER URL -->
 
-        </div>
+          <div class="mt-5">
+
+            <div class="text-xs text-gray-400 mb-1">
+              ลิงก์ของลูกค้า
+            </div>
 
 
-        <!-- STAMPS -->
+            <div class="flex gap-2">
 
-        <div class="mt-5">
-
-          <div class="flex flex-wrap gap-2">
-
-            ${renderMiniStamps(stamps)}
-
-          </div>
-
-        </div>
+              <input
+                class="input text-xs"
+                value="${escapeHtml(url)}"
+                readonly
+                onclick="this.select()"
+              />
 
 
-        <!-- COUNT -->
+              <button
+                onclick="copyMemberUrl('${escapeHtml(memberId)}')"
+                class="btn shrink-0 px-4 rounded-xl bg-gray-800 text-white text-xs"
+              >
+                คัดลอก
+              </button>
 
-        <div class="mt-4">
-
-          <div class="flex justify-between text-xs text-gray-500 mb-2">
-
-            <span>
-              สะสมแสตมป์
-            </span>
-
-            <span>
-              ${stamps} / 10
-            </span>
+            </div>
 
           </div>
 
 
-          <div class="h-2 bg-gray-100 rounded-full overflow-hidden">
+          <!-- ACTIONS -->
 
-            <div
-              class="h-full bg-[#ff72a8] rounded-full"
-              style="width:${stamps * 10}%"
-            ></div>
-
-          </div>
-
-        </div>
-
-
-        <!-- MEMBER URL -->
-
-        <div class="mt-5">
-
-          <div class="text-xs text-gray-400 mb-1">
-            ลิงก์ของลูกค้า
-          </div>
-
-          <div class="flex gap-2">
-
-            <input
-              class="input text-xs"
-              value="${escapeHtml(url)}"
-              readonly
-              onclick="this.select()"
-            />
+          <div class="grid grid-cols-3 gap-2 mt-5">
 
             <button
-              onclick="copyMemberUrl('${member.id}')"
-              class="btn shrink-0 px-4 rounded-xl bg-gray-800 text-white text-xs"
+              onclick="changeStamp('${escapeHtml(memberId)}', 1)"
+              class="btn py-2.5 rounded-xl bg-pink-500 text-white text-sm font-medium"
             >
-              คัดลอก
+              ＋1
+            </button>
+
+
+            <button
+              onclick="changeStamp('${escapeHtml(memberId)}', -1)"
+              class="btn py-2.5 rounded-xl bg-gray-100 text-gray-600 text-sm font-medium"
+            >
+              −1
+            </button>
+
+
+            <button
+              onclick="resetStamps('${escapeHtml(memberId)}')"
+              class="btn py-2.5 rounded-xl bg-gray-100 text-gray-600 text-sm font-medium"
+            >
+              รีเซ็ต
             </button>
 
           </div>
 
-        </div>
+
+          <div class="grid grid-cols-3 gap-2 mt-2">
+
+            <button
+              onclick="openMember('${escapeHtml(memberId)}')"
+              class="btn py-2 rounded-xl bg-purple-50 text-purple-600 text-xs font-medium"
+            >
+              เปิดบัตร
+            </button>
 
 
-        <!-- ACTIONS -->
-
-        <div class="grid grid-cols-3 gap-2 mt-5">
-
-          <button
-            onclick="changeStamp('${member.id}', 1)"
-            class="btn py-2.5 rounded-xl bg-pink-500 text-white text-sm font-medium"
-          >
-            ＋1
-          </button>
-
-          <button
-            onclick="changeStamp('${member.id}', -1)"
-            class="btn py-2.5 rounded-xl bg-gray-100 text-gray-600 text-sm font-medium"
-          >
-            −1
-          </button>
-
-          <button
-            onclick="resetStamps('${member.id}')"
-            class="btn py-2.5 rounded-xl bg-gray-100 text-gray-600 text-sm font-medium"
-          >
-            รีเซ็ต
-          </button>
-
-        </div>
+            <button
+              onclick="editMember('${escapeHtml(memberId)}')"
+              class="btn py-2 rounded-xl bg-blue-50 text-blue-600 text-xs font-medium"
+            >
+              แก้ไข
+            </button>
 
 
-        <div class="grid grid-cols-3 gap-2 mt-2">
+            <button
+              onclick="deleteMember('${escapeHtml(memberId)}')"
+              class="btn py-2 rounded-xl bg-red-50 text-red-500 text-xs font-medium"
+            >
+              ลบ
+            </button>
 
-          <button
-            onclick="openMember('${member.id}')"
-            class="btn py-2 rounded-xl bg-purple-50 text-purple-600 text-xs font-medium"
-          >
-            เปิดบัตร
-          </button>
+          </div>
 
-          <button
-            onclick="editMember('${member.id}')"
-            class="btn py-2 rounded-xl bg-blue-50 text-blue-600 text-xs font-medium"
-          >
-            แก้ไข
-          </button>
-
-          <button
-            onclick="deleteMember('${member.id}')"
-            class="btn py-2 rounded-xl bg-red-50 text-red-500 text-xs font-medium"
-          >
-            ลบ
-          </button>
-
-        </div>
-
-      `;
+        `;
 
 
-      list.appendChild(card);
-
-    });
-
-  }
-
-
-  /* =========================================================
-     ESCAPE HTML
-  ========================================================= */
-
-  function escapeHtml(value) {
-
-    return String(value)
-      .replaceAll("&", "&amp;")
-      .replaceAll("<", "&lt;")
-      .replaceAll(">", "&gt;")
-      .replaceAll('"', "&quot;")
-      .replaceAll("'", "&#039;");
-
-  }
-
-
-  /* =========================================================
-     FILE TO DATA URL
-  ========================================================= */
-
-  function fileToDataURL(file) {
-
-    return new Promise(
-      (resolve, reject) => {
-
-        const reader =
-          new FileReader();
-
-
-        reader.onload = () =>
-          resolve(reader.result);
-
-
-        reader.onerror = reject;
-
-
-        reader.readAsDataURL(file);
+        list.appendChild(
+          card
+        );
 
       }
     );
@@ -1364,15 +2058,87 @@
 
 
   /* =========================================================
-     STAMP IMAGE UPLOAD
+     ESCAPE HTML
   ========================================================= */
 
-  let pendingStampImage = "";
-  let pendingEmptyStampImage = "";
+  function escapeHtml(
+    value
+  ) {
 
+    return String(
+      value ?? ""
+    )
+      .replaceAll(
+        "&",
+        "&amp;"
+      )
+      .replaceAll(
+        "<",
+        "&lt;"
+      )
+      .replaceAll(
+        ">",
+        "&gt;"
+      )
+      .replaceAll(
+        '"',
+        "&quot;"
+      )
+      .replaceAll(
+        "'",
+        "&#039;"
+      );
+
+  }
+
+
+  /* =========================================================
+     FILE TO DATA URL
+  ========================================================= */
+
+  function fileToDataURL(
+    file
+  ) {
+
+    return new Promise(
+      (
+        resolve,
+        reject
+      ) => {
+
+        const reader =
+          new FileReader();
+
+
+        reader.onload =
+          () =>
+            resolve(
+              reader.result
+            );
+
+
+        reader.onerror =
+          reject;
+
+
+        reader.readAsDataURL(
+          file
+        );
+
+      }
+    );
+
+  }
+
+
+  /* =========================================================
+     STAMP IMAGE INPUT
+  ========================================================= */
 
   document
-    .getElementById("stampImageInput")
+    .getElementById(
+      "stampImageInput"
+    )
     .addEventListener(
       "change",
       async function () {
@@ -1387,14 +2153,20 @@
 
 
         if (
-          !file.type.includes("png") &&
-          !file.type.includes("webp") &&
-          !file.type.includes("jpeg")
+          ![
+            "image/png",
+            "image/webp",
+            "image/jpeg"
+          ].includes(
+            file.type
+          )
         ) {
 
           showToast(
-            "กรุณาเลือกไฟล์รูปภาพ"
+            "กรุณาเลือกไฟล์ PNG / WEBP / JPG"
           );
+
+          this.value = "";
 
           return;
 
@@ -1404,11 +2176,15 @@
         try {
 
           pendingStampImage =
-            await fileToDataURL(file);
+            await fileToDataURL(
+              file
+            );
 
 
           document
-            .getElementById("stampPreview")
+            .getElementById(
+              "stampPreview"
+            )
             .src =
             pendingStampImage;
 
@@ -1418,6 +2194,8 @@
           );
 
         } catch (error) {
+
+          console.error(error);
 
           showToast(
             "ไม่สามารถอ่านไฟล์ได้"
@@ -1429,8 +2207,14 @@
     );
 
 
+  /* =========================================================
+     EMPTY STAMP IMAGE INPUT
+  ========================================================= */
+
   document
-    .getElementById("emptyStampImageInput")
+    .getElementById(
+      "emptyStampImageInput"
+    )
     .addEventListener(
       "change",
       async function () {
@@ -1444,14 +2228,39 @@
         }
 
 
+        if (
+          ![
+            "image/png",
+            "image/webp",
+            "image/jpeg"
+          ].includes(
+            file.type
+          )
+        ) {
+
+          showToast(
+            "กรุณาเลือกไฟล์ PNG / WEBP / JPG"
+          );
+
+          this.value = "";
+
+          return;
+
+        }
+
+
         try {
 
           pendingEmptyStampImage =
-            await fileToDataURL(file);
+            await fileToDataURL(
+              file
+            );
 
 
           document
-            .getElementById("emptyStampPreview")
+            .getElementById(
+              "emptyStampPreview"
+            )
             .src =
             pendingEmptyStampImage;
 
@@ -1461,6 +2270,8 @@
           );
 
         } catch (error) {
+
+          console.error(error);
 
           showToast(
             "ไม่สามารถอ่านไฟล์ได้"
@@ -1476,44 +2287,81 @@
      SAVE STAMP SETTINGS
   ========================================================= */
 
-  function saveStampSettings() {
+  async function saveStampSettings() {
 
-    const store =
-      getStoreData();
+    const button =
+      document.getElementById(
+        "saveStampButton"
+      );
 
 
-    if (pendingStampImage) {
+    button.disabled = true;
 
-      store.memberStampImage =
-        pendingStampImage;
+    button.textContent =
+      "กำลังบันทึก...";
+
+
+    try {
+
+      const newStore = {
+        ...storeData
+      };
+
+
+      if (pendingStampImage) {
+
+        newStore.memberStampImage =
+          pendingStampImage;
+
+      }
+
+
+      if (
+        pendingEmptyStampImage
+      ) {
+
+        newStore.memberStampEmptyImage =
+          pendingEmptyStampImage;
+
+      }
+
+
+      await saveStoreData(
+        newStore
+      );
+
+
+      pendingStampImage = "";
+
+      pendingEmptyStampImage = "";
+
+
+      renderStampPreviews();
+
+      renderMembers();
+
+
+      showToast(
+        "บันทึกรูปแสตมป์เรียบร้อยแล้ว"
+      );
+
+    } catch (error) {
+
+      console.error(error);
+
+      showToast(
+        "บันทึกรูปแสตมป์ไม่สำเร็จ: " +
+        error.message
+      );
+
+    } finally {
+
+      button.disabled = false;
+
+      button.textContent =
+        "บันทึกรูปแสตมป์";
 
     }
-
-
-    if (pendingEmptyStampImage) {
-
-      store.memberStampEmptyImage =
-        pendingEmptyStampImage;
-
-    }
-
-
-    saveStoreData(store);
-
-
-    pendingStampImage = "";
-
-    pendingEmptyStampImage = "";
-
-
-    renderStampPreviews();
-
-    renderMembers();
-
-
-    showToast(
-      "บันทึกรูปแสตมป์เรียบร้อยแล้ว"
-    );
 
   }
 
@@ -1523,10 +2371,6 @@
   ========================================================= */
 
   function renderStampPreviews() {
-
-    const store =
-      getStoreData();
-
 
     const stampPreview =
       document.getElementById(
@@ -1540,10 +2384,12 @@
       );
 
 
-    if (store.memberStampImage) {
+    if (
+      storeData.memberStampImage
+    ) {
 
       stampPreview.src =
-        store.memberStampImage;
+        storeData.memberStampImage;
 
     } else {
 
@@ -1554,10 +2400,12 @@
     }
 
 
-    if (store.memberStampEmptyImage) {
+    if (
+      storeData.memberStampEmptyImage
+    ) {
 
       emptyPreview.src =
-        store.memberStampEmptyImage;
+        storeData.memberStampEmptyImage;
 
     } else {
 
@@ -1574,14 +2422,102 @@
      INITIALIZE
   ========================================================= */
 
-  function init() {
+  async function init() {
 
-    renderStampPreviews();
+    try {
 
-    renderMembers();
+      /*
+       * 1. ตรวจ Login
+       */
+
+      const hasAccess =
+        await checkAdminAccess();
+
+
+      if (!hasAccess) {
+        return;
+      }
+
+
+      /*
+       * 2. โหลด Settings
+       */
+
+      setLoadingText(
+        "กำลังโหลดการตั้งค่า..."
+      );
+
+
+      await loadStoreData();
+
+
+      /*
+       * 3. โหลดสมาชิก
+       */
+
+      await loadMembers();
+
+
+      /*
+       * 4. แสดงข้อมูล
+       */
+
+      renderStampPreviews();
+
+      renderMembers();
+
+
+      /*
+       * 5. เปิดหน้า
+       */
+
+      hideLoading();
+
+
+    } catch (error) {
+
+      console.error(
+        "INITIALIZE ERROR:",
+        error
+      );
+
+
+      setLoadingText(
+        "โหลดข้อมูลไม่สำเร็จ: " +
+        error.message
+      );
+
+    }
 
   }
 
+
+  /* =========================================================
+     AUTH STATE
+  ========================================================= */
+
+  supabaseClient.auth.onAuthStateChange(
+    async (
+      event,
+      session
+    ) => {
+
+      if (
+        event === "SIGNED_OUT"
+      ) {
+
+        window.location.href =
+          "admin-login.html";
+
+      }
+
+    }
+  );
+
+
+  /* =========================================================
+     START
+  ========================================================= */
 
   init();
 
