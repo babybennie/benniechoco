@@ -259,6 +259,127 @@
       display:none !important;
     }
 
+    .search-input{
+      width:100%;
+
+      border:1px solid #ead8e0;
+      background:rgba(255,255,255,.9);
+
+      border-radius:15px;
+
+      padding:12px 14px;
+
+      outline:none;
+
+      color:#5c3d26;
+
+      font-family:'Prompt',sans-serif;
+
+      transition:
+        border-color .2s,
+        box-shadow .2s;
+    }
+
+    .search-input:focus{
+      border-color:#f2a5c2;
+
+      box-shadow:
+        0 0 0 3px rgba(255,145,185,.12);
+    }
+
+    .search-button{
+      border:0;
+
+      background:
+        linear-gradient(
+          135deg,
+          #ff91b9,
+          #eaa1ff
+        );
+
+      color:white;
+
+      border-radius:15px;
+
+      padding:12px 18px;
+
+      font-family:'Prompt',sans-serif;
+      font-size:14px;
+      font-weight:500;
+
+      cursor:pointer;
+
+      transition:
+        transform .15s,
+        opacity .2s;
+    }
+
+    .search-button:hover{
+      opacity:.92;
+    }
+
+    .search-button:active{
+      transform:scale(.98);
+    }
+
+    .pin-wrap{
+      position:relative;
+    }
+
+    .pin-toggle{
+      position:absolute;
+      right:10px;
+      top:50%;
+
+      transform:translateY(-50%);
+
+      border:0;
+      background:transparent;
+
+      color:#c79aaa;
+
+      font-family:'Prompt',sans-serif;
+      font-size:12px;
+
+      cursor:pointer;
+    }
+
+    .music-button{
+      position:fixed;
+      right:16px;
+      bottom:16px;
+
+      z-index:90;
+
+      border:1px solid rgba(255,255,255,.9);
+
+      background:rgba(255,255,255,.88);
+
+      backdrop-filter:blur(12px);
+      -webkit-backdrop-filter:blur(12px);
+
+      color:#b66b88;
+
+      padding:9px 13px;
+
+      border-radius:999px;
+
+      font-family:'Prompt',sans-serif;
+      font-size:12px;
+      font-weight:500;
+
+      box-shadow:
+        0 10px 25px rgba(120,70,90,.10);
+
+      cursor:pointer;
+
+      transition:.2s;
+    }
+
+    .music-button:hover{
+      transform:translateY(-1px);
+    }
+
     @media(max-width:480px){
 
       .stamp-grid{
@@ -317,8 +438,131 @@
        ===================================================== -->
 
   <main
-    class="max-w-lg mx-auto px-4 pb-12"
+    class="max-w-lg mx-auto px-4 pb-20"
   >
+
+
+    <!-- ===================================================
+         SEARCH / LOGIN
+         =================================================== -->
+
+    <section
+      id="searchState"
+      class="glass rounded-[30px] p-6 mb-5"
+    >
+
+      <div
+        class="text-center"
+      >
+
+        <div
+          class="text-3xl mb-2"
+        >
+          ♡
+        </div>
+
+        <h1
+          class="font-bold text-lg text-gray-800"
+        >
+          ดูบัตรสมาชิก
+        </h1>
+
+        <p
+          class="text-xs text-gray-400 mt-2 leading-relaxed"
+        >
+          กรอก Member ID และรหัสสมาชิกเพื่อดูบัตรของคุณค่ะ
+        </p>
+
+      </div>
+
+
+      <!-- MEMBER ID -->
+
+      <div
+        class="mt-5"
+      >
+
+        <label
+          class="block text-xs text-gray-500 mb-2"
+        >
+          Member ID
+        </label>
+
+        <input
+          id="memberIdInput"
+          class="search-input"
+          type="text"
+          autocomplete="off"
+          autocapitalize="characters"
+          placeholder="เช่น BC-A1B2C3"
+        >
+
+      </div>
+
+
+      <!-- PIN -->
+
+      <div
+        class="mt-4"
+      >
+
+        <label
+          class="block text-xs text-gray-500 mb-2"
+        >
+          รหัสสมาชิก / PIN
+        </label>
+
+        <div
+          class="pin-wrap"
+        >
+
+          <input
+            id="memberPinInput"
+            class="search-input pr-16"
+            type="password"
+            inputmode="numeric"
+            autocomplete="off"
+            maxlength="20"
+            placeholder="กรอกรหัสที่ร้านแจ้งให้"
+          >
+
+          <button
+            id="pinToggle"
+            class="pin-toggle"
+            type="button"
+          >
+            แสดง
+          </button>
+
+        </div>
+
+      </div>
+
+
+      <!-- BUTTON -->
+
+      <button
+        id="searchButton"
+        class="search-button w-full mt-5"
+        type="button"
+      >
+        ดูบัตรสมาชิก ♡
+      </button>
+
+
+      <div
+        id="searchError"
+        class="hidden text-center text-xs text-red-400 mt-3"
+      ></div>
+
+
+      <div
+        class="text-center text-[11px] text-gray-300 mt-4 leading-relaxed"
+      >
+        หากจำรหัสสมาชิกไม่ได้ กรุณาติดต่อร้าน bennie choco ค่ะ
+      </div>
+
+    </section>
 
 
     <!-- ===================================================
@@ -327,7 +571,7 @@
 
     <section
       id="loadingState"
-      class="glass rounded-[30px] p-8 text-center"
+      class="glass rounded-[30px] p-8 text-center hidden"
     >
 
       <div
@@ -339,7 +583,7 @@
       <div
         class="text-sm text-gray-500"
       >
-        กำลังโหลดบัตรสมาชิก...
+        กำลังตรวจสอบบัตรสมาชิก...
       </div>
 
     </section>
@@ -363,22 +607,23 @@
       <h1
         class="font-bold text-lg text-gray-800"
       >
-        ไม่พบข้อมูลสมาชิก
+        ไม่สามารถเปิดบัตรได้
       </h1>
 
       <p
         id="errorMessage"
         class="text-sm text-gray-500 mt-2 leading-relaxed"
       >
-        ลิงก์สมาชิกอาจไม่ถูกต้องหรือข้อมูลยังไม่พร้อมค่ะ
+        กรุณาตรวจสอบข้อมูลอีกครั้งค่ะ
       </p>
 
-      <a
-        href="index.html"
+      <button
+        id="backToSearch"
+        type="button"
         class="inline-block mt-5 px-5 py-3 rounded-xl bg-pink-500 hover:bg-pink-600 text-white text-sm font-medium transition"
       >
-        กลับหน้าเว็บ
-      </a>
+        ลองใหม่อีกครั้ง
+      </button>
 
     </section>
 
@@ -496,7 +741,7 @@
                 id="stampText"
                 class="text-xs text-gray-400"
               >
-                สะสมแล้ว 0 ดวง
+                สะสมแล้ว 0 แสตมป์
               </div>
 
             </div>
@@ -580,15 +825,19 @@
             <div
               class="text-xs text-gray-400"
             >
+
               เหลืออีก
+
               <span
                 id="remainingCount"
                 class="font-semibold text-pink-500"
               >
                 10
               </span>
-              ดวง
-              ก็จะครบ 10 ดวงแล้วค่ะ ♡
+
+              แสตมป์
+              ก็จะครบ 10 แสตมป์แล้วค่ะ ♡
+
             </div>
 
           </div>
@@ -607,10 +856,18 @@
         class="text-center mt-6"
       >
 
-        <div
-          class="text-xs text-gray-400"
+        <button
+          id="changeMemberButton"
+          type="button"
+          class="text-xs text-pink-400 hover:text-pink-500 transition"
         >
-          กรุณาเก็บลิงก์บัตรสมาชิกนี้ไว้
+          🔎 ดูบัตรสมาชิกอื่น
+        </button>
+
+        <div
+          class="text-xs text-gray-400 mt-3"
+        >
+          กรุณาเก็บ Member ID และรหัสสมาชิกนี้ไว้
         </div>
 
         <div
@@ -626,6 +883,19 @@
 
 
   </main>
+
+
+  <!-- =====================================================
+       MUSIC BUTTON
+       ===================================================== -->
+
+  <button
+    id="musicButton"
+    class="music-button hidden"
+    type="button"
+  >
+    ▶ เปิดเพลง
+  </button>
 
 
   <!-- =====================================================
@@ -674,9 +944,19 @@
     const SETTINGS_ID = 1;
 
 
+    const DEFAULT_MUSIC_URL =
+      "https://www.image2url.com/r2/default/audio/1789223045833-c1830056-9b42-4cf1-aa59-b28c86ba0c11.mp3";
+
+
     /* =====================================================
        ELEMENTS
        ===================================================== */
+
+    const searchState =
+      document.getElementById(
+        "searchState"
+      );
+
 
     const loadingState =
       document.getElementById(
@@ -702,11 +982,238 @@
       );
 
 
+    const searchError =
+      document.getElementById(
+        "searchError"
+      );
+
+
+    const memberIdInput =
+      document.getElementById(
+        "memberIdInput"
+      );
+
+
+    const memberPinInput =
+      document.getElementById(
+        "memberPinInput"
+      );
+
+
+    const searchButton =
+      document.getElementById(
+        "searchButton"
+      );
+
+
+    const pinToggle =
+      document.getElementById(
+        "pinToggle"
+      );
+
+
+    const backToSearch =
+      document.getElementById(
+        "backToSearch"
+      );
+
+
+    const changeMemberButton =
+      document.getElementById(
+        "changeMemberButton"
+      );
+
+
+    const musicButton =
+      document.getElementById(
+        "musicButton"
+      );
+
+
     /* =====================================================
-       GET MEMBER CODE
+       MUSIC
        ===================================================== */
 
-    function getMemberCode(){
+    let music =
+      null;
+
+    let musicEnabled =
+      true;
+
+    let musicUrl =
+      DEFAULT_MUSIC_URL;
+
+
+    function setupMusic(
+      settings
+    ){
+
+      musicEnabled =
+        settings.musicEnabled !== false;
+
+
+      musicUrl =
+        settings.musicUrl ||
+        DEFAULT_MUSIC_URL;
+
+
+      if(!musicEnabled){
+
+        musicButton.classList.add(
+          "hidden"
+        );
+
+
+        return;
+
+      }
+
+
+      music =
+        new Audio(
+          musicUrl
+        );
+
+
+      music.loop =
+        true;
+
+
+      music.preload =
+        "auto";
+
+
+      music.volume =
+        0.35;
+
+
+      musicButton.classList.remove(
+        "hidden"
+      );
+
+
+      musicButton.textContent =
+        "▶ เปิดเพลง";
+
+
+      /*
+       * พยายามเปิดเพลงอัตโนมัติ
+       * แต่เบราว์เซอร์บางตัวอาจบล็อก autoplay
+       */
+
+      music
+        .play()
+        .then(
+          function(){
+
+            updateMusicButton();
+
+          }
+        )
+        .catch(
+          function(){
+
+            updateMusicButton();
+
+          }
+        );
+
+    }
+
+
+    function updateMusicButton(){
+
+      if(
+        !music ||
+        !musicEnabled
+      ){
+
+        musicButton.classList.add(
+          "hidden"
+        );
+
+
+        return;
+
+      }
+
+
+      musicButton.classList.remove(
+        "hidden"
+      );
+
+
+      if(
+        !music.paused
+      ){
+
+        musicButton.textContent =
+          "Ⅱ ปิดเพลง";
+
+      }else{
+
+        musicButton.textContent =
+          "▶ เปิดเพลง";
+
+      }
+
+    }
+
+
+    musicButton.addEventListener(
+      "click",
+      async function(){
+
+        if(
+          !music ||
+          !musicEnabled
+        ){
+
+          return;
+
+        }
+
+
+        try{
+
+          if(
+            music.paused
+          ){
+
+            await music.play();
+
+          }else{
+
+            music.pause();
+
+          }
+
+
+          updateMusicButton();
+
+        }catch(error){
+
+          console.error(
+            "Music error:",
+            error
+          );
+
+
+          showToast(
+            "เบราว์เซอร์ยังไม่อนุญาตให้เปิดเพลงค่ะ"
+          );
+
+        }
+
+      }
+    );
+
+
+    /* =====================================================
+       GET MEMBER CODE FROM URL
+       ===================================================== */
+
+    function getMemberCodeFromUrl(){
 
       const params =
         new URLSearchParams(
@@ -808,6 +1315,97 @@
 
 
     /* =====================================================
+       TOAST
+       ===================================================== */
+
+    let toastTimer =
+      null;
+
+
+    function showToast(
+      message
+    ){
+
+      const toast =
+        document.getElementById(
+          "toast"
+        );
+
+
+      toast.textContent =
+        message;
+
+
+      toast.classList.add(
+        "show"
+      );
+
+
+      clearTimeout(
+        toastTimer
+      );
+
+
+      toastTimer =
+        setTimeout(
+          function(){
+
+            toast.classList.remove(
+              "show"
+            );
+
+          },
+          2500
+        );
+
+    }
+
+
+    /* =====================================================
+       SHOW SEARCH
+       ===================================================== */
+
+    function showSearch(){
+
+      loadingState.classList.add(
+        "hidden"
+      );
+
+
+      errorState.classList.add(
+        "hidden"
+      );
+
+
+      memberContent.classList.add(
+        "hidden"
+      );
+
+
+      searchState.classList.remove(
+        "hidden"
+      );
+
+
+      searchError.classList.add(
+        "hidden"
+      );
+
+
+      searchError.textContent =
+        "";
+
+
+      memberPinInput.value =
+        "";
+
+
+      memberPinInput.focus();
+
+    }
+
+
+    /* =====================================================
        SHOW ERROR
        ===================================================== */
 
@@ -825,6 +1423,11 @@
       );
 
 
+      searchState.classList.add(
+        "hidden"
+      );
+
+
       errorState.classList.remove(
         "hidden"
       );
@@ -837,20 +1440,54 @@
 
 
     /* =====================================================
+       SEARCH ERROR
+       ===================================================== */
+
+    function showSearchError(
+      message
+    ){
+
+      searchError.textContent =
+        message;
+
+
+      searchError.classList.remove(
+        "hidden"
+      );
+
+    }
+
+
+    /* =====================================================
        LOAD MEMBER
        ===================================================== */
 
     async function loadMember(){
 
       const memberCode =
-        getMemberCode();
+        memberIdInput.value
+          .trim()
+          .toUpperCase();
+
+
+      const memberPin =
+        memberPinInput.value
+          .trim();
+
+
+      searchError.classList.add(
+        "hidden"
+      );
 
 
       if(!memberCode){
 
-        showError(
-          "ไม่พบ Member ID ในลิงก์ค่ะ กรุณาใช้ลิงก์บัตรสมาชิกที่ได้รับจากร้าน"
+        showSearchError(
+          "กรุณากรอก Member ID ก่อนค่ะ"
         );
+
+
+        memberIdInput.focus();
 
 
         return;
@@ -858,30 +1495,80 @@
       }
 
 
+      if(!memberPin){
+
+        showSearchError(
+          "กรุณากรอกรหัสสมาชิก / PIN ก่อนค่ะ"
+        );
+
+
+        memberPinInput.focus();
+
+
+        return;
+
+      }
+
+
+      /*
+       * ซ่อนข้อมูลทั้งหมดก่อนตรวจสอบ
+       */
+
+      searchState.classList.add(
+        "hidden"
+      );
+
+
+      errorState.classList.add(
+        "hidden"
+      );
+
+
+      memberContent.classList.add(
+        "hidden"
+      );
+
+
+      loadingState.classList.remove(
+        "hidden"
+      );
+
+
       try{
 
         /*
-         * ใช้ RPC get_member_card()
-         * เพื่อไม่เปิดข้อมูลสมาชิกทั้งหมด
+         * ค้นหาด้วย Member ID + PIN
+         *
+         * จะไม่ดึง member_pin กลับมา
+         * และจะไม่เปิดข้อมูลสมาชิกถ้า PIN ไม่ตรง
          */
 
         const {
           data,
           error
         } =
-          await db.rpc(
-            "get_member_card",
-            {
-              p_member_code:
-                memberCode
-            }
-          );
+          await db
+            .from(
+              "members"
+            )
+            .select(
+              "id,member_code,name,channel,stamps,created_at,updated_at"
+            )
+            .eq(
+              "member_code",
+              memberCode
+            )
+            .eq(
+              "member_pin",
+              memberPin
+            )
+            .maybeSingle();
 
 
         if(error){
 
           console.error(
-            "get_member_card error:",
+            "Member lookup error:",
             error
           );
 
@@ -891,31 +1578,20 @@
         }
 
 
-        /*
-         * RPC อาจคืน object เดียว
-         * หรือ array 1 รายการ
-         */
+        if(!data){
 
-        let member =
-          data;
+          loadingState.classList.add(
+            "hidden"
+          );
 
 
-        if(
-          Array.isArray(
-            data
-          )
-        ){
-
-          member =
-            data[0] || null;
-
-        }
+          searchState.classList.remove(
+            "hidden"
+          );
 
 
-        if(!member){
-
-          showError(
-            "ไม่พบสมาชิกจาก Member ID นี้ค่ะ กรุณาตรวจสอบลิงก์อีกครั้ง"
+          showSearchError(
+            "Member ID หรือรหัสสมาชิกไม่ถูกต้องค่ะ"
           );
 
 
@@ -924,8 +1600,54 @@
         }
 
 
-        await loadSettings(
-          member
+        /*
+         * โหลด settings จากฐานข้อมูลกลาง
+         */
+
+        const {
+          data: settingsRow,
+          error: settingsError
+        } =
+          await db
+            .from(
+              "site_settings"
+            )
+            .select(
+              "data"
+            )
+            .eq(
+              "id",
+              SETTINGS_ID
+            )
+            .maybeSingle();
+
+
+        if(settingsError){
+
+          console.error(
+            "Load settings failed:",
+            settingsError
+          );
+
+
+          throw settingsError;
+
+        }
+
+
+        const settings =
+          settingsRow?.data ||
+          {};
+
+
+        setupMusic(
+          settings
+        );
+
+
+        renderMember(
+          data,
+          settings
         );
 
 
@@ -938,61 +1660,10 @@
 
 
         showError(
-          "ไม่สามารถโหลดข้อมูลสมาชิกได้ในขณะนี้ค่ะ กรุณาลองเปิดลิงก์อีกครั้ง"
+          "ไม่สามารถตรวจสอบข้อมูลสมาชิกได้ในขณะนี้ค่ะ กรุณาลองใหม่อีกครั้ง"
         );
 
       }
-
-    }
-
-
-    /* =====================================================
-       LOAD SITE SETTINGS
-       ===================================================== */
-
-    async function loadSettings(
-      member
-    ){
-
-      const {
-        data,
-        error
-      } =
-        await db
-          .from(
-            "site_settings"
-          )
-          .select(
-            "settings"
-          )
-          .eq(
-            "id",
-            SETTINGS_ID
-          )
-          .maybeSingle();
-
-
-      if(error){
-
-        console.error(
-          "Load settings failed:",
-          error
-        );
-
-
-        throw error;
-
-      }
-
-
-      const settings =
-        data?.settings || {};
-
-
-      renderMember(
-        member,
-        settings
-      );
 
     }
 
@@ -1018,7 +1689,9 @@
 
       const code =
         member.member_code ||
-        getMemberCode();
+        memberIdInput.value
+          .trim()
+          .toUpperCase();
 
 
       const stamps =
@@ -1068,7 +1741,7 @@
       document.getElementById(
         "stampText"
       ).textContent =
-        `สะสมแล้ว ${stamps} ดวง`;
+        `สะสมแล้ว ${stamps} แสตมป์`;
 
 
       const percent =
@@ -1141,6 +1814,11 @@
 
 
       loadingState.classList.add(
+        "hidden"
+      );
+
+
+      searchState.classList.add(
         "hidden"
       );
 
@@ -1258,10 +1936,138 @@
 
 
     /* =====================================================
+       PIN SHOW / HIDE
+       ===================================================== */
+
+    pinToggle.addEventListener(
+      "click",
+      function(){
+
+        if(
+          memberPinInput.type ===
+          "password"
+        ){
+
+          memberPinInput.type =
+            "text";
+
+
+          pinToggle.textContent =
+            "ซ่อน";
+
+        }else{
+
+          memberPinInput.type =
+            "password";
+
+
+          pinToggle.textContent =
+            "แสดง";
+
+        }
+
+      }
+    );
+
+
+    /* =====================================================
+       SEARCH BUTTON
+       ===================================================== */
+
+    searchButton.addEventListener(
+      "click",
+      loadMember
+    );
+
+
+    /* =====================================================
+       ENTER KEY
+       ===================================================== */
+
+    memberIdInput.addEventListener(
+      "keydown",
+      function(event){
+
+        if(
+          event.key ===
+          "Enter"
+        ){
+
+          event.preventDefault();
+
+          memberPinInput.focus();
+
+        }
+
+      }
+    );
+
+
+    memberPinInput.addEventListener(
+      "keydown",
+      function(event){
+
+        if(
+          event.key ===
+          "Enter"
+        ){
+
+          event.preventDefault();
+
+          loadMember();
+
+        }
+
+      }
+    );
+
+
+    /* =====================================================
+       BACK TO SEARCH
+       ===================================================== */
+
+    backToSearch.addEventListener(
+      "click",
+      function(){
+
+        showSearch();
+
+      }
+    );
+
+
+    changeMemberButton.addEventListener(
+      "click",
+      function(){
+
+        showSearch();
+
+      }
+    );
+
+
+    /* =====================================================
+       AUTO-FILL MEMBER ID FROM URL
+       ===================================================== */
+
+    const urlMemberCode =
+      getMemberCodeFromUrl();
+
+
+    if(urlMemberCode){
+
+      memberIdInput.value =
+        urlMemberCode;
+
+    }
+
+
+    /* =====================================================
        INIT
        ===================================================== */
 
-    loadMember();
+    memberIdInput.focus();
+
 
   </script>
 
