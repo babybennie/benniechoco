@@ -1,0 +1,1591 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <title>bennie choco — Member Admin</title>
+
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <link
+    href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600;700&display=swap"
+    rel="stylesheet"
+  />
+
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: "Prompt", sans-serif;
+      background:
+        radial-gradient(circle at top left, rgba(255, 182, 211, 0.35), transparent 35%),
+        radial-gradient(circle at bottom right, rgba(139, 94, 60, 0.16), transparent 35%),
+        #fff8fb;
+      color: #3f2a31;
+    }
+
+    .glass {
+      background: rgba(255, 255, 255, 0.86);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid rgba(255, 255, 255, 0.9);
+      box-shadow: 0 12px 35px rgba(100, 60, 80, 0.08);
+    }
+
+    .input {
+      width: 100%;
+      border: 1px solid #eadce2;
+      background: #fff;
+      border-radius: 14px;
+      padding: 12px 14px;
+      outline: none;
+      transition: 0.2s ease;
+      color: #3f2a31;
+    }
+
+    .input:focus {
+      border-color: #ff72a8;
+      box-shadow: 0 0 0 3px rgba(255, 114, 168, 0.12);
+    }
+
+    .btn {
+      transition: 0.2s ease;
+      cursor: pointer;
+    }
+
+    .btn:hover {
+      transform: translateY(-1px);
+    }
+
+    .stamp-preview {
+      width: 70px;
+      height: 70px;
+      object-fit: contain;
+      border-radius: 14px;
+      background:
+        linear-gradient(45deg, #f1f1f1 25%, transparent 25%),
+        linear-gradient(-45deg, #f1f1f1 25%, transparent 25%),
+        linear-gradient(45deg, transparent 75%, #f1f1f1 75%),
+        linear-gradient(-45deg, transparent 75%, #f1f1f1 75%);
+      background-size: 14px 14px;
+      background-position: 0 0, 0 7px, 7px -7px, -7px 0;
+      border: 1px solid #eadce2;
+      padding: 6px;
+    }
+
+    .member-card {
+      transition: 0.2s ease;
+    }
+
+    .member-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 14px 35px rgba(100, 60, 80, 0.10);
+    }
+
+    .stamp-dot {
+      width: 31px;
+      height: 31px;
+      border-radius: 50%;
+      border: 1px solid #eadce2;
+      background: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+    }
+
+    .stamp-dot img {
+      width: 25px;
+      height: 25px;
+      object-fit: contain;
+    }
+
+    .completed {
+      background: linear-gradient(
+        135deg,
+        rgba(255, 220, 233, 0.8),
+        rgba(255, 245, 249, 0.95)
+      );
+      border: 1px solid #ffc7dc;
+    }
+
+    .toast {
+      position: fixed;
+      left: 50%;
+      bottom: 25px;
+      transform: translateX(-50%) translateY(20px);
+      opacity: 0;
+      pointer-events: none;
+      transition: 0.25s ease;
+      z-index: 9999;
+    }
+
+    .toast.show {
+      opacity: 1;
+      transform: translateX(-50%) translateY(0);
+    }
+
+    .hidden {
+      display: none !important;
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- =========================
+       HEADER
+  ========================== -->
+  <header class="sticky top-0 z-40 bg-white/80 backdrop-blur-xl border-b border-pink-100">
+    <div class="max-w-6xl mx-auto px-4 py-4 flex items-center justify-between gap-3">
+
+      <div>
+        <div class="text-xl font-bold text-[#8b5e3c]">
+          bennie choco
+        </div>
+
+        <div class="text-xs text-gray-500 mt-0.5">
+          Member & Stamp Admin
+        </div>
+      </div>
+
+      <div class="flex gap-2">
+
+        <a
+          href="admin.html"
+          class="btn px-3 py-2 rounded-xl bg-pink-50 text-pink-600 text-sm font-medium"
+        >
+          Website Admin
+        </a>
+
+        <a
+          href="index.html"
+          class="btn px-3 py-2 rounded-xl bg-gray-100 text-gray-600 text-sm font-medium"
+        >
+          หน้าเว็บ
+        </a>
+
+      </div>
+    </div>
+  </header>
+
+
+  <main class="max-w-6xl mx-auto px-4 py-6 pb-28">
+
+    <!-- =========================
+         MEMBER SYSTEM STATUS
+    ========================== -->
+
+    <section class="glass rounded-3xl p-5 mb-5">
+
+      <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+
+        <div>
+          <h1 class="text-xl font-bold">
+            ระบบสมาชิก / สะสมแสตมป์
+          </h1>
+
+          <p class="text-sm text-gray-500 mt-1">
+            ซื้อ 1 ครั้ง = 1 แสตมป์ · ครบ 10 แสตมป์
+          </p>
+        </div>
+
+        <div
+          id="memberCount"
+          class="inline-flex items-center justify-center px-4 py-2 rounded-full bg-pink-50 text-pink-600 text-sm font-medium"
+        >
+          สมาชิก 0 คน
+        </div>
+
+      </div>
+
+    </section>
+
+
+    <!-- =========================
+         STAMP SETTINGS
+    ========================== -->
+
+    <section class="glass rounded-3xl p-5 mb-5">
+
+      <div class="mb-5">
+
+        <h2 class="font-bold text-lg">
+          ตั้งค่ารูปแสตมป์
+        </h2>
+
+        <p class="text-sm text-gray-500 mt-1">
+          แนะนำให้ใช้ไฟล์ PNG พื้นหลังโปร่งใส
+        </p>
+
+      </div>
+
+
+      <div class="grid md:grid-cols-2 gap-5">
+
+        <!-- Filled Stamp -->
+        <div class="border border-pink-100 rounded-2xl p-4">
+
+          <div class="font-medium mb-3">
+            รูปแสตมป์ที่ปั้มแล้ว
+          </div>
+
+          <div class="flex items-center gap-4">
+
+            <img
+              id="stampPreview"
+              class="stamp-preview"
+              src=""
+              alt="stamp preview"
+            />
+
+            <div class="flex-1">
+
+              <label
+                class="btn inline-flex items-center justify-center px-4 py-2 rounded-xl bg-[#ff72a8] text-white text-sm font-medium"
+              >
+                เลือกไฟล์ PNG
+
+                <input
+                  id="stampImageInput"
+                  type="file"
+                  accept="image/png,image/webp,image/jpeg"
+                  class="hidden"
+                />
+              </label>
+
+              <div class="text-xs text-gray-400 mt-2">
+                รูปนี้จะถูกใช้กับช่องแสตมป์ที่ได้รับแล้ว
+              </div>
+
+            </div>
+
+          </div>
+
+        </div>
+
+
+        <!-- Empty Stamp -->
+        <div class="border border-gray-100 rounded-2xl p-4">
+
+          <div class="font-medium mb-3">
+            รูปช่องแสตมป์ที่ยังไม่ได้รับ
+          </div>
+
+          <div class="flex items-center gap-4">
+
+            <img
+              id="emptyStampPreview"
+              class="stamp-preview"
+              src=""
+              alt="empty stamp preview"
+            />
+
+            <div class="flex-1">
+
+              <label
+                class="btn inline-flex items-center justify-center px-4 py-2 rounded-xl bg-gray-700 text-white text-sm font-medium"
+              >
+                เลือกไฟล์
+
+                <input
+                  id="emptyStampImageInput"
+                  type="file"
+                  accept="image/png,image/webp,image/jpeg"
+                  class="hidden"
+                />
+              </label>
+
+              <div class="text-xs text-gray-400 mt-2">
+                ใช้เป็นพื้นหลังของช่องที่ยังไม่ได้แสตมป์
+              </div>
+
+            </div>
+
+          </div>
+
+        </div>
+
+      </div>
+
+
+      <div class="flex justify-end mt-5">
+
+        <button
+          onclick="saveStampSettings()"
+          class="btn px-5 py-3 rounded-xl bg-[#8b5e3c] text-white text-sm font-medium"
+        >
+          บันทึกรูปแสตมป์
+        </button>
+
+      </div>
+
+    </section>
+
+
+    <!-- =========================
+         ADD MEMBER
+    ========================== -->
+
+    <section class="glass rounded-3xl p-5 mb-5">
+
+      <div class="mb-5">
+
+        <h2 class="font-bold text-lg">
+          เพิ่มสมาชิกใหม่
+        </h2>
+
+        <p class="text-sm text-gray-500 mt-1">
+          สร้างบัตรสมาชิกและลิงก์เฉพาะสำหรับลูกค้า
+        </p>
+
+      </div>
+
+
+      <div class="grid md:grid-cols-2 gap-4">
+
+        <div>
+          <label class="text-sm font-medium block mb-2">
+            ชื่อลูกค้า
+          </label>
+
+          <input
+            id="newMemberName"
+            class="input"
+            placeholder="เช่น น้องมิ้น"
+          />
+        </div>
+
+
+        <div>
+          <label class="text-sm font-medium block mb-2">
+            ช่องทางการสั่งซื้อ
+          </label>
+
+          <input
+            id="newMemberChannel"
+            class="input"
+            placeholder="เช่น LINE / IG / TikTok"
+          />
+        </div>
+
+
+        <div>
+          <label class="text-sm font-medium block mb-2">
+            จำนวนแสตมป์เริ่มต้น
+          </label>
+
+          <input
+            id="newMemberStamps"
+            class="input"
+            type="number"
+            min="0"
+            max="10"
+            value="0"
+          />
+        </div>
+
+      </div>
+
+
+      <button
+        onclick="addMember()"
+        class="btn mt-5 w-full md:w-auto px-6 py-3 rounded-xl bg-[#ff72a8] text-white font-medium"
+      >
+        ＋ เพิ่มสมาชิก
+      </button>
+
+    </section>
+
+
+    <!-- =========================
+         SEARCH
+    ========================== -->
+
+    <section class="mb-5">
+
+      <input
+        id="searchMember"
+        oninput="renderMembers()"
+        class="input"
+        placeholder="ค้นหาชื่อลูกค้า / ช่องทาง / Member ID..."
+      />
+
+    </section>
+
+
+    <!-- =========================
+         MEMBER LIST
+    ========================== -->
+
+    <section>
+
+      <div
+        id="memberList"
+        class="grid lg:grid-cols-2 gap-5"
+      ></div>
+
+      <div
+        id="emptyState"
+        class="hidden glass rounded-3xl p-10 text-center"
+      >
+
+        <div class="text-4xl mb-3">
+          ♡
+        </div>
+
+        <div class="font-medium">
+          ยังไม่มีสมาชิก
+        </div>
+
+        <div class="text-sm text-gray-500 mt-1">
+          เพิ่มสมาชิกคนแรกจากด้านบนได้เลย
+        </div>
+
+      </div>
+
+    </section>
+
+  </main>
+
+
+  <!-- =========================
+       TOAST
+  ========================== -->
+
+  <div
+    id="toast"
+    class="toast px-5 py-3 rounded-2xl bg-[#3f2a31] text-white text-sm shadow-xl"
+  >
+    บันทึกแล้ว
+  </div>
+
+
+<script>
+
+  /* =========================================================
+     STORAGE
+  ========================================================= */
+
+  const MEMBER_KEY = "bennieChocoMembers";
+  const STORE_KEY = "bennieChocoPaymentData";
+
+
+  /* =========================================================
+     DEFAULT DATA
+  ========================================================= */
+
+  const defaultStore = {
+    shopName: "bennie choco",
+
+    memberStampImage: "",
+
+    memberStampEmptyImage: ""
+  };
+
+
+  /* =========================================================
+     HELPERS
+  ========================================================= */
+
+  function getStoreData() {
+
+    try {
+
+      const saved = localStorage.getItem(STORE_KEY);
+
+      if (!saved) {
+        return { ...defaultStore };
+      }
+
+      return {
+        ...defaultStore,
+        ...JSON.parse(saved)
+      };
+
+    } catch (error) {
+
+      console.error(error);
+
+      return {
+        ...defaultStore
+      };
+
+    }
+
+  }
+
+
+  function saveStoreData(data) {
+
+    localStorage.setItem(
+      STORE_KEY,
+      JSON.stringify(data)
+    );
+
+  }
+
+
+  function getMembers() {
+
+    try {
+
+      const saved = localStorage.getItem(MEMBER_KEY);
+
+      if (!saved) {
+        return {};
+      }
+
+      return JSON.parse(saved);
+
+    } catch (error) {
+
+      console.error(error);
+
+      return {};
+
+    }
+
+  }
+
+
+  function saveMembers(members) {
+
+    localStorage.setItem(
+      MEMBER_KEY,
+      JSON.stringify(members)
+    );
+
+  }
+
+
+  function showToast(message) {
+
+    const toast = document.getElementById("toast");
+
+    toast.textContent = message;
+
+    toast.classList.add("show");
+
+    clearTimeout(window.toastTimer);
+
+    window.toastTimer = setTimeout(() => {
+
+      toast.classList.remove("show");
+
+    }, 2200);
+
+  }
+
+
+  /* =========================================================
+     MEMBER ID
+  ========================================================= */
+
+  function generateMemberId() {
+
+    const members = getMembers();
+
+    let id = "";
+
+    do {
+
+      const random =
+        Math.random()
+          .toString(36)
+          .substring(2, 8)
+          .toUpperCase();
+
+      id = "BC-" + random;
+
+    } while (members[id]);
+
+    return id;
+
+  }
+
+
+  /* =========================================================
+     MEMBER URL
+  ========================================================= */
+
+  function getMemberUrl(memberId) {
+
+    return (
+      window.location.origin +
+      window.location.pathname
+        .replace("member-admin.html", "member.html") +
+      "?id=" +
+      encodeURIComponent(memberId)
+    );
+
+  }
+
+
+  /* =========================================================
+     ADD MEMBER
+  ========================================================= */
+
+  function addMember() {
+
+    const name =
+      document
+        .getElementById("newMemberName")
+        .value
+        .trim();
+
+    const channel =
+      document
+        .getElementById("newMemberChannel")
+        .value
+        .trim();
+
+    let stamps =
+      Number(
+        document
+          .getElementById("newMemberStamps")
+          .value
+      );
+
+    if (!name) {
+
+      showToast("กรุณาใส่ชื่อลูกค้าก่อน");
+
+      return;
+
+    }
+
+
+    if (Number.isNaN(stamps)) {
+      stamps = 0;
+    }
+
+
+    stamps = Math.max(
+      0,
+      Math.min(10, stamps)
+    );
+
+
+    const members = getMembers();
+
+    const id = generateMemberId();
+
+
+    members[id] = {
+
+      id,
+
+      name,
+
+      channel:
+        channel || "-",
+
+      stamps,
+
+      createdAt:
+        new Date().toISOString(),
+
+      updatedAt:
+        new Date().toISOString()
+
+    };
+
+
+    saveMembers(members);
+
+
+    document.getElementById("newMemberName").value = "";
+
+    document.getElementById("newMemberChannel").value = "";
+
+    document.getElementById("newMemberStamps").value = "0";
+
+
+    renderMembers();
+
+    showToast("เพิ่มสมาชิกเรียบร้อยแล้ว");
+
+  }
+
+
+  /* =========================================================
+     UPDATE STAMPS
+  ========================================================= */
+
+  function changeStamp(memberId, amount) {
+
+    const members = getMembers();
+
+    if (!members[memberId]) {
+      return;
+    }
+
+
+    let stamps =
+      Number(members[memberId].stamps || 0);
+
+    stamps += amount;
+
+
+    stamps = Math.max(
+      0,
+      Math.min(10, stamps)
+    );
+
+
+    members[memberId].stamps = stamps;
+
+    members[memberId].updatedAt =
+      new Date().toISOString();
+
+
+    saveMembers(members);
+
+    renderMembers();
+
+
+    if (amount > 0) {
+
+      showToast(
+        stamps >= 10
+          ? "ครบ 10 แสตมป์แล้ว 🎉"
+          : "เพิ่มแสตมป์แล้ว"
+      );
+
+    } else {
+
+      showToast("ลดแสตมป์แล้ว");
+
+    }
+
+  }
+
+
+  /* =========================================================
+     RESET STAMPS
+  ========================================================= */
+
+  function resetStamps(memberId) {
+
+    const members = getMembers();
+
+    if (!members[memberId]) {
+      return;
+    }
+
+
+    const confirmed =
+      confirm(
+        "ต้องการรีเซ็ตแสตมป์ของสมาชิกคนนี้เป็น 0 ใช่ไหม?"
+      );
+
+
+    if (!confirmed) {
+      return;
+    }
+
+
+    members[memberId].stamps = 0;
+
+    members[memberId].updatedAt =
+      new Date().toISOString();
+
+
+    saveMembers(members);
+
+    renderMembers();
+
+    showToast("รีเซ็ตแสตมป์แล้ว");
+
+  }
+
+
+  /* =========================================================
+     DELETE MEMBER
+  ========================================================= */
+
+  function deleteMember(memberId) {
+
+    const members = getMembers();
+
+    if (!members[memberId]) {
+      return;
+    }
+
+
+    const name =
+      members[memberId].name;
+
+
+    const confirmed =
+      confirm(
+        `ต้องการลบสมาชิก "${name}" ใช่ไหม?\nการลบนี้ไม่สามารถย้อนกลับได้`
+      );
+
+
+    if (!confirmed) {
+      return;
+    }
+
+
+    delete members[memberId];
+
+    saveMembers(members);
+
+    renderMembers();
+
+    showToast("ลบสมาชิกแล้ว");
+
+  }
+
+
+  /* =========================================================
+     EDIT MEMBER
+  ========================================================= */
+
+  function editMember(memberId) {
+
+    const members = getMembers();
+
+    const member = members[memberId];
+
+    if (!member) {
+      return;
+    }
+
+
+    const newName =
+      prompt(
+        "ชื่อลูกค้า",
+        member.name
+      );
+
+
+    if (newName === null) {
+      return;
+    }
+
+
+    const newChannel =
+      prompt(
+        "ช่องทางการสั่งซื้อ",
+        member.channel || ""
+      );
+
+
+    if (newChannel === null) {
+      return;
+    }
+
+
+    member.name =
+      newName.trim() || member.name;
+
+    member.channel =
+      newChannel.trim() || "-";
+
+    member.updatedAt =
+      new Date().toISOString();
+
+
+    saveMembers(members);
+
+    renderMembers();
+
+    showToast("แก้ไขข้อมูลแล้ว");
+
+  }
+
+
+  /* =========================================================
+     COPY MEMBER URL
+  ========================================================= */
+
+  async function copyMemberUrl(memberId) {
+
+    const url =
+      getMemberUrl(memberId);
+
+
+    try {
+
+      await navigator.clipboard.writeText(url);
+
+      showToast("คัดลอกลิงก์สมาชิกแล้ว");
+
+    } catch (error) {
+
+      prompt(
+        "คัดลอกลิงก์นี้",
+        url
+      );
+
+    }
+
+  }
+
+
+  /* =========================================================
+     OPEN MEMBER PAGE
+  ========================================================= */
+
+  function openMember(memberId) {
+
+    const url =
+      getMemberUrl(memberId);
+
+    window.open(
+      url,
+      "_blank"
+    );
+
+  }
+
+
+  /* =========================================================
+     RENDER STAMPS
+  ========================================================= */
+
+  function renderMiniStamps(stamps) {
+
+    const store =
+      getStoreData();
+
+
+    const filled =
+      store.memberStampImage;
+
+
+    const empty =
+      store.memberStampEmptyImage;
+
+
+    let html = "";
+
+
+    for (
+      let i = 1;
+      i <= 10;
+      i++
+    ) {
+
+      const isFilled =
+        i <= stamps;
+
+
+      if (
+        isFilled &&
+        filled
+      ) {
+
+        html += `
+          <div class="stamp-dot">
+            <img
+              src="${filled}"
+              alt="stamp"
+            >
+          </div>
+        `;
+
+      } else if (
+        !isFilled &&
+        empty
+      ) {
+
+        html += `
+          <div class="stamp-dot">
+            <img
+              src="${empty}"
+              alt="empty stamp"
+            >
+          </div>
+        `;
+
+      } else if (isFilled) {
+
+        html += `
+          <div class="stamp-dot bg-pink-100 border-pink-300 text-pink-600 text-xs">
+            ✓
+          </div>
+        `;
+
+      } else {
+
+        html += `
+          <div class="stamp-dot text-gray-300 text-xs">
+            ${i}
+          </div>
+        `;
+
+      }
+
+    }
+
+
+    return html;
+
+  }
+
+
+  /* =========================================================
+     RENDER MEMBERS
+  ========================================================= */
+
+  function renderMembers() {
+
+    const members =
+      getMembers();
+
+
+    const search =
+      document
+        .getElementById("searchMember")
+        .value
+        .trim()
+        .toLowerCase();
+
+
+    const list =
+      document.getElementById("memberList");
+
+    const emptyState =
+      document.getElementById("emptyState");
+
+
+    const memberArray =
+      Object.values(members)
+        .filter(member => {
+
+          if (!search) {
+            return true;
+          }
+
+
+          return (
+
+            String(member.name || "")
+              .toLowerCase()
+              .includes(search)
+
+            ||
+
+            String(member.channel || "")
+              .toLowerCase()
+              .includes(search)
+
+            ||
+
+            String(member.id || "")
+              .toLowerCase()
+              .includes(search)
+
+          );
+
+        })
+        .sort(
+          (a, b) =>
+            new Date(b.updatedAt || b.createdAt) -
+            new Date(a.updatedAt || a.createdAt)
+        );
+
+
+    document.getElementById(
+      "memberCount"
+    ).textContent =
+      `สมาชิก ${Object.keys(members).length} คน`;
+
+
+    list.innerHTML = "";
+
+
+    if (!memberArray.length) {
+
+      emptyState.classList.remove(
+        "hidden"
+      );
+
+      return;
+
+    }
+
+
+    emptyState.classList.add(
+      "hidden"
+    );
+
+
+    memberArray.forEach(member => {
+
+      const stamps =
+        Math.max(
+          0,
+          Math.min(
+            10,
+            Number(member.stamps || 0)
+          )
+        );
+
+
+      const completed =
+        stamps >= 10;
+
+
+      const url =
+        getMemberUrl(member.id);
+
+
+      const card =
+        document.createElement("div");
+
+
+      card.className =
+        "member-card glass rounded-3xl p-5";
+
+
+      card.innerHTML = `
+
+        <div class="flex items-start justify-between gap-3">
+
+          <div>
+
+            <div class="font-bold text-lg">
+              ${escapeHtml(member.name)}
+            </div>
+
+            <div class="text-sm text-gray-500 mt-1">
+              ช่องทาง: ${escapeHtml(member.channel || "-")}
+            </div>
+
+            <div class="text-xs text-gray-400 mt-1">
+              ID: ${escapeHtml(member.id)}
+            </div>
+
+          </div>
+
+
+          ${
+            completed
+              ? `
+                <div class="completed px-3 py-1.5 rounded-full text-xs font-medium text-pink-600">
+                  ครบ 10 ดวง 🎉
+                </div>
+              `
+              : `
+                <div class="px-3 py-1.5 rounded-full bg-gray-50 text-gray-500 text-xs">
+                  ${stamps}/10
+                </div>
+              `
+          }
+
+        </div>
+
+
+        <!-- STAMPS -->
+
+        <div class="mt-5">
+
+          <div class="flex flex-wrap gap-2">
+
+            ${renderMiniStamps(stamps)}
+
+          </div>
+
+        </div>
+
+
+        <!-- COUNT -->
+
+        <div class="mt-4">
+
+          <div class="flex justify-between text-xs text-gray-500 mb-2">
+
+            <span>
+              สะสมแสตมป์
+            </span>
+
+            <span>
+              ${stamps} / 10
+            </span>
+
+          </div>
+
+
+          <div class="h-2 bg-gray-100 rounded-full overflow-hidden">
+
+            <div
+              class="h-full bg-[#ff72a8] rounded-full"
+              style="width:${stamps * 10}%"
+            ></div>
+
+          </div>
+
+        </div>
+
+
+        <!-- MEMBER URL -->
+
+        <div class="mt-5">
+
+          <div class="text-xs text-gray-400 mb-1">
+            ลิงก์ของลูกค้า
+          </div>
+
+          <div class="flex gap-2">
+
+            <input
+              class="input text-xs"
+              value="${escapeHtml(url)}"
+              readonly
+              onclick="this.select()"
+            />
+
+            <button
+              onclick="copyMemberUrl('${member.id}')"
+              class="btn shrink-0 px-4 rounded-xl bg-gray-800 text-white text-xs"
+            >
+              คัดลอก
+            </button>
+
+          </div>
+
+        </div>
+
+
+        <!-- ACTIONS -->
+
+        <div class="grid grid-cols-3 gap-2 mt-5">
+
+          <button
+            onclick="changeStamp('${member.id}', 1)"
+            class="btn py-2.5 rounded-xl bg-pink-500 text-white text-sm font-medium"
+          >
+            ＋1
+          </button>
+
+          <button
+            onclick="changeStamp('${member.id}', -1)"
+            class="btn py-2.5 rounded-xl bg-gray-100 text-gray-600 text-sm font-medium"
+          >
+            −1
+          </button>
+
+          <button
+            onclick="resetStamps('${member.id}')"
+            class="btn py-2.5 rounded-xl bg-gray-100 text-gray-600 text-sm font-medium"
+          >
+            รีเซ็ต
+          </button>
+
+        </div>
+
+
+        <div class="grid grid-cols-3 gap-2 mt-2">
+
+          <button
+            onclick="openMember('${member.id}')"
+            class="btn py-2 rounded-xl bg-purple-50 text-purple-600 text-xs font-medium"
+          >
+            เปิดบัตร
+          </button>
+
+          <button
+            onclick="editMember('${member.id}')"
+            class="btn py-2 rounded-xl bg-blue-50 text-blue-600 text-xs font-medium"
+          >
+            แก้ไข
+          </button>
+
+          <button
+            onclick="deleteMember('${member.id}')"
+            class="btn py-2 rounded-xl bg-red-50 text-red-500 text-xs font-medium"
+          >
+            ลบ
+          </button>
+
+        </div>
+
+      `;
+
+
+      list.appendChild(card);
+
+    });
+
+  }
+
+
+  /* =========================================================
+     ESCAPE HTML
+  ========================================================= */
+
+  function escapeHtml(value) {
+
+    return String(value)
+      .replaceAll("&", "&amp;")
+      .replaceAll("<", "&lt;")
+      .replaceAll(">", "&gt;")
+      .replaceAll('"', "&quot;")
+      .replaceAll("'", "&#039;");
+
+  }
+
+
+  /* =========================================================
+     FILE TO DATA URL
+  ========================================================= */
+
+  function fileToDataURL(file) {
+
+    return new Promise(
+      (resolve, reject) => {
+
+        const reader =
+          new FileReader();
+
+
+        reader.onload = () =>
+          resolve(reader.result);
+
+
+        reader.onerror = reject;
+
+
+        reader.readAsDataURL(file);
+
+      }
+    );
+
+  }
+
+
+  /* =========================================================
+     STAMP IMAGE UPLOAD
+  ========================================================= */
+
+  let pendingStampImage = "";
+  let pendingEmptyStampImage = "";
+
+
+  document
+    .getElementById("stampImageInput")
+    .addEventListener(
+      "change",
+      async function () {
+
+        const file =
+          this.files[0];
+
+
+        if (!file) {
+          return;
+        }
+
+
+        if (
+          !file.type.includes("png") &&
+          !file.type.includes("webp") &&
+          !file.type.includes("jpeg")
+        ) {
+
+          showToast(
+            "กรุณาเลือกไฟล์รูปภาพ"
+          );
+
+          return;
+
+        }
+
+
+        try {
+
+          pendingStampImage =
+            await fileToDataURL(file);
+
+
+          document
+            .getElementById("stampPreview")
+            .src =
+            pendingStampImage;
+
+
+          showToast(
+            "เลือกรูปแสตมป์แล้ว กดบันทึกอีกครั้ง"
+          );
+
+        } catch (error) {
+
+          showToast(
+            "ไม่สามารถอ่านไฟล์ได้"
+          );
+
+        }
+
+      }
+    );
+
+
+  document
+    .getElementById("emptyStampImageInput")
+    .addEventListener(
+      "change",
+      async function () {
+
+        const file =
+          this.files[0];
+
+
+        if (!file) {
+          return;
+        }
+
+
+        try {
+
+          pendingEmptyStampImage =
+            await fileToDataURL(file);
+
+
+          document
+            .getElementById("emptyStampPreview")
+            .src =
+            pendingEmptyStampImage;
+
+
+          showToast(
+            "เลือกรูปช่องว่างแล้ว กดบันทึกอีกครั้ง"
+          );
+
+        } catch (error) {
+
+          showToast(
+            "ไม่สามารถอ่านไฟล์ได้"
+          );
+
+        }
+
+      }
+    );
+
+
+  /* =========================================================
+     SAVE STAMP SETTINGS
+  ========================================================= */
+
+  function saveStampSettings() {
+
+    const store =
+      getStoreData();
+
+
+    if (pendingStampImage) {
+
+      store.memberStampImage =
+        pendingStampImage;
+
+    }
+
+
+    if (pendingEmptyStampImage) {
+
+      store.memberStampEmptyImage =
+        pendingEmptyStampImage;
+
+    }
+
+
+    saveStoreData(store);
+
+
+    pendingStampImage = "";
+
+    pendingEmptyStampImage = "";
+
+
+    renderStampPreviews();
+
+    renderMembers();
+
+
+    showToast(
+      "บันทึกรูปแสตมป์เรียบร้อยแล้ว"
+    );
+
+  }
+
+
+  /* =========================================================
+     RENDER STAMP PREVIEWS
+  ========================================================= */
+
+  function renderStampPreviews() {
+
+    const store =
+      getStoreData();
+
+
+    const stampPreview =
+      document.getElementById(
+        "stampPreview"
+      );
+
+
+    const emptyPreview =
+      document.getElementById(
+        "emptyStampPreview"
+      );
+
+
+    if (store.memberStampImage) {
+
+      stampPreview.src =
+        store.memberStampImage;
+
+    } else {
+
+      stampPreview.removeAttribute(
+        "src"
+      );
+
+    }
+
+
+    if (store.memberStampEmptyImage) {
+
+      emptyPreview.src =
+        store.memberStampEmptyImage;
+
+    } else {
+
+      emptyPreview.removeAttribute(
+        "src"
+      );
+
+    }
+
+  }
+
+
+  /* =========================================================
+     INITIALIZE
+  ========================================================= */
+
+  function init() {
+
+    renderStampPreviews();
+
+    renderMembers();
+
+  }
+
+
+  init();
+
+</script>
+
+</body>
+</html>
