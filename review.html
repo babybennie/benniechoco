@@ -1,0 +1,1033 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Review | Bennie Choco</title>
+
+<meta name="theme-color" content="#FDEAF7">
+<meta name="msapplication-TileColor" content="#FDEAF7">
+
+<script src="https://cdn.tailwindcss.com"></script>
+
+<style>
+
+body{
+    background:
+        radial-gradient(circle at top left, rgba(255,255,255,.9), transparent 35%),
+        linear-gradient(180deg,#fff7fb 0%,#fdeaf7 100%);
+    min-height:100vh;
+}
+
+.glass{
+    background:rgba(255,255,255,.82);
+    backdrop-filter:blur(12px);
+    -webkit-backdrop-filter:blur(12px);
+}
+
+.mood-btn{
+    transition:.2s ease;
+}
+
+.mood-btn.selected{
+    transform:translateY(-2px);
+    box-shadow:0 6px 18px rgba(236,72,153,.16);
+}
+
+.review-card{
+    animation:fadeIn .35s ease;
+}
+
+@keyframes fadeIn{
+    from{
+        opacity:0;
+        transform:translateY(8px);
+    }
+    to{
+        opacity:1;
+        transform:translateY(0);
+    }
+}
+
+textarea{
+    resize:none;
+}
+
+</style>
+</head>
+
+<body class="text-gray-700">
+
+<div class="max-w-xl mx-auto px-4 py-8">
+
+    <!-- =====================================================
+         HEADER
+         ===================================================== -->
+
+    <div class="text-center mb-7">
+
+        <div class="inline-flex items-center justify-center
+                    w-16 h-16 rounded-full
+                    bg-white/90 shadow-sm
+                    border border-pink-100 mb-4">
+
+            <span class="text-3xl">🍫</span>
+
+        </div>
+
+        <h1 class="text-2xl font-bold text-pink-500">
+            รีวิวจากลูกค้า
+        </h1>
+
+        <p class="text-sm text-gray-500 mt-2">
+            ขอบคุณที่แวะมาแชร์ความรู้สึกกับ Bennie Choco นะคะ ♡
+        </p>
+
+    </div>
+
+
+    <!-- =====================================================
+         REVIEW FORM
+         ===================================================== -->
+
+    <section class="glass rounded-3xl
+                    border border-pink-100
+                    shadow-sm p-5 mb-7">
+
+        <h2 class="text-lg font-semibold text-gray-700 mb-5">
+            💌 เขียนรีวิว
+        </h2>
+
+
+        <!-- NAME -->
+
+        <div class="mb-4">
+
+            <label
+                for="name"
+                class="block text-sm font-medium text-gray-600 mb-2"
+            >
+                ชื่อ / ชื่อเล่น
+            </label>
+
+            <input
+                id="name"
+                type="text"
+                maxlength="50"
+                placeholder="เช่น น้องมิน"
+                class="w-full rounded-2xl
+                       border border-pink-100
+                       bg-white/80
+                       px-4 py-3
+                       text-sm
+                       outline-none
+                       focus:border-pink-300
+                       focus:ring-2
+                       focus:ring-pink-100"
+            >
+
+        </div>
+
+
+        <!-- SERVICE -->
+
+        <div class="mb-4">
+
+            <label
+                for="service"
+                class="block text-sm font-medium text-gray-600 mb-2"
+            >
+                ซื้อบริการอะไร
+            </label>
+
+            <input
+                id="service"
+                type="text"
+                maxlength="100"
+                placeholder="เช่น ดูดวงความรัก / Yes or No"
+                class="w-full rounded-2xl
+                       border border-pink-100
+                       bg-white/80
+                       px-4 py-3
+                       text-sm
+                       outline-none
+                       focus:border-pink-300
+                       focus:ring-2
+                       focus:ring-pink-100"
+            >
+
+        </div>
+
+
+        <!-- DETAIL -->
+
+        <div class="mb-5">
+
+            <label
+                for="detail"
+                class="block text-sm font-medium text-gray-600 mb-2"
+            >
+                รายละเอียดรีวิว
+            </label>
+
+            <textarea
+                id="detail"
+                rows="5"
+                maxlength="500"
+                placeholder="อยากบอกอะไรกับ Bennie Choco เขียนได้เลยค่า ♡"
+                class="w-full rounded-2xl
+                       border border-pink-100
+                       bg-white/80
+                       px-4 py-3
+                       text-sm
+                       outline-none
+                       focus:border-pink-300
+                       focus:ring-2
+                       focus:ring-pink-100"
+            ></textarea>
+
+            <div class="text-right text-xs text-gray-400 mt-1">
+                <span id="charCount">0</span>/500
+            </div>
+
+        </div>
+
+
+        <!-- MOOD -->
+
+        <div class="mb-5">
+
+            <p class="text-sm font-medium text-gray-600 mb-3">
+                ความรู้สึกหลังใช้บริการ
+            </p>
+
+            <div class="grid grid-cols-2 gap-3">
+
+                <button
+                    type="button"
+                    id="happyBtn"
+                    class="mood-btn rounded-2xl
+                           border border-pink-100
+                           bg-white/80
+                           py-4
+                           text-sm font-semibold
+                           text-pink-500"
+                >
+                    😊 Happy
+                </button>
+
+                <button
+                    type="button"
+                    id="sadBtn"
+                    class="mood-btn rounded-2xl
+                           border border-pink-100
+                           bg-white/80
+                           py-4
+                           text-sm font-semibold
+                           text-gray-500"
+                >
+                    🥲 Sad
+                </button>
+
+            </div>
+
+        </div>
+
+
+        <!-- NOTICE -->
+
+        <div class="rounded-2xl
+                    bg-pink-50
+                    border border-pink-100
+                    px-4 py-3
+                    text-xs text-pink-500
+                    leading-relaxed
+                    mb-4">
+
+            ♡ รีวิวของคุณจะถูกตรวจสอบก่อนแสดงบนหน้าเว็บนะคะ
+            เพื่อป้องกันข้อความป่วนหรือข้อความที่ไม่เหมาะสมค่า
+
+        </div>
+
+
+        <!-- SUBMIT -->
+
+        <button
+            id="submitBtn"
+            type="button"
+            class="w-full rounded-2xl
+                   bg-pink-400
+                   hover:bg-pink-500
+                   text-white
+                   py-3.5
+                   font-semibold
+                   shadow-sm
+                   transition"
+        >
+            💗 ส่งรีวิว
+        </button>
+
+
+        <p
+            id="message"
+            class="hidden text-center text-sm mt-4"
+        ></p>
+
+    </section>
+
+
+    <!-- =====================================================
+         APPROVED REVIEWS
+         ===================================================== -->
+
+    <section>
+
+        <div class="flex items-center justify-between mb-4">
+
+            <h2 class="text-lg font-semibold text-gray-700">
+                💕 รีวิวจากลูกค้า
+            </h2>
+
+            <span
+                id="reviewCount"
+                class="text-xs text-gray-400"
+            >
+            </span>
+
+        </div>
+
+
+        <div
+            id="reviewsList"
+            class="space-y-4"
+        ></div>
+
+
+        <div
+            id="emptyReviews"
+            class="glass
+                   rounded-3xl
+                   border border-pink-100
+                   p-7
+                   text-center
+                   text-sm
+                   text-gray-400"
+        >
+            ยังไม่มีรีวิวค่า ♡
+        </div>
+
+    </section>
+
+
+    <!-- =====================================================
+         MUSIC BUTTON
+         ===================================================== -->
+
+    <button
+        id="musicButton"
+        class="fixed bottom-5 right-5
+               rounded-full
+               bg-white/90
+               border border-pink-100
+               shadow-md
+               px-4 py-3
+               text-xs font-semibold
+               text-pink-500
+               z-50"
+    >
+        ♫ เปิดเพลง
+    </button>
+
+</div>
+
+
+<!-- =========================================================
+     AUDIO
+     ========================================================= -->
+
+<audio
+    id="bgMusic"
+    loop
+    preload="auto"
+></audio>
+
+
+<script>
+
+const SUPABASE_URL =
+    "https://jlcjcfhdvrbdihzwbdhu.supabase.co";
+
+const SUPABASE_KEY =
+    "sb_publishable_bTlJbTM1h2Kl9Z1n7wVfaw_SRJLocBg";
+
+const DEFAULT_MUSIC_URL =
+    "https://www.image2url.com/r2/default/audio/1789223045833-c1830056-9b42-4cf1-aa59-b28c86ba0c11.mp3";
+
+
+/* =========================================================
+   SUPABASE
+   ========================================================= */
+
+const db = window.supabase = {
+    from(table){
+
+        return {
+
+            async select(columns){
+
+                const response = await fetch(
+                    `${SUPABASE_URL}/rest/v1/${table}?select=${encodeURIComponent(columns)}`,
+                    {
+                        headers:{
+                            apikey:SUPABASE_KEY,
+                            Authorization:`Bearer ${SUPABASE_KEY}`
+                        }
+                    }
+                );
+
+                const data = await response.json();
+
+                if(!response.ok){
+                    return {
+                        data:null,
+                        error:data
+                    };
+                }
+
+                return {
+                    data,
+                    error:null
+                };
+            },
+
+            async insert(values){
+
+                const response = await fetch(
+                    `${SUPABASE_URL}/rest/v1/${table}`,
+                    {
+                        method:"POST",
+
+                        headers:{
+                            apikey:SUPABASE_KEY,
+                            Authorization:`Bearer ${SUPABASE_KEY}`,
+                            "Content-Type":"application/json",
+                            Prefer:"return=representation"
+                        },
+
+                        body:JSON.stringify(values)
+                    }
+                );
+
+                const data = await response.json();
+
+                if(!response.ok){
+                    return {
+                        data:null,
+                        error:data
+                    };
+                }
+
+                return {
+                    data,
+                    error:null
+                };
+            }
+
+        };
+    }
+};
+
+
+/* =========================================================
+   ELEMENTS
+   ========================================================= */
+
+const nameInput =
+    document.getElementById("name");
+
+const serviceInput =
+    document.getElementById("service");
+
+const detailInput =
+    document.getElementById("detail");
+
+const happyBtn =
+    document.getElementById("happyBtn");
+
+const sadBtn =
+    document.getElementById("sadBtn");
+
+const submitBtn =
+    document.getElementById("submitBtn");
+
+const message =
+    document.getElementById("message");
+
+const charCount =
+    document.getElementById("charCount");
+
+const reviewsList =
+    document.getElementById("reviewsList");
+
+const emptyReviews =
+    document.getElementById("emptyReviews");
+
+const reviewCount =
+    document.getElementById("reviewCount");
+
+let selectedMood = "";
+
+
+/* =========================================================
+   CHARACTER COUNT
+   ========================================================= */
+
+detailInput.addEventListener("input", () => {
+
+    charCount.textContent =
+        detailInput.value.length;
+
+});
+
+
+/* =========================================================
+   MOOD
+   ========================================================= */
+
+function selectMood(mood){
+
+    selectedMood = mood;
+
+    happyBtn.classList.remove("selected");
+    sadBtn.classList.remove("selected");
+
+    if(mood === "happy"){
+
+        happyBtn.classList.add(
+            "selected",
+            "bg-pink-50",
+            "border-pink-300"
+        );
+
+        sadBtn.classList.remove(
+            "bg-pink-50",
+            "border-pink-300"
+        );
+
+    }
+
+    if(mood === "sad"){
+
+        sadBtn.classList.add(
+            "selected",
+            "bg-pink-50",
+            "border-pink-300"
+        );
+
+        happyBtn.classList.remove(
+            "bg-pink-50",
+            "border-pink-300"
+        );
+
+    }
+
+}
+
+
+happyBtn.addEventListener(
+    "click",
+    () => selectMood("happy")
+);
+
+sadBtn.addEventListener(
+    "click",
+    () => selectMood("sad")
+);
+
+
+/* =========================================================
+   MESSAGE
+   ========================================================= */
+
+function showMessage(text,type){
+
+    message.textContent = text;
+
+    message.classList.remove(
+        "hidden",
+        "text-pink-500",
+        "text-red-500",
+        "text-green-500"
+    );
+
+    if(type === "error"){
+        message.classList.add("text-red-500");
+    }
+
+    else if(type === "success"){
+        message.classList.add("text-green-500");
+    }
+
+    else{
+        message.classList.add("text-pink-500");
+    }
+
+}
+
+
+/* =========================================================
+   SUBMIT REVIEW
+   ========================================================= */
+
+submitBtn.addEventListener("click", async () => {
+
+    const name =
+        nameInput.value.trim();
+
+    const service =
+        serviceInput.value.trim();
+
+    const detail =
+        detailInput.value.trim();
+
+
+    if(!name){
+
+        showMessage(
+            "รบกวนใส่ชื่อหรือชื่อเล่นก่อนนะคะ ♡",
+            "error"
+        );
+
+        nameInput.focus();
+        return;
+    }
+
+
+    if(!service){
+
+        showMessage(
+            "รบกวนใส่บริการที่ซื้อด้วยนะคะ ♡",
+            "error"
+        );
+
+        serviceInput.focus();
+        return;
+    }
+
+
+    if(!detail){
+
+        showMessage(
+            "รบกวนเขียนรายละเอียดรีวิวก่อนนะคะ ♡",
+            "error"
+        );
+
+        detailInput.focus();
+        return;
+    }
+
+
+    if(!selectedMood){
+
+        showMessage(
+            "เลือกความรู้สึก Happy หรือ Sad ก่อนน้า ♡",
+            "error"
+        );
+
+        return;
+    }
+
+
+    submitBtn.disabled = true;
+
+    submitBtn.textContent =
+        "กำลังส่งรีวิว...";
+
+
+    const { data, error } =
+        await db
+            .from("reviews")
+            .insert({
+                name,
+                service,
+                detail,
+                mood:selectedMood,
+                status:"pending"
+            });
+
+
+    if(error){
+
+        console.error(error);
+
+        showMessage(
+            "ส่งรีวิวไม่สำเร็จ ลองใหม่อีกครั้งนะคะ",
+            "error"
+        );
+
+        submitBtn.disabled = false;
+
+        submitBtn.textContent =
+            "💗 ส่งรีวิว";
+
+        return;
+    }
+
+
+    nameInput.value = "";
+    serviceInput.value = "";
+    detailInput.value = "";
+
+    charCount.textContent = "0";
+
+    selectedMood = "";
+
+    happyBtn.classList.remove(
+        "selected",
+        "bg-pink-50",
+        "border-pink-300"
+    );
+
+    sadBtn.classList.remove(
+        "selected",
+        "bg-pink-50",
+        "border-pink-300"
+    );
+
+
+    showMessage(
+        "ส่งรีวิวเรียบร้อยแล้วค่า ♡ รอตรวจสอบสักครู่นะคะ",
+        "success"
+    );
+
+
+    submitBtn.disabled = false;
+
+    submitBtn.textContent =
+        "💗 ส่งรีวิว";
+
+});
+
+
+/* =========================================================
+   LOAD APPROVED REVIEWS
+   ========================================================= */
+
+async function loadReviews(){
+
+    const { data, error } =
+        await db
+            .from("reviews")
+            .select(
+                "id,name,service,detail,mood,status,created_at"
+            );
+
+
+    if(error){
+
+        console.error(error);
+
+        return;
+    }
+
+
+    const approved =
+        (data || [])
+        .filter(review => review.status === "approved")
+        .sort(
+            (a,b) =>
+                new Date(b.created_at)
+                -
+                new Date(a.created_at)
+        );
+
+
+    reviewCount.textContent =
+        approved.length
+        ? `${approved.length} รีวิว`
+        : "";
+
+
+    if(!approved.length){
+
+        emptyReviews.classList.remove("hidden");
+
+        reviewsList.innerHTML = "";
+
+        return;
+    }
+
+
+    emptyReviews.classList.add("hidden");
+
+
+    reviewsList.innerHTML =
+        approved
+        .map(review => {
+
+            const mood =
+                review.mood === "happy"
+                    ? "😊 Happy"
+                    : "🥲 Sad";
+
+
+            const moodClass =
+                review.mood === "happy"
+                    ? "bg-pink-50 text-pink-500"
+                    : "bg-gray-50 text-gray-500";
+
+
+            const date =
+                new Date(review.created_at)
+                .toLocaleDateString(
+                    "th-TH",
+                    {
+                        year:"numeric",
+                        month:"short",
+                        day:"numeric"
+                    }
+                );
+
+
+            return `
+
+                <article
+                    class="review-card
+                           glass
+                           rounded-3xl
+                           border border-pink-100
+                           shadow-sm
+                           p-5"
+                >
+
+                    <div
+                        class="flex items-start
+                               justify-between
+                               gap-3
+                               mb-3"
+                    >
+
+                        <div>
+
+                            <div
+                                class="font-semibold
+                                       text-gray-700"
+                            >
+                                ${escapeHtml(review.name)}
+                            </div>
+
+                            <div
+                                class="text-xs
+                                       text-gray-400
+                                       mt-1"
+                            >
+                                ${escapeHtml(review.service)}
+                            </div>
+
+                        </div>
+
+
+                        <span
+                            class="shrink-0
+                                   rounded-full
+                                   px-3 py-1
+                                   text-xs
+                                   font-medium
+                                   ${moodClass}"
+                        >
+                            ${mood}
+                        </span>
+
+                    </div>
+
+
+                    <div
+                        class="rounded-2xl
+                               bg-white/70
+                               px-4 py-3
+                               text-sm
+                               leading-relaxed
+                               text-gray-600"
+                    >
+                        ${escapeHtml(review.detail)}
+                    </div>
+
+
+                    <div
+                        class="text-right
+                               text-[11px]
+                               text-gray-400
+                               mt-3"
+                    >
+                        ${date}
+                    </div>
+
+                </article>
+
+            `;
+
+        })
+        .join("");
+
+}
+
+
+/* =========================================================
+   ESCAPE HTML
+   ป้องกันคนใส่ HTML / Script ในรีวิว
+   ========================================================= */
+
+function escapeHtml(value){
+
+    return String(value)
+        .replace(/&/g,"&amp;")
+        .replace(/</g,"&lt;")
+        .replace(/>/g,"&gt;")
+        .replace(/"/g,"&quot;")
+        .replace(/'/g,"&#039;");
+
+}
+
+
+/* =========================================================
+   MUSIC
+   ========================================================= */
+
+const bgMusic =
+    document.getElementById("bgMusic");
+
+const musicButton =
+    document.getElementById("musicButton");
+
+
+async function loadMusicSettings(){
+
+    let musicEnabled = true;
+
+    let musicUrl =
+        DEFAULT_MUSIC_URL;
+
+
+    try{
+
+        const { data, error } =
+            await db
+                .from("site_settings")
+                .select("data");
+
+
+        if(!error && data && data.length){
+
+            const settings =
+                data[0].data || {};
+
+
+            if(
+                Object.prototype.hasOwnProperty
+                .call(settings,"musicEnabled")
+            ){
+
+                musicEnabled =
+                    settings.musicEnabled !== false;
+
+            }
+
+
+            if(settings.musicUrl){
+
+                musicUrl =
+                    settings.musicUrl;
+
+            }
+
+        }
+
+    }
+
+    catch(error){
+
+        console.error(error);
+
+    }
+
+
+    if(!musicEnabled){
+
+        musicButton.style.display =
+            "none";
+
+        return;
+    }
+
+
+    bgMusic.src = musicUrl;
+
+
+    try{
+
+        await bgMusic.play();
+
+        musicButton.textContent =
+            "♫ ปิดเพลง";
+
+    }
+
+    catch(error){
+
+        musicButton.textContent =
+            "♫ เปิดเพลง";
+
+    }
+
+}
+
+
+musicButton.addEventListener(
+    "click",
+    async () => {
+
+        if(bgMusic.paused){
+
+            try{
+
+                await bgMusic.play();
+
+                musicButton.textContent =
+                    "♫ ปิดเพลง";
+
+            }
+
+            catch(error){
+
+                console.error(error);
+
+            }
+
+        }
+
+        else{
+
+            bgMusic.pause();
+
+            musicButton.textContent =
+                "♫ เปิดเพลง";
+
+        }
+
+    }
+);
+
+
+/* =========================================================
+   START
+   ========================================================= */
+
+loadReviews();
+
+loadMusicSettings();
+
+</script>
+
+</body>
+</html>
