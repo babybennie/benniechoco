@@ -997,6 +997,7 @@
   <audio
     id="bgMusic"
     loop
+    playsinline
     preload="none"
   ></audio>
 
@@ -1027,19 +1028,6 @@
        STORAGE KEYS
     ========================================== */
 
-    /*
-      สำคัญมาก:
-
-      Admin รุ่นล่าสุดบันทึกข้อมูลไว้ที่
-      bennieChocoAdminSettings
-
-      Payment เดิมอ่านจาก
-      bennieChocoPaymentData
-
-      ดังนั้น Payment จะอ่าน Admin ก่อน
-      แล้วค่อย fallback ไปข้อมูลเก่า
-    */
-
     const ADMIN_STORAGE_KEY =
       "bennieChocoAdminSettings";
 
@@ -1056,6 +1044,9 @@
 
     const DEFAULT_PREVIEW_IMAGE =
       "https://i.postimg.cc/y6b24ph9/mi-m-ch-x-488-20260114125256.png";
+
+    const DEFAULT_MUSIC_URL =
+      "https://www.image2url.com/r2/default/audio/1789223045833-c1830056-9b42-4cf1-aa59-b28c86ba0c11.mp3";
 
 
     const defaultData = {
@@ -1096,11 +1087,18 @@
       footer:
         "♡ ปกติเค้าจะตอบกลับไม่เกิน 5 นาทีค่า|(หากไม่ติดงานประจำ)",
 
+      /*
+        เพลงเริ่มต้น
+
+        ถ้า Admin ยังไม่ได้บันทึกค่าเพลง
+        จะใช้ MP3 นี้เป็นค่าเริ่มต้น
+      */
+
       musicUrl:
-        "",
+        DEFAULT_MUSIC_URL,
 
       musicEnabled:
-        false,
+        true,
 
       backgroundImage:
         "",
@@ -1177,10 +1175,6 @@
         source || {};
 
 
-      /*
-        รูปแบบใหม่
-      */
-
       if (
         Array.isArray(data.accounts) &&
         data.accounts.length > 0
@@ -1233,10 +1227,6 @@
 
       }
 
-
-      /*
-        รองรับข้อมูลเก่า
-      */
 
       const oldAccounts = [];
 
@@ -1295,11 +1285,6 @@
       }
 
 
-      /*
-        รองรับ kbank / trueMoney
-        แบบ string จากระบบเก่า
-      */
-
       if (
         typeof data.kbank === "string" &&
         data.kbank.trim()
@@ -1356,11 +1341,6 @@
 
       }
 
-
-      /*
-        ถ้าไม่มีอะไรเลย
-        ใช้ข้อมูลตั้งต้น
-      */
 
       return (
         Array.isArray(defaultData.accounts)
@@ -1522,7 +1502,7 @@
         const result =
           await supabaseClient
             .from("site_settings")
-            .select("*")
+            .select("id,data")
             .eq("id", 1)
             .maybeSingle();
 
@@ -1554,19 +1534,18 @@
 
 
         /*
-          รองรับ settings
-          ถ้าตารางมี field นี้
+          ตาราง site_settings ใช้ column data
         */
 
         if (
-          row.settings !== undefined &&
-          row.settings !== null
+          row.data !== undefined &&
+          row.data !== null
         ) {
 
           const settings =
-            typeof row.settings === "string"
-              ? safeParse(row.settings)
-              : row.settings;
+            typeof row.data === "string"
+              ? safeParse(row.data)
+              : row.data;
 
 
           if (
@@ -1603,17 +1582,13 @@
 
     async function loadPaymentData() {
 
-      /*
-        1. Default
-      */
-
       let finalData = {
         ...defaultData
       };
 
 
       /*
-        2. ข้อมูล Payment เก่า
+        ข้อมูล Payment เก่า
       */
 
       const oldPaymentData =
@@ -1634,8 +1609,8 @@
 
 
       /*
-        3. ข้อมูล Admin
-           สำคัญที่สุด
+        ข้อมูล Admin ในเครื่อง
+        ใช้เป็น fallback เท่านั้น
       */
 
       const adminData =
@@ -1656,11 +1631,8 @@
 
 
       /*
-        4. Supabase
-
-        ใช้เฉพาะเมื่อมีข้อมูลจริง
-        และไม่บังคับ เพราะ Admin รุ่นปัจจุบัน
-        ใช้ localStorage เป็นตัวบันทึกหลัก
+        Supabase เป็นข้อมูลกลางหลัก
+        ใช้เหมือนกันทุกเว็บและทุกอุปกรณ์
       */
 
       const supabaseData =
@@ -1681,23 +1653,10 @@
 
 
       /*
-        Accounts ต้องเลือกจาก Admin ก่อน
+        Accounts
       */
 
       if (
-        adminData &&
-        Array.isArray(
-          adminData.accounts
-        ) &&
-        adminData.accounts.length > 0
-      ) {
-
-        finalData.accounts =
-          normalizeAccounts(
-            adminData
-          );
-
-      } else if (
         supabaseData &&
         Array.isArray(
           supabaseData.accounts
@@ -1708,6 +1667,19 @@
         finalData.accounts =
           normalizeAccounts(
             supabaseData
+          );
+
+      } else if (
+        adminData &&
+        Array.isArray(
+          adminData.accounts
+        ) &&
+        adminData.accounts.length > 0
+      ) {
+
+        finalData.accounts =
+          normalizeAccounts(
+            adminData
           );
 
       } else if (
@@ -1730,25 +1702,7 @@
 
 
       /*
-        ถ้า Admin มี image
-        ให้ใช้ image จาก Admin
-      */
-
-      if (
-        adminData &&
-        typeof adminData.image === "string" &&
-        adminData.image.trim()
-      ) {
-
-        finalData.image =
-          adminData.image.trim();
-
-      }
-
-
-      /*
-        ถ้าไม่มี QR จริง
-        ใช้ QR ตั้งต้น
+        QR จาก Supabase/Admin
       */
 
       if (
@@ -1778,8 +1732,24 @@
 
 
       /*
-        Sync ลง localStorage เก่า
-        เพื่อให้ระบบเดิมยังใช้ได้
+        ถ้าไม่มี musicUrl จริง
+        ใช้เพลงเริ่มต้น
+      */
+
+      if (
+        typeof finalData.musicUrl !== "string" ||
+        !finalData.musicUrl.trim()
+      ) {
+
+        finalData.musicUrl =
+          DEFAULT_MUSIC_URL;
+
+      }
+
+
+      /*
+        Sync localStorage เพื่อ compatibility
+        แต่ไม่ใช่แหล่งข้อมูลหลัก
       */
 
       try {
@@ -1823,11 +1793,6 @@
     const noteParam =
       params.get("note");
 
-
-    /*
-      รองรับ preview image
-      ถ้าอนาคต Admin ส่งมาทาง URL
-    */
 
     const previewImageParam =
       params.get("previewImage");
@@ -1944,6 +1909,183 @@
         "content",
         value
       );
+
+    }
+
+
+    /* ==========================================
+       MUSIC
+    ========================================== */
+
+    async function applyMusic(
+      data
+    ) {
+
+      const musicBox =
+        document.getElementById(
+          "musicBox"
+        );
+
+
+      const musicButton =
+        document.getElementById(
+          "musicButton"
+        );
+
+
+      const bgMusic =
+        document.getElementById(
+          "bgMusic"
+        );
+
+
+      /*
+        ปิดและ reset ก่อนทุกครั้ง
+      */
+
+      bgMusic.pause();
+
+      bgMusic.removeAttribute(
+        "src"
+      );
+
+      bgMusic.load();
+
+
+      /*
+        ถ้า Admin ปิดเพลง
+        ไม่แสดงกล่องเพลง
+      */
+
+      if (
+        data.musicEnabled === false
+      ) {
+
+        musicBox.classList.remove(
+          "show"
+        );
+
+        return;
+
+      }
+
+
+      const musicUrl =
+        String(
+          data.musicUrl ||
+          DEFAULT_MUSIC_URL
+        ).trim();
+
+
+      if (!musicUrl) {
+
+        musicBox.classList.remove(
+          "show"
+        );
+
+        return;
+
+      }
+
+
+      /*
+        ตั้งเพลง
+      */
+
+      musicBox.classList.add(
+        "show"
+      );
+
+
+      bgMusic.src =
+        musicUrl;
+
+
+      bgMusic.loop =
+        true;
+
+      bgMusic.playsInline =
+        true;
+
+      bgMusic.volume =
+        0.35;
+
+
+      /*
+        ปุ่มเปิด / ปิด
+      */
+
+      musicButton.onclick =
+        async function() {
+
+          try {
+
+            if (
+              bgMusic.paused
+            ) {
+
+              await bgMusic.play();
+
+
+              musicButton.textContent =
+                "Ⅱ ปิดเพลง";
+
+            } else {
+
+              bgMusic.pause();
+
+
+              musicButton.textContent =
+                "▶ เปิดเพลง";
+
+            }
+
+          } catch (error) {
+
+            console.warn(
+              "Audio play failed:",
+              error
+            );
+
+
+            musicButton.textContent =
+              "▶ แตะเพื่อเปิดเพลง";
+
+
+            showToast(
+              "แตะปุ่มอีกครั้งเพื่อเปิดเพลงนะคะ ♡"
+            );
+
+          }
+
+        };
+
+
+      /*
+        พยายาม autoplay
+        Browser บางตัวจะบล็อกเสียง
+      */
+
+      try {
+
+        await bgMusic.play();
+
+
+        musicButton.textContent =
+          "Ⅱ ปิดเพลง";
+
+      } catch (error) {
+
+        console.log(
+          "Autoplay blocked:",
+          error
+        );
+
+
+        musicButton.textContent =
+          "▶ เปิดเพลง";
+
+      }
 
     }
 
@@ -2084,6 +2226,11 @@
         document.getElementById(
           "paymentAmount"
         );
+
+
+      amountElement.classList.remove(
+        "missing"
+      );
 
 
       if (
@@ -2551,109 +2698,9 @@
          MUSIC
       ========================================== */
 
-      const musicBox =
-        document.getElementById(
-          "musicBox"
-        );
-
-
-      const musicButton =
-        document.getElementById(
-          "musicButton"
-        );
-
-
-      const bgMusic =
-        document.getElementById(
-          "bgMusic"
-        );
-
-
-      if (
-        data.musicUrl
-      ) {
-
-        musicBox.classList.add(
-          "show"
-        );
-
-
-        bgMusic.src =
-          data.musicUrl;
-
-
-        musicButton.onclick =
-          async function() {
-
-            try {
-
-              if (
-                bgMusic.paused
-              ) {
-
-                await bgMusic.play();
-
-
-                musicButton.textContent =
-                  "Ⅱ ปิดเพลง";
-
-              } else {
-
-                bgMusic.pause();
-
-
-                musicButton.textContent =
-                  "▶ เปิดเพลง";
-
-              }
-
-            } catch (error) {
-
-              showToast(
-                "เบราว์เซอร์ยังไม่อนุญาตให้เปิดเพลงอัตโนมัติค่า"
-              );
-
-            }
-
-          };
-
-
-        if (
-          data.musicEnabled === true
-        ) {
-
-          bgMusic
-            .play()
-            .then(
-              function() {
-
-                musicButton.textContent =
-                  "Ⅱ ปิดเพลง";
-
-              }
-            )
-            .catch(
-              function() {
-
-                musicButton.textContent =
-                  "▶ เปิดเพลง";
-
-              }
-            );
-
-        }
-
-      } else {
-
-        musicBox.classList.remove(
-          "show"
-        );
-
-        bgMusic.removeAttribute(
-          "src"
-        );
-
-      }
+      await applyMusic(
+        data
+      );
 
     }
 
