@@ -1,14 +1,13 @@
 <!DOCTYPE html>
 <html lang="th">
 <head>
-
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <title>Bennie Choco Admin</title>
 
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="https://cdn.tailwindcss.com"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 <link
   href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600;700&display=swap"
@@ -16,872 +15,802 @@
 >
 
 <style>
+*{
+  box-sizing:border-box;
+}
+
+html{
+  scroll-behavior:smooth;
+}
 
 body{
+  margin:0;
   font-family:Prompt,sans-serif;
   background:
-    linear-gradient(
-      135deg,
-      #fff9fb,
-      #fcecf2
-    );
+    radial-gradient(
+      circle at top left,
+      rgba(255,182,211,.35),
+      transparent 35%
+    ),
+    radial-gradient(
+      circle at bottom right,
+      rgba(139,94,60,.12),
+      transparent 35%
+    ),
+    #fff8fb;
+  color:#4a3038;
   min-height:100vh;
 }
 
 .panel{
-  background:#ffffffdd;
-  backdrop-filter:blur(15px);
-  -webkit-backdrop-filter:blur(15px);
-  border:1px solid #fff;
-  box-shadow:
-    0 20px 50px
-    #f472b633;
+  background:rgba(255,255,255,.90);
+  backdrop-filter:blur(16px);
+  border:1px solid rgba(255,255,255,.9);
+  box-shadow:0 20px 50px rgba(244,114,182,.14);
 }
 
 .field{
   width:100%;
-  border:1px solid #fbcfe8;
+  border:1px solid #f3c7da;
   border-radius:14px;
-  padding:10px 12px;
-  outline:0;
+  padding:11px 13px;
+  outline:none;
   background:#fff;
+  color:#4a3038;
+  transition:.2s;
 }
 
 .field:focus{
   border-color:#f472b6;
-  box-shadow:
-    0 0 0 3px
-    #fce7f3;
+  box-shadow:0 0 0 3px rgba(244,114,182,.12);
 }
 
 .label{
   font-size:12px;
   font-weight:600;
   color:#8b5e3c;
-  margin-bottom:5px;
+  margin-bottom:6px;
   display:block;
+}
+
+.section-title{
+  font-size:16px;
+  font-weight:700;
+  color:#ec4899;
+}
+
+.small-help{
+  font-size:11px;
+  line-height:1.6;
+  color:#9b7b84;
+}
+
+.account-card{
+  border:1px solid #fbcfe8;
+  background:#fffafd;
+  border-radius:18px;
+  padding:14px;
+}
+
+.account-card + .account-card{
+  margin-top:10px;
+}
+
+.preview-box{
+  border:1px dashed #f9a8d4;
+  background:#fff7fb;
+  border-radius:20px;
+  overflow:hidden;
+}
+
+.preview-box img{
+  display:block;
+  width:100%;
+  max-height:360px;
+  object-fit:contain;
+  background:#fff;
+}
+
+.toast{
+  position:fixed;
+  left:50%;
+  bottom:24px;
+  transform:translateX(-50%) translateY(20px);
+  opacity:0;
+  pointer-events:none;
+  z-index:9999;
+  transition:.25s;
+  background:#5b3944;
+  color:#fff;
+  border-radius:999px;
+  padding:11px 18px;
+  font-size:13px;
+  box-shadow:0 10px 30px rgba(0,0,0,.15);
+}
+
+.toast.show{
+  opacity:1;
+  transform:translateX(-50%) translateY(0);
 }
 
 .hidden{
   display:none!important;
 }
-
-.nav-btn{
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  min-height:52px;
-  border-radius:16px;
-  font-weight:600;
-  transition:.2s;
-  cursor:pointer;
-}
-
-.nav-btn:active{
-  transform:scale(.98);
-}
-
-.account-card{
-  border:1px solid #fbcfe8;
-  border-radius:18px;
-  padding:14px;
-  background:#fffafd;
-}
-
 </style>
-
 </head>
 
+<body class="p-4">
 
-<body class="p-4 text-brown-600">
+<div class="max-w-4xl mx-auto pb-16">
 
+  <!-- HEADER -->
+  <header class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
 
-<div id="adminScreen">
+    <div>
+      <h1 class="text-2xl font-bold text-pink-500">
+        Bennie Choco Admin
+      </h1>
 
-  <div class="max-w-4xl mx-auto">
-
-
-    <!-- HEADER -->
-
-    <div class="flex items-center justify-between gap-3 mb-5">
-
-      <div>
-
-        <h1 class="text-2xl font-bold text-pink-500">
-          Bennie Choco Admin
-        </h1>
-
-        <p
-          id="adminUserText"
-          class="text-xs text-brown-400 mt-1"
-        >
-          กำลังตรวจสอบสิทธิ์...
-        </p>
-
-      </div>
-
-
-      <button
-        id="logoutButton"
-        type="button"
-        class="
-          px-4
-          py-2
-          rounded-full
-          bg-brown-600
-          text-white
-          text-sm
-        "
-      >
-        ออกจากระบบ
-      </button>
-
+      <p class="text-xs text-brown-400 mt-1">
+        จัดการข้อมูลหน้าเว็บ Payment & Checkout
+      </p>
     </div>
 
-
-    <!-- NAVIGATION -->
-
-    <div class="grid grid-cols-2 md:grid-cols-4 gap-3 mb-5">
-
-      <button
-        id="websiteAdminButton"
-        type="button"
-        class="
-          nav-btn
-          bg-pink-500
-          text-white
-        "
-      >
-        ⚙️ Website Admin
-      </button>
-
-
-      <button
-        id="paymentGeneratorButton"
-        type="button"
-        class="
-          nav-btn
-          bg-white
-          border
-          border-pink-200
-          text-pink-500
-        "
-      >
-        💰 สร้างลิงก์ชำระเงิน
-      </button>
-
-
-      <a
-        href="member-admin.html"
-        class="
-          nav-btn
-          bg-white
-          border
-          border-pink-200
-          text-pink-500
-        "
-      >
-        🎫 Member Admin
-      </a>
-
+    <div class="flex flex-wrap gap-2">
 
       <a
         href="index.html"
-        class="
-          nav-btn
-          bg-brown-600
-          text-white
-        "
+        class="px-4 py-2 rounded-full bg-[#8b5e3c] text-white text-sm shadow-sm"
       >
-        🌐 หน้าเว็บไซต์
+        ดูหน้าเว็บ
+      </a>
+
+      <a
+        href="payment.html"
+        target="_blank"
+        class="px-4 py-2 rounded-full bg-pink-500 text-white text-sm shadow-sm"
+      >
+        เปิด Payment
+      </a>
+
+      <a
+        href="member-admin.html"
+        class="px-4 py-2 rounded-full bg-purple-500 text-white text-sm shadow-sm"
+      >
+        Member Admin
       </a>
 
     </div>
 
-
-    <!-- =================================================
-         WEBSITE ADMIN
-         ================================================= -->
-
-    <div
-      id="websiteSettings"
-      class="panel rounded-3xl p-5 space-y-6"
-    >
+  </header>
 
 
-      <!-- WEBSITE SETTINGS -->
+  <!-- MAIN ADMIN -->
+  <main class="panel rounded-3xl p-5 sm:p-7 space-y-7">
 
-      <section>
+    <!-- BASIC -->
+    <section>
 
-        <h2 class="font-bold text-pink-500 mb-3">
-          ข้อมูลหลักของเว็บไซต์
-        </h2>
+      <h2 class="section-title mb-4">
+        ข้อมูลหลัก
+      </h2>
 
-        <div class="grid md:grid-cols-2 gap-3">
+      <div class="grid md:grid-cols-2 gap-4">
 
-
-          <div>
-
-            <label class="label">
-              ชื่อเว็บ
-            </label>
-
-            <input
-              id="shopName"
-              class="field"
-            >
-
-          </div>
-
-
-          <div>
-
-            <label class="label">
-              ข้อความใต้ชื่อ
-            </label>
-
-            <input
-              id="subtitle"
-              class="field"
-            >
-
-          </div>
-
-
-          <div>
-
-            <label class="label">
-              ชื่อบัญชีร้าน
-            </label>
-
-            <input
-              id="accountName"
-              class="field"
-            >
-
-          </div>
-
-
-        </div>
-
-      </section>
-
-
-      <!-- =================================================
-           PAYMENT ACCOUNTS
-           ================================================= -->
-
-      <section>
-
-        <div class="flex items-center justify-between gap-3 mb-3">
-
-          <div>
-
-            <h2 class="font-bold text-pink-500">
-              ช่องทางชำระเงิน
-            </h2>
-
-            <p class="text-xs text-brown-400 mt-1">
-              เพิ่มบัญชีธนาคารหรือช่องทางรับเงินได้หลายรายการ
-            </p>
-
-          </div>
-
-
-          <button
-            id="addAccountButton"
-            type="button"
-            class="
-              shrink-0
-              rounded-2xl
-              bg-pink-500
-              text-white
-              font-bold
-              px-4
-              py-2
-            "
+        <div>
+          <label class="label">ชื่อเว็บ</label>
+          <input
+            id="shopName"
+            class="field"
+            type="text"
           >
-            ＋ เพิ่มบัญชี
-          </button>
-
         </div>
 
+        <div>
+          <label class="label">ข้อความใต้ชื่อ</label>
+          <input
+            id="subtitle"
+            class="field"
+            type="text"
+          >
+        </div>
 
-        <div
-          id="accountsContainer"
-          class="space-y-3"
-        ></div>
+        <div>
+          <label class="label">ชื่อบัญชีร้าน</label>
+          <input
+            id="accountName"
+            class="field"
+            type="text"
+          >
+        </div>
+
+        <div>
+          <label class="label">ข้อความสถานะด้านขวา</label>
+          <input
+            id="statusRight"
+            class="field"
+            type="text"
+          >
+        </div>
+
+      </div>
+
+    </section>
 
 
-        <p
-          id="accountsMessage"
-          class="
-            text-xs
-            text-brown-400
-            mt-3
-            min-h-[18px]
-          "
-        ></p>
+    <!-- PAYMENT ACCOUNTS -->
+    <section>
+
+      <div class="flex items-center justify-between gap-3 mb-4">
+
+        <div>
+          <h2 class="section-title">
+            บัญชีรับเงิน
+          </h2>
+
+          <p class="small-help">
+            เพิ่ม/แก้ไขช่องทางรับเงินที่จะแสดงในหน้า Payment
+          </p>
+        </div>
+
+        <button
+          id="addAccountButton"
+          type="button"
+          class="shrink-0 px-4 py-2 rounded-full bg-pink-500 text-white text-xs font-medium"
+        >
+          + เพิ่มบัญชี
+        </button>
+
+      </div>
+
+      <div id="accountsContainer"></div>
+
+    </section>
 
 
-      </section>
+    <!-- LEGACY PAYMENT FIELDS -->
+    <section>
+
+      <h2 class="section-title mb-4">
+        ข้อมูลช่องทางชำระเงินหลัก
+      </h2>
+
+      <div class="grid md:grid-cols-2 gap-4">
+
+        <div>
+          <label class="label">
+            เลขบัญชีกสิกร
+          </label>
+
+          <input
+            id="kbank"
+            class="field"
+            type="text"
+            inputmode="numeric"
+          >
+        </div>
+
+        <div>
+          <label class="label">
+            เบอร์ Wallet / TrueMoney
+          </label>
+
+          <input
+            id="trueMoney"
+            class="field"
+            type="text"
+            inputmode="numeric"
+          >
+        </div>
+
+        <div>
+          <label class="label">
+            ค่าธรรมเนียม Wallet เพิ่ม
+          </label>
+
+          <input
+            id="walletExtraFee"
+            class="field"
+            type="text"
+            placeholder="+20 บาท"
+          >
+        </div>
+
+      </div>
+
+    </section>
 
 
-      <!-- WEBSITE TEXT -->
+    <!-- PAYMENT IMAGE -->
+    <section>
 
-      <section>
+      <h2 class="section-title mb-4">
+        รูป QR / รูปชำระเงิน
+      </h2>
 
-        <h2 class="font-bold text-pink-500 mb-3">
-          ข้อความบนหน้าเว็บไซต์
-        </h2>
-
+      <div class="grid md:grid-cols-2 gap-4 items-start">
 
         <div class="space-y-3">
 
-
           <div>
-
             <label class="label">
-              ข้อความสถานะขวา
+              URL รูป QR
             </label>
 
             <input
-              id="statusRight"
+              id="image"
               class="field"
+              type="text"
             >
-
           </div>
 
-
           <div>
-
             <label class="label">
-              แถบสถานะ
+              หรือเลือกรูปจากเครื่อง
             </label>
 
             <input
-              id="statusText"
+              id="imageFile"
               class="field"
+              type="file"
+              accept="image/*"
             >
-
           </div>
-
-
-          <div>
-
-            <label class="label">
-              ข้อความนำ
-            </label>
-
-            <input
-              id="intro"
-              class="field"
-            >
-
-          </div>
-
-
-          <div>
-
-            <label class="label">
-              ข้อความแนะนำการคัดลอก
-            </label>
-
-            <input
-              id="copyHint"
-              class="field"
-            >
-
-          </div>
-
-
-          <div>
-
-            <label class="label">
-              หัวข้อช่องทางชำระเงิน
-            </label>
-
-            <input
-              id="paymentTitle"
-              class="field"
-            >
-
-          </div>
-
-
-          <div>
-
-            <label class="label">
-              เตือนโอนผิด — ใช้ | แบ่งบรรทัด
-            </label>
-
-            <textarea
-              id="wrongTransfer"
-              class="field"
-              rows="3"
-            ></textarea>
-
-          </div>
-
-
-          <div>
-
-            <label class="label">
-              เตือนแปะสลิป — ใช้ | แบ่งบรรทัด
-            </label>
-
-            <textarea
-              id="slipText"
-              class="field"
-              rows="3"
-            ></textarea>
-
-          </div>
-
-
-          <div>
-
-            <label class="label">
-              ท้ายหน้า — ใช้ | แบ่งบรรทัด
-            </label>
-
-            <textarea
-              id="footer"
-              class="field"
-              rows="3"
-            ></textarea>
-
-          </div>
-
 
         </div>
 
-      </section>
+        <div class="preview-box">
+
+          <img
+            id="preview"
+            src=""
+            alt="Payment QR Preview"
+          >
+
+        </div>
+
+      </div>
+
+    </section>
 
 
-      <!-- WALLET -->
+    <!-- WEBSITE TEXT -->
+    <section>
 
-      <section>
+      <h2 class="section-title mb-4">
+        ข้อความบนหน้า Payment
+      </h2>
 
-        <h2 class="font-bold text-pink-500 mb-3">
-          ค่าธรรมเนียม Wallet
-        </h2>
+      <div class="space-y-4">
+
+        <div>
+          <label class="label">
+            ข้อความสถานะ
+          </label>
+
+          <input
+            id="statusText"
+            class="field"
+            type="text"
+          >
+        </div>
+
+        <div>
+          <label class="label">
+            ข้อความนำ
+          </label>
+
+          <input
+            id="intro"
+            class="field"
+            type="text"
+          >
+        </div>
+
+        <div>
+          <label class="label">
+            ข้อความแนะนำการคัดลอก
+          </label>
+
+          <input
+            id="copyHint"
+            class="field"
+            type="text"
+          >
+        </div>
+
+        <div>
+          <label class="label">
+            หัวข้อช่องทางชำระเงิน
+          </label>
+
+          <input
+            id="paymentTitle"
+            class="field"
+            type="text"
+          >
+        </div>
+
+        <div>
+          <label class="label">
+            ข้อความเตือนโอนเงิน
+          </label>
+
+          <textarea
+            id="wrongTransfer"
+            class="field min-h-[90px]"
+          ></textarea>
+
+          <p class="small-help mt-1">
+            ถ้าต้องการขึ้นบรรทัดใหม่ ให้ใช้เครื่องหมาย |
+          </p>
+        </div>
+
+        <div>
+          <label class="label">
+            ข้อความส่งสลิป
+          </label>
+
+          <textarea
+            id="slipText"
+            class="field min-h-[90px]"
+          ></textarea>
+
+          <p class="small-help mt-1">
+            ถ้าต้องการขึ้นบรรทัดใหม่ ให้ใช้เครื่องหมาย |
+          </p>
+        </div>
+
+        <div>
+          <label class="label">
+            Footer
+          </label>
+
+          <textarea
+            id="footer"
+            class="field min-h-[80px]"
+          ></textarea>
+
+          <p class="small-help mt-1">
+            ถ้าต้องการขึ้นบรรทัดใหม่ ให้ใช้เครื่องหมาย |
+          </p>
+        </div>
+
+      </div>
+
+    </section>
 
 
-        <label class="label">
-          ข้อความค่าธรรมเนียมเพิ่มเติม
-        </label>
+    <!-- MUSIC -->
+    <section>
 
+      <h2 class="section-title mb-4">
+        เพลงพื้นหลัง
+      </h2>
 
-        <input
-          id="walletExtraFee"
-          class="field"
-          placeholder="+5 บาท"
-        >
+      <div class="space-y-4">
 
-
-        <p class="text-[11px] text-brown-400 mt-2">
-          ตัวอย่าง: +20 บาท
-        </p>
-
-      </section>
-
-
-      <!-- PAYMENT IMAGE -->
-
-      <section>
-
-        <h2 class="font-bold text-pink-500 mb-3">
-          รูปภาพชำระเงิน
-        </h2>
-
-
-        <label class="label">
-          URL รูปภาพ
-        </label>
-
-
-        <input
-          id="image"
-          class="field mb-3"
-          placeholder="https://..."
-        >
-
-
-        <label class="label">
-          หรือเลือกรูปจากเครื่อง
-        </label>
-
-
-        <input
-          id="imageFile"
-          type="file"
-          accept="image/*"
-          class="field"
-        >
-
-
-        <img
-          id="preview"
-          class="
-            mt-3
-            w-40
-            h-40
-            object-cover
-            rounded-2xl
-            border
-            border-pink-100
-          "
-          alt="Preview"
-        >
-
-      </section>
-
-
-      <!-- MUSIC -->
-
-      <section>
-
-        <h2 class="font-bold text-pink-500 mb-3">
-          เพลงพื้นหลัง
-        </h2>
-
-
-        <label class="label">
-          URL เพลง
-        </label>
-
-
-        <input
-          id="musicUrl"
-          class="field"
-          placeholder="YouTube หรือไฟล์เสียง .mp3/.m4a"
-        >
-
-
-        <label class="flex items-center gap-2 mt-3 text-sm">
+        <label class="flex items-center gap-3 cursor-pointer">
 
           <input
             id="musicEnabled"
             type="checkbox"
-            class="w-4 h-4"
+            class="w-4 h-4 accent-pink-500"
           >
 
-          เปิดใช้งานเพลง
+          <span class="text-sm">
+            เปิดใช้งานเพลงพื้นหลัง
+          </span>
 
         </label>
 
-      </section>
+        <div>
+
+          <label class="label">
+            URL เพลง
+          </label>
+
+          <input
+            id="musicUrl"
+            class="field"
+            type="text"
+            placeholder="https://..."
+          >
+
+          <p class="small-help mt-1">
+            ต้องเป็น URL ไฟล์เพลงที่เว็บสามารถโหลดได้โดยตรง
+          </p>
+
+        </div>
+
+      </div>
+
+    </section>
 
 
-      <!-- BACKGROUND -->
+    <!-- BACKGROUND -->
+    <section>
 
-      <section>
+      <h2 class="section-title mb-4">
+        Background
+      </h2>
 
-        <h2 class="font-bold text-pink-500 mb-3">
-          พื้นหลัง
-        </h2>
+      <div class="space-y-4">
 
-
-        <label class="label">
-          URL รูปพื้นหลัง
-        </label>
-
-
-        <input
-          id="backgroundUrl"
-          class="field"
-          placeholder="https://..."
-        >
-
-
-        <label class="flex items-center gap-2 mt-3 text-sm">
+        <label class="flex items-center gap-3 cursor-pointer">
 
           <input
             id="backgroundEnabled"
             type="checkbox"
-            class="w-4 h-4"
+            class="w-4 h-4 accent-pink-500"
           >
 
-          เปิดใช้งานพื้นหลัง
+          <span class="text-sm">
+            เปิดใช้งาน Background พิเศษ
+          </span>
 
         </label>
 
-      </section>
+        <div>
 
-
-      <!-- MEMBER -->
-
-      <section>
-
-        <h2 class="font-bold text-pink-500 mb-3">
-          ระบบสมาชิก
-        </h2>
-
-
-        <label class="flex items-center gap-2 text-sm">
+          <label class="label">
+            URL Background
+          </label>
 
           <input
-            id="memberEnabled"
-            type="checkbox"
-            class="w-4 h-4"
+            id="backgroundUrl"
+            class="field"
+            type="text"
+            placeholder="https://..."
           >
-
-          เปิดใช้งานปุ่ม Member
-
-        </label>
-
-      </section>
-
-
-      <!-- LINK PREVIEW -->
-
-      <section>
-
-        <h2 class="font-bold text-pink-500 mb-3">
-          ตัวอย่างตอนแชร์ลิงก์
-        </h2>
-
-
-        <div class="space-y-3">
-
-
-          <div>
-
-            <label class="label">
-              Preview Title
-            </label>
-
-            <input
-              id="previewTitle"
-              class="field"
-              placeholder="bennie choco"
-            >
-
-          </div>
-
-
-          <div>
-
-            <label class="label">
-              Preview Description
-            </label>
-
-            <textarea
-              id="previewDescription"
-              class="field"
-              rows="2"
-              placeholder="Payment & Checkout"
-            ></textarea>
-
-          </div>
-
-
-          <div>
-
-            <label class="label">
-              Preview Image URL
-            </label>
-
-            <input
-              id="previewImage"
-              class="field"
-              placeholder="https://..."
-            >
-
-          </div>
-
 
         </div>
 
-      </section>
+      </div>
+
+    </section>
 
 
-      <!-- SAVE -->
+    <!-- MEMBER -->
+    <section>
 
-      <div class="flex gap-2 pt-2">
+      <h2 class="section-title mb-4">
+        ระบบ Member
+      </h2>
+
+      <label class="flex items-center gap-3 cursor-pointer">
+
+        <input
+          id="memberEnabled"
+          type="checkbox"
+          class="w-4 h-4 accent-pink-500"
+        >
+
+        <span class="text-sm">
+          เปิดใช้งานระบบสมาชิก / สะสมแต้ม
+        </span>
+
+      </label>
+
+    </section>
+
+
+    <!-- LINK PREVIEW -->
+    <section>
+
+      <h2 class="section-title mb-4">
+        Preview เวลาส่งลิงก์
+      </h2>
+
+      <div class="space-y-4">
+
+        <div>
+          <label class="label">
+            Preview Title
+          </label>
+
+          <input
+            id="previewTitle"
+            class="field"
+            type="text"
+          >
+        </div>
+
+        <div>
+          <label class="label">
+            Preview Description
+          </label>
+
+          <input
+            id="previewDescription"
+            class="field"
+            type="text"
+          >
+        </div>
+
+        <div>
+
+          <label class="label">
+            Preview Image URL
+          </label>
+
+          <input
+            id="previewImage"
+            class="field"
+            type="text"
+          >
+
+        </div>
+
+        <div class="rounded-2xl border border-pink-100 bg-pink-50/50 p-4">
+
+          <p class="text-xs text-brown-400 mb-2">
+            รูปที่ใช้เป็นตัวอย่าง Preview
+          </p>
+
+          <img
+            id="previewShareImage"
+            src=""
+            alt="Share Preview"
+            class="w-full max-h-[300px] object-contain rounded-xl bg-white"
+          >
+
+        </div>
+
+      </div>
+
+    </section>
+
+
+    <!-- PAYMENT GENERATOR -->
+    <section
+      id="paymentGenerator"
+      class="border border-pink-100 rounded-3xl p-5 bg-pink-50/30"
+    >
+
+      <div class="flex items-center justify-between gap-3 mb-4">
+
+        <div>
+          <h2 class="section-title">
+            สร้างลิงก์ชำระเงิน
+          </h2>
+
+          <p class="small-help">
+            ใส่ยอดเงินแล้วสร้างลิงก์ส่งให้ลูกค้าได้ทันที
+          </p>
+        </div>
+
+      </div>
+
+      <div class="grid md:grid-cols-2 gap-4">
+
+        <div>
+
+          <label class="label">
+            จำนวนเงิน
+          </label>
+
+          <input
+            id="paymentAmount"
+            class="field"
+            type="number"
+            min="0"
+            step="1"
+            placeholder="เช่น 99"
+          >
+
+        </div>
+
+        <div>
+
+          <label class="label">
+            หมายเหตุ
+          </label>
+
+          <input
+            id="paymentNote"
+            class="field"
+            type="text"
+            placeholder="เช่น ค่าดูดวง 1 คำถาม"
+          >
+
+        </div>
+
+      </div>
+
+      <button
+        id="generatePaymentLink"
+        type="button"
+        class="mt-4 w-full py-3 rounded-2xl bg-pink-500 text-white font-medium shadow-sm"
+      >
+        สร้างลิงก์ชำระเงิน
+      </button>
+
+      <div
+        id="paymentLinkResult"
+        class="hidden mt-4"
+      >
+
+        <label class="label">
+          ลิงก์ที่สร้าง
+        </label>
+
+        <div class="flex gap-2">
+
+          <input
+            id="generatedPaymentLink"
+            class="field"
+            type="text"
+            readonly
+          >
+
+          <button
+            id="copyPaymentLink"
+            type="button"
+            class="px-4 rounded-xl bg-[#8b5e3c] text-white text-sm"
+          >
+            คัดลอก
+          </button>
+
+        </div>
+
+      </div>
+
+    </section>
+
+
+    <!-- SAVE BUTTON -->
+    <section class="pt-2">
+
+      <div class="flex flex-col sm:flex-row gap-3">
 
         <button
           id="save"
           type="button"
-          class="
-            flex-1
-            rounded-2xl
-            bg-pink-500
-            text-white
-            font-bold
-            py-3
-          "
+          class="flex-1 py-3.5 rounded-2xl bg-pink-500 text-white font-semibold shadow-sm hover:bg-pink-600 transition"
         >
           บันทึกข้อมูล
         </button>
 
-
         <button
           id="reset"
           type="button"
-          class="
-            rounded-2xl
-            bg-brown-100
-            text-brown-600
-            px-5
-          "
+          class="px-6 py-3.5 rounded-2xl border border-pink-200 text-pink-500 font-medium bg-white"
         >
           คืนค่าเริ่มต้น
         </button>
 
       </div>
 
-
-      <p
-        id="message"
-        class="
-          text-center
-          text-xs
-          text-brown-400
-          min-h-[20px]
-        "
-      ></p>
-
-
-    </div>
-
-
-    <!-- =================================================
-         PAYMENT LINK GENERATOR
-         ================================================= -->
-
-    <div
-      id="paymentGenerator"
-      class="
-        hidden
-        panel
-        rounded-3xl
-        p-5
-        mt-5
-      "
-    >
-
-      <h2 class="font-bold text-pink-500 mb-4">
-        💰 สร้างลิงก์ชำระเงิน
-      </h2>
-
-
-      <label class="label">
-        จำนวนเงิน
-      </label>
-
-
-      <input
-        id="paymentAmount"
-        class="field"
-        type="number"
-        min="0"
-        step="0.01"
-        inputmode="decimal"
-        placeholder="เช่น 199"
-      >
-
-
-      <label class="label mt-4">
-        หมายเหตุ
-      </label>
-
-
-      <input
-        id="paymentNote"
-        class="field"
-        placeholder="เช่น ค่าดูดวง"
-      >
-
-
-      <button
-        id="generatePayment"
-        type="button"
-        class="
-          w-full
-          mt-4
-          py-3
-          rounded-2xl
-          bg-pink-500
-          text-white
-          font-bold
-        "
-      >
-        สร้างลิงก์
-      </button>
-
-
       <div
-        id="paymentResult"
-        class="hidden mt-4"
-      >
+        id="message"
+        class="text-center text-sm mt-3 min-h-[22px]"
+      ></div>
 
-        <label class="label">
-          ลิงก์สำหรับส่งให้ลูกค้า
-        </label>
+    </section>
 
-
-        <textarea
-          id="paymentLink"
-          class="field"
-          rows="3"
-          readonly
-        ></textarea>
-
-
-        <button
-          id="copyPaymentLink"
-          type="button"
-          class="
-            w-full
-            mt-3
-            py-3
-            rounded-2xl
-            bg-brown-600
-            text-white
-            font-bold
-          "
-        >
-          📋 คัดลอกลิงก์
-        </button>
-
-      </div>
-
-
-      <p
-        id="paymentGeneratorMessage"
-        class="
-          text-center
-          text-xs
-          text-brown-400
-          mt-3
-          min-h-[18px]
-        "
-      ></p>
-
-    </div>
-
-
-  </div>
+  </main>
 
 </div>
 
+
+<div
+  id="toast"
+  class="toast"
+></div>
 
 
 <script>
 
 /* =========================================================
    SUPABASE
-   ========================================================= */
+========================================================= */
 
 const SUPABASE_URL =
   "https://jlcjcfhdvrbdihzwbdhu.supabase.co";
 
-
 const SUPABASE_KEY =
   "sb_publishable_bTlJbTM1h2Kl9Z1n7wVfaw_SRJLocBg";
-
 
 const supabaseClient =
   window.supabase.createClient(
@@ -897,34 +826,25 @@ const supabaseClient =
   );
 
 
-
 /* =========================================================
-   DEFAULT ACCOUNTS
-   ========================================================= */
+   LOCAL STORAGE
+   ตัวนี้เป็นตัวเก็บค่าที่กดบันทึกจาก Admin
+========================================================= */
 
-const defaultAccounts = [
-
-  {
-    id:"kbank",
-    name:"KBank",
-    display:"กสิกรไทย (Parinyasiri)",
-    number:"2221396513"
-  },
-
-  {
-    id:"truemoney",
-    name:"TrueMoney",
-    display:"ทรูมันนี่ (Parinyasiri)",
-    number:"0943947154"
-  }
-
-];
-
+const ADMIN_SETTINGS_STORAGE_KEY =
+  "bennieChocoAdminSettings";
 
 
 /* =========================================================
-   DEFAULTS
-   ========================================================= */
+   DATA ตั้งต้น
+========================================================= */
+
+const DEFAULT_QR_IMAGE =
+  "https://i.postimg.cc/yY6xtdPX/mi-m-ch-x-825-20260912003431.png";
+
+const DEFAULT_PREVIEW_IMAGE =
+  "https://i.postimg.cc/y6b24ph9/mi-m-ch-x-488-20260114125256.png";
+
 
 const defaults = {
 
@@ -938,7 +858,7 @@ const defaults = {
     "Parinyasiri",
 
   image:
-    "https://i.postimg.cc/yYXXLQnm/att-YZKp-Oou02U1m01U9E7IVQ5yixn-Mty-Ak-Ll-S0rpd-OVE00.jpg",
+    DEFAULT_QR_IMAGE,
 
   statusText:
     "เปิดรับออเดอร์อยู่ค่า",
@@ -965,13 +885,25 @@ const defaults = {
     "♡ ปกติเค้าจะตอบกลับไม่เกิน 5 นาทีค่า|(หากไม่ติดงานประจำ)",
 
   kbank:
-    "2221396513",
+    "166-3-17142-5",
 
   trueMoney:
-    "0943947154",
+    "098-532-3732",
 
-  accounts:
-    defaultAccounts,
+  accounts:[
+    {
+      id:"kbank",
+      name:"KBank",
+      display:"กสิกรไทย (Parinyasiri)",
+      number:"166-3-17142-5"
+    },
+    {
+      id:"truemoney",
+      name:"TrueMoney",
+      display:"Wallet (Parinyasiri)",
+      number:"098-532-3732"
+    }
+  ],
 
   walletExtraFee:
     "+20 บาท",
@@ -998,557 +930,662 @@ const defaults = {
     "Payment & Checkout",
 
   previewImage:
-    ""
+    DEFAULT_PREVIEW_IMAGE
 
 };
 
 
-
 /* =========================================================
-   ELEMENTS
-   ========================================================= */
+   OLD VALUES ที่เคยใช้
+   ถ้าพบค่าเก่า ให้เปลี่ยนเป็นค่าใหม่
+   แต่จะไม่ทับค่าที่ผู้ใช้เพิ่งแก้เอง
+========================================================= */
 
-const adminScreen =
-  document.getElementById("adminScreen");
+const OLD_KBANK_VALUES = [
+  "2221396513"
+];
 
-const adminUserText =
-  document.getElementById("adminUserText");
+const OLD_WALLET_VALUES = [
+  "0943947154"
+];
 
-const accountsContainer =
-  document.getElementById("accountsContainer");
-
-const accountsMessage =
-  document.getElementById("accountsMessage");
-
-const paymentGenerator =
-  document.getElementById("paymentGenerator");
-
+const OLD_QR_VALUES = [
+  "https://i.postimg.cc/yYXXLQnm/att-YZKp-Oou02U1m01U9E7IVQ5yixn-Mty-Ak-Ll-S0rpd-OVE00.jpg"
+];
 
 
 /* =========================================================
-   ADMIN CHECK
-   ========================================================= */
+   STATE
+========================================================= */
 
-async function getAdminUser(userId){
+let settings = {
+  ...defaults
+};
 
-  const {
-    data,
-    error
-  } =
-    await supabaseClient
-      .from("admin_users")
-      .select(
-        "user_id, username"
-      )
-      .eq(
-        "user_id",
-        userId
-      )
-      .maybeSingle();
+let accounts = [];
 
 
-  if(error){
+/* =========================================================
+   HELPERS
+========================================================= */
 
-    console.error(
-      "Admin check error:",
-      error
+function showToast(message){
+
+  const toast =
+    document.getElementById("toast");
+
+  toast.textContent =
+    message;
+
+  toast.classList.add("show");
+
+  clearTimeout(
+    window.__toastTimer
+  );
+
+  window.__toastTimer =
+    setTimeout(
+      ()=>{
+        toast.classList.remove("show");
+      },
+      2200
     );
+}
 
-    throw error;
+
+function safeJsonParse(value){
+
+  try{
+
+    return JSON.parse(value);
+
+  }catch(error){
+
+    return null;
 
   }
-
-
-  return data;
 
 }
 
 
+function clone(value){
 
-/* =========================================================
-   REDIRECT TO LOGIN
-   ========================================================= */
-
-function redirectToLogin(){
-
-  window.location.replace(
-    "admin-login.html?next=admin.html"
+  return JSON.parse(
+    JSON.stringify(value)
   );
 
 }
 
 
+function normalizeAccounts(data){
 
-/* =========================================================
-   REQUIRE ADMIN
-   ========================================================= */
-
-async function requireAdmin(){
-
-  try{
-
-    const {
-      data,
-      error
-    } =
-      await supabaseClient
-        .auth
-        .getSession();
+  let list =
+    Array.isArray(data?.accounts)
+      ? data.accounts
+      : [];
 
 
-    if(error){
+  list =
+    list
+      .filter(Boolean)
+      .map(
+        (account,index)=>({
 
-      console.error(
-        "getSession error:",
-        error
-      );
+          id:
+            String(
+              account.id ||
+              `account-${Date.now()}-${index}`
+            ),
 
-      redirectToLogin();
+          name:
+            String(
+              account.name ||
+              "Bank"
+            ),
 
-      return false;
+          display:
+            String(
+              account.display ||
+              account.name ||
+              ""
+            ),
 
-    }
+          number:
+            String(
+              account.number ||
+              ""
+            )
 
-
-    const session =
-      data?.session;
-
-
-    if(!session){
-
-      redirectToLogin();
-
-      return false;
-
-    }
-
-
-    const admin =
-      await getAdminUser(
-        session.user.id
+        })
       );
 
 
-    if(!admin){
+  /*
+    ถ้าไม่มี accounts
+    ให้สร้างจากข้อมูลหลักทันที
+  */
 
-      await supabaseClient
-        .auth
-        .signOut();
+  if(!list.length){
 
+    list = [
 
-      window.location.replace(
-        "admin-login.html"
-      );
+      {
+        id:"kbank",
+        name:"KBank",
+        display:"กสิกรไทย (Parinyasiri)",
+        number:
+          data?.kbank ||
+          defaults.kbank
+      },
 
+      {
+        id:"truemoney",
+        name:"TrueMoney",
+        display:"Wallet (Parinyasiri)",
+        number:
+          data?.trueMoney ||
+          defaults.trueMoney
+      }
 
-      return false;
-
-    }
-
-
-    adminUserText.textContent =
-      "เข้าสู่ระบบในชื่อ: " +
-      (
-        admin.username ||
-        "Admin"
-      );
-
-
-    return true;
-
-
-  }catch(error){
-
-    console.error(
-      "requireAdmin failed:",
-      error
-    );
-
-
-    redirectToLogin();
-
-    return false;
+    ];
 
   }
+
+
+  return list;
 
 }
 
 
-
 /* =========================================================
-   NORMALIZE ACCOUNTS
-   ========================================================= */
+   LEGACY DATA MIGRATION
+========================================================= */
 
-function normalizeAccounts(data){
+function migrateLegacyData(data){
+
+  const result =
+    {
+      ...clone(defaults),
+      ...(data || {})
+    };
+
+
+  /*
+    ถ้าค่าเดิมเป็นเลขชุดเก่าที่เคยใช้
+    ให้เปลี่ยนเป็นเลขชุดใหม่
+  */
 
   if(
-    Array.isArray(data.accounts) &&
-    data.accounts.length
+    !result.kbank ||
+    OLD_KBANK_VALUES.includes(
+      String(result.kbank).trim()
+    )
   ){
 
-    return data.accounts.map(
-      function(account,index){
+    result.kbank =
+      defaults.kbank;
 
-        return {
+  }
 
-          id:
-            account.id ||
-            ("account_" + Date.now() + "_" + index),
 
-          name:
-            account.name ||
-            "",
+  if(
+    !result.trueMoney ||
+    OLD_WALLET_VALUES.includes(
+      String(result.trueMoney).trim()
+    )
+  ){
 
-          display:
-            account.display ||
-            "",
+    result.trueMoney =
+      defaults.trueMoney;
 
-          number:
-            account.number ||
-            ""
+  }
 
-        };
+
+  if(
+    !result.image ||
+    OLD_QR_VALUES.includes(
+      String(result.image).trim()
+    )
+  ){
+
+    result.image =
+      defaults.image;
+
+  }
+
+
+  /*
+    accounts
+  */
+
+  result.accounts =
+    normalizeAccounts(result);
+
+
+  result.accounts =
+    result.accounts.map(
+      account=>{
+
+        const number =
+          String(
+            account.number || ""
+          ).trim();
+
+        const id =
+          String(
+            account.id || ""
+          ).toLowerCase();
+
+        const name =
+          String(
+            account.name || ""
+          ).toLowerCase();
+
+
+        if(
+          id === "kbank" ||
+          name.includes("kbank") ||
+          name.includes("กสิกร")
+        ){
+
+          if(
+            !number ||
+            OLD_KBANK_VALUES.includes(number)
+          ){
+
+            account.number =
+              defaults.kbank;
+
+          }
+
+        }
+
+
+        if(
+          id === "truemoney" ||
+          name.includes("truemoney") ||
+          name.includes("wallet")
+        ){
+
+          if(
+            !number ||
+            OLD_WALLET_VALUES.includes(number)
+          ){
+
+            account.number =
+              defaults.trueMoney;
+
+          }
+
+        }
+
+
+        return account;
 
       }
     );
 
-  }
-
 
   /*
-     ถ้าข้อมูลเก่ายังไม่มี accounts
-     ให้สร้างจาก kbank / trueMoney เดิม
+    ให้ legacy fields ตรงกับ accounts
   */
 
-  const accounts = [];
-
-
-  if(data.kbank){
-
-    accounts.push({
-
-      id:"kbank",
-
-      name:"KBank",
-
-      display:
-        "กสิกรไทย (" +
-        (data.accountName || "") +
-        ")",
-
-      number:
-        data.kbank
-
-    });
-
-  }
-
-
-  if(data.trueMoney){
-
-    accounts.push({
-
-      id:"truemoney",
-
-      name:"TrueMoney",
-
-      display:
-        "ทรูมันนี่ (" +
-        (data.accountName || "") +
-        ")",
-
-      number:
-        data.trueMoney
-
-    });
-
-  }
-
-
-  return accounts;
-
-}
-
-
-
-/* =========================================================
-   RENDER ACCOUNTS
-   ========================================================= */
-
-function renderAccounts(accounts){
-
-  accountsContainer.innerHTML = "";
-
-
-  if(!accounts.length){
-
-    accountsContainer.innerHTML = `
-
-      <div
-        class="
-          text-center
-          text-sm
-          text-brown-400
-          border
-          border-dashed
-          border-pink-200
-          rounded-2xl
-          py-6
-        "
-      >
-        ยังไม่มีช่องทางชำระเงิน
-      </div>
-
-    `;
-
-    return;
-
-  }
-
-
-  accounts.forEach(
-    function(account,index){
-
-      const card =
-        document.createElement("div");
-
-
-      card.className =
-        "account-card";
-
-
-      card.dataset.index =
-        index;
-
-
-      card.innerHTML = `
-
-        <div class="flex items-center justify-between gap-3 mb-3">
-
-          <div class="font-bold text-pink-500">
-            ช่องทางที่ ${index + 1}
-          </div>
-
-          <button
-            type="button"
-            class="
-              delete-account
-              text-xs
-              rounded-full
-              px-3
-              py-1
-              bg-pink-50
-              text-pink-500
-              font-semibold
-            "
-          >
-            ลบบัญชี
-          </button>
-
-        </div>
-
-
-        <div class="space-y-3">
-
-          <div>
-
-            <label class="label">
-              ชื่อช่องทาง
-            </label>
-
-            <input
-              class="field account-name"
-              value="${escapeHtml(account.name)}"
-              placeholder="เช่น KBank / SCB / TrueMoney"
-            >
-
-          </div>
-
-
-          <div>
-
-            <label class="label">
-              ชื่อที่แสดง
-            </label>
-
-            <input
-              class="field account-display"
-              value="${escapeHtml(account.display)}"
-              placeholder="เช่น กสิกรไทย (Parinyasiri)"
-            >
-
-          </div>
-
-
-          <div>
-
-            <label class="label">
-              เลขบัญชี / เบอร์โทร
-            </label>
-
-            <input
-              class="field account-number"
-              value="${escapeHtml(account.number)}"
-              inputmode="numeric"
-              placeholder="เช่น 2221396513"
-            >
-
-          </div>
-
-        </div>
-
-      `;
-
-
-      accountsContainer.appendChild(
-        card
-      );
-
-    }
-  );
-
-
-  /*
-     ปุ่มลบบัญชี
-  */
-
-  accountsContainer
-    .querySelectorAll(
-      ".delete-account"
-    )
-    .forEach(
-      function(button){
-
-        button.addEventListener(
-          "click",
-          function(){
-
-            const card =
-              this.closest(
-                ".account-card"
-              );
-
-
-            if(card){
-
-              card.remove();
-
-              renumberAccountCards();
-
-            }
-
-          }
+  const kbankAccount =
+    result.accounts.find(
+      account=>{
+
+        const text =
+          (
+            String(account.id || "") +
+            " " +
+            String(account.name || "") +
+            " " +
+            String(account.display || "")
+          ).toLowerCase();
+
+        return (
+          text.includes("kbank") ||
+          text.includes("กสิกร")
         );
 
       }
     );
 
-}
 
+  const walletAccount =
+    result.accounts.find(
+      account=>{
 
+        const text =
+          (
+            String(account.id || "") +
+            " " +
+            String(account.name || "") +
+            " " +
+            String(account.display || "")
+          ).toLowerCase();
 
-/* =========================================================
-   ESCAPE HTML
-   ========================================================= */
-
-function escapeHtml(value){
-
-  return String(
-    value ?? ""
-  )
-  .replace(
-    /&/g,
-    "&amp;"
-  )
-  .replace(
-    /</g,
-    "&lt;"
-  )
-  .replace(
-    />/g,
-    "&gt;"
-  )
-  .replace(
-    /"/g,
-    "&quot;"
-  )
-  .replace(
-    /'/g,
-    "&#039;"
-  );
-
-}
-
-
-
-/* =========================================================
-   RENUMBER ACCOUNT CARDS
-   ========================================================= */
-
-function renumberAccountCards(){
-
-  accountsContainer
-    .querySelectorAll(
-      ".account-card"
-    )
-    .forEach(
-      function(card,index){
-
-        const title =
-          card.querySelector(
-            ".font-bold"
-          );
-
-
-        if(title){
-
-          title.textContent =
-            "ช่องทางที่ " +
-            (index + 1);
-
-        }
+        return (
+          text.includes("truemoney") ||
+          text.includes("wallet")
+        );
 
       }
     );
 
+
+  if(kbankAccount){
+
+    result.kbank =
+      kbankAccount.number ||
+      defaults.kbank;
+
+  }
+
+
+  if(walletAccount){
+
+    result.trueMoney =
+      walletAccount.number ||
+      defaults.trueMoney;
+
+  }
+
+
+  /*
+    ถ้า Preview Image หาย
+    ให้ใช้ค่าที่กำหนดไว้
+  */
+
+  if(!result.previewImage){
+
+    result.previewImage =
+      defaults.previewImage;
+
+  }
+
+
+  return result;
+
 }
 
 
+/* =========================================================
+   LOAD SETTINGS
+========================================================= */
+
+function loadSettings(){
+
+  try{
+
+    const raw =
+      localStorage.getItem(
+        ADMIN_SETTINGS_STORAGE_KEY
+      );
+
+
+    let saved = {};
+
+
+    if(raw){
+
+      const parsed =
+        safeJsonParse(raw);
+
+      if(
+        parsed &&
+        typeof parsed === "object"
+      ){
+
+        saved = parsed;
+
+      }
+
+    }
+
+
+    settings =
+      migrateLegacyData(saved);
+
+
+    /*
+      ถ้า localStorage ยังไม่มีข้อมูล
+      ให้ตั้งต้นจาก defaults
+    */
+
+    if(!raw){
+
+      settings =
+        migrateLegacyData(
+          defaults
+        );
+
+    }
+
+
+    accounts =
+      normalizeAccounts(settings);
+
+
+    settings.accounts =
+      clone(accounts);
+
+
+    fillForm(settings);
+
+
+  }catch(error){
+
+    console.error(
+      "Load settings error:",
+      error
+    );
+
+
+    settings =
+      clone(defaults);
+
+    accounts =
+      clone(defaults.accounts);
+
+    fillForm(settings);
+
+  }
+
+}
+
 
 /* =========================================================
-   GET ACCOUNTS FROM FORM
-   ========================================================= */
+   SAVE SETTINGS
+========================================================= */
+
+function saveSettings(){
+
+  try{
+
+    const newData =
+      getFormData();
+
+
+    /*
+      บันทึกลง localStorage
+      และใช้ข้อมูลนี้เป็นค่าหลักจนกว่าจะบันทึกใหม่
+    */
+
+    localStorage.setItem(
+      ADMIN_SETTINGS_STORAGE_KEY,
+      JSON.stringify(newData)
+    );
+
+
+    /*
+      ตรวจสอบว่าบันทึกจริง
+    */
+
+    const verifyRaw =
+      localStorage.getItem(
+        ADMIN_SETTINGS_STORAGE_KEY
+      );
+
+
+    const verify =
+      safeJsonParse(
+        verifyRaw
+      );
+
+
+    if(
+      !verify ||
+      verify.shopName !==
+        newData.shopName
+    ){
+
+      throw new Error(
+        "ตรวจสอบข้อมูลหลังบันทึกไม่สำเร็จ"
+      );
+
+    }
+
+
+    settings =
+      migrateLegacyData(
+        verify
+      );
+
+
+    accounts =
+      normalizeAccounts(
+        settings
+      );
+
+
+    fillForm(settings);
+
+
+    const message =
+      document.getElementById(
+        "message"
+      );
+
+
+    message.textContent =
+      "บันทึกแล้ว ✓";
+
+    message.className =
+      "text-center text-sm mt-3 min-h-[22px] text-green-600";
+
+
+    showToast(
+      "บันทึกข้อมูลเรียบร้อยแล้ว"
+    );
+
+
+    setTimeout(
+      ()=>{
+        message.textContent = "";
+      },
+      2500
+    );
+
+
+  }catch(error){
+
+    console.error(
+      "Save settings error:",
+      error
+    );
+
+
+    const message =
+      document.getElementById(
+        "message"
+      );
+
+
+    message.textContent =
+      "บันทึกไม่สำเร็จ: " +
+      error.message;
+
+
+    message.className =
+      "text-center text-sm mt-3 min-h-[22px] text-red-500";
+
+
+    showToast(
+      "บันทึกไม่สำเร็จ"
+    );
+
+  }
+
+}
+
+
+/* =========================================================
+   FORM -> DATA
+========================================================= */
+
+function getValue(id){
+
+  const el =
+    document.getElementById(id);
+
+  return el
+    ? el.value
+    : "";
+
+}
+
+
+function getChecked(id){
+
+  const el =
+    document.getElementById(id);
+
+  return el
+    ? Boolean(el.checked)
+    : false;
+
+}
+
 
 function getAccountsFromForm(){
 
   const cards =
-    accountsContainer.querySelectorAll(
+    document.querySelectorAll(
       ".account-card"
     );
 
 
-  const accounts = [];
+  const list = [];
 
 
   cards.forEach(
-    function(card,index){
+    (card,index)=>{
+
+      const id =
+        card.dataset.accountId ||
+        `account-${Date.now()}-${index}`;
+
 
       const name =
-        card.querySelector(
-          ".account-name"
-        ).value.trim();
+        card
+          .querySelector(".account-name")
+          ?.value
+          ?.trim() || "";
 
 
       const display =
-        card.querySelector(
-          ".account-display"
-        ).value.trim();
+        card
+          .querySelector(".account-display")
+          ?.value
+          ?.trim() || "";
 
 
       const number =
-        card.querySelector(
-          ".account-number"
-        ).value.trim();
+        card
+          .querySelector(".account-number")
+          ?.value
+          ?.trim() || "";
 
 
       if(
@@ -1557,22 +1594,20 @@ function getAccountsFromForm(){
         number
       ){
 
-        accounts.push({
+        list.push({
 
-          id:
-            "account_" +
-            (index + 1) +
-            "_" +
-            Date.now(),
+          id,
 
           name:
-            name,
+            name ||
+            "Payment",
 
           display:
-            display,
+            display ||
+            name ||
+            "Payment",
 
-          number:
-            number
+          number
 
         });
 
@@ -1582,15 +1617,516 @@ function getAccountsFromForm(){
   );
 
 
-  return accounts;
+  return list;
 
 }
 
 
+function getFormData(){
+
+  const formAccounts =
+    getAccountsFromForm();
+
+
+  let kbank =
+    getValue("kbank").trim();
+
+
+  let trueMoney =
+    getValue("trueMoney").trim();
+
+
+  /*
+    ถ้ามีบัญชี KBank ใน Accounts
+    ใช้เลขจากตรงนั้น
+  */
+
+  const kbankAccount =
+    formAccounts.find(
+      account=>{
+
+        const text =
+          (
+            account.id +
+            " " +
+            account.name +
+            " " +
+            account.display
+          ).toLowerCase();
+
+        return (
+          text.includes("kbank") ||
+          text.includes("กสิกร")
+        );
+
+      }
+    );
+
+
+  if(kbankAccount?.number){
+
+    kbank =
+      kbankAccount.number;
+
+  }
+
+
+  const walletAccount =
+    formAccounts.find(
+      account=>{
+
+        const text =
+          (
+            account.id +
+            " " +
+            account.name +
+            " " +
+            account.display
+          ).toLowerCase();
+
+        return (
+          text.includes("truemoney") ||
+          text.includes("wallet")
+        );
+
+      }
+    );
+
+
+  if(walletAccount?.number){
+
+    trueMoney =
+      walletAccount.number;
+
+  }
+
+
+  return {
+
+    shopName:
+      getValue("shopName"),
+
+    subtitle:
+      getValue("subtitle"),
+
+    accountName:
+      getValue("accountName"),
+
+    image:
+      getValue("image") ||
+      defaults.image,
+
+    statusText:
+      getValue("statusText"),
+
+    statusRight:
+      getValue("statusRight"),
+
+    intro:
+      getValue("intro"),
+
+    copyHint:
+      getValue("copyHint"),
+
+    paymentTitle:
+      getValue("paymentTitle"),
+
+    wrongTransfer:
+      getValue("wrongTransfer"),
+
+    slipText:
+      getValue("slipText"),
+
+    footer:
+      getValue("footer"),
+
+    kbank:
+      kbank ||
+      defaults.kbank,
+
+    trueMoney:
+      trueMoney ||
+      defaults.trueMoney,
+
+    accounts:
+      formAccounts.length
+        ? formAccounts
+        : clone(defaults.accounts),
+
+    walletExtraFee:
+      getValue("walletExtraFee"),
+
+    musicEnabled:
+      getChecked("musicEnabled"),
+
+    musicUrl:
+      getValue("musicUrl"),
+
+    backgroundEnabled:
+      getChecked("backgroundEnabled"),
+
+    backgroundUrl:
+      getValue("backgroundUrl"),
+
+    memberEnabled:
+      getChecked("memberEnabled"),
+
+    previewTitle:
+      getValue("previewTitle"),
+
+    previewDescription:
+      getValue("previewDescription"),
+
+    previewImage:
+      getValue("previewImage") ||
+      defaults.previewImage
+
+  };
+
+}
+
+
+/* =========================================================
+   FILL FORM
+========================================================= */
+
+function setValue(id,value){
+
+  const el =
+    document.getElementById(id);
+
+  if(el){
+
+    el.value =
+      value ?? "";
+
+  }
+
+}
+
+
+function setChecked(id,value){
+
+  const el =
+    document.getElementById(id);
+
+  if(el){
+
+    el.checked =
+      Boolean(value);
+
+  }
+
+}
+
+
+function fillForm(data){
+
+  setValue(
+    "shopName",
+    data.shopName
+  );
+
+  setValue(
+    "subtitle",
+    data.subtitle
+  );
+
+  setValue(
+    "accountName",
+    data.accountName
+  );
+
+  setValue(
+    "kbank",
+    data.kbank
+  );
+
+  setValue(
+    "trueMoney",
+    data.trueMoney
+  );
+
+  setValue(
+    "statusRight",
+    data.statusRight
+  );
+
+  setValue(
+    "statusText",
+    data.statusText
+  );
+
+  setValue(
+    "intro",
+    data.intro
+  );
+
+  setValue(
+    "copyHint",
+    data.copyHint
+  );
+
+  setValue(
+    "paymentTitle",
+    data.paymentTitle
+  );
+
+  setValue(
+    "wrongTransfer",
+    data.wrongTransfer
+  );
+
+  setValue(
+    "slipText",
+    data.slipText
+  );
+
+  setValue(
+    "footer",
+    data.footer
+  );
+
+  setValue(
+    "image",
+    data.image ||
+    defaults.image
+  );
+
+  setValue(
+    "walletExtraFee",
+    data.walletExtraFee
+  );
+
+  setValue(
+    "musicUrl",
+    data.musicUrl
+  );
+
+  setValue(
+    "backgroundUrl",
+    data.backgroundUrl
+  );
+
+  setValue(
+    "previewTitle",
+    data.previewTitle
+  );
+
+  setValue(
+    "previewDescription",
+    data.previewDescription
+  );
+
+  setValue(
+    "previewImage",
+    data.previewImage ||
+    defaults.previewImage
+  );
+
+
+  setChecked(
+    "musicEnabled",
+    data.musicEnabled
+  );
+
+  setChecked(
+    "backgroundEnabled",
+    data.backgroundEnabled
+  );
+
+  setChecked(
+    "memberEnabled",
+    data.memberEnabled
+  );
+
+
+  accounts =
+    normalizeAccounts(data);
+
+
+  renderAccounts();
+
+
+  updateImagePreview();
+
+
+  updateSharePreview();
+
+}
+
+
+/* =========================================================
+   ACCOUNTS UI
+========================================================= */
+
+function renderAccounts(){
+
+  const container =
+    document.getElementById(
+      "accountsContainer"
+    );
+
+
+  container.innerHTML = "";
+
+
+  accounts.forEach(
+    (account,index)=>{
+
+      const card =
+        document.createElement(
+          "div"
+        );
+
+
+      card.className =
+        "account-card";
+
+
+      card.dataset.accountId =
+        account.id;
+
+
+      card.innerHTML = `
+
+        <div class="flex items-center justify-between gap-3 mb-3">
+
+          <div class="text-sm font-semibold text-brown-600">
+            บัญชีที่ ${index + 1}
+          </div>
+
+          <button
+            type="button"
+            class="remove-account text-xs text-red-500 px-3 py-1.5 rounded-full bg-red-50"
+          >
+            ลบบัญชี
+          </button>
+
+        </div>
+
+        <div class="grid md:grid-cols-3 gap-3">
+
+          <div>
+            <label class="label">
+              ชื่อช่องทาง
+            </label>
+
+            <input
+              class="field account-name"
+              type="text"
+              value="${escapeHtml(account.name)}"
+              placeholder="KBank"
+            >
+          </div>
+
+          <div>
+            <label class="label">
+              ชื่อที่แสดง
+            </label>
+
+            <input
+              class="field account-display"
+              type="text"
+              value="${escapeHtml(account.display)}"
+              placeholder="กสิกรไทย (Parinyasiri)"
+            >
+          </div>
+
+          <div>
+            <label class="label">
+              เลขบัญชี / เบอร์
+            </label>
+
+            <input
+              class="field account-number"
+              type="text"
+              value="${escapeHtml(account.number)}"
+              inputmode="numeric"
+            >
+          </div>
+
+        </div>
+      `;
+
+
+      container.appendChild(
+        card
+      );
+
+
+      const removeButton =
+        card.querySelector(
+          ".remove-account"
+        );
+
+
+      removeButton.addEventListener(
+        "click",
+        ()=>{
+
+          if(
+            document.querySelectorAll(
+              ".account-card"
+            ).length <= 1
+          ){
+
+            showToast(
+              "ต้องมีบัญชีอย่างน้อย 1 บัญชี"
+            );
+
+            return;
+
+          }
+
+
+          card.remove();
+
+        }
+      );
+
+    }
+  );
+
+}
+
+
+/* =========================================================
+   ESCAPE HTML
+========================================================= */
+
+function escapeHtml(value){
+
+  return String(
+    value ?? ""
+  )
+  .replaceAll(
+    "&",
+    "&amp;"
+  )
+  .replaceAll(
+    "<",
+    "&lt;"
+  )
+  .replaceAll(
+    ">",
+    "&gt;"
+  )
+  .replaceAll(
+    '"',
+    "&quot;"
+  )
+  .replaceAll(
+    "'",
+    "&#039;"
+  );
+
+}
+
 
 /* =========================================================
    ADD ACCOUNT
-   ========================================================= */
+========================================================= */
 
 document
   .getElementById(
@@ -1598,20 +2134,21 @@ document
   )
   .addEventListener(
     "click",
-    function(){
+    ()=>{
 
-      const accounts =
-        getAccountsFromForm();
+      const cards =
+        document.querySelectorAll(
+          ".account-card"
+        );
 
 
-      accounts.push({
+      const newAccount = {
 
         id:
-          "account_" +
-          Date.now(),
+          `account-${Date.now()}`,
 
         name:
-          "",
+          "Payment",
 
         display:
           "",
@@ -1619,25 +2156,30 @@ document
         number:
           ""
 
-      });
+      };
 
 
-      renderAccounts(
-        accounts
+      accounts.push(
+        newAccount
       );
 
 
-      const cards =
-        accountsContainer.querySelectorAll(
-          ".account-card"
-        );
+      renderAccounts();
 
 
       const lastCard =
-        cards[cards.length - 1];
+        document.querySelector(
+          ".account-card:last-child"
+        );
 
 
       if(lastCard){
+
+        lastCard.scrollIntoView({
+          behavior:"smooth",
+          block:"center"
+        });
+
 
         const input =
           lastCard.querySelector(
@@ -1647,7 +2189,12 @@ document
 
         if(input){
 
-          input.focus();
+          setTimeout(
+            ()=>{
+              input.focus();
+            },
+            300
+          );
 
         }
 
@@ -1657,480 +2204,61 @@ document
   );
 
 
-
 /* =========================================================
-   LOAD SETTINGS
-   ========================================================= */
+   IMAGE PREVIEW
+========================================================= */
 
-async function loadSettings(){
+function updateImagePreview(){
 
-  const {
-    data,
-    error
-  } =
-    await supabaseClient
-      .from("site_settings")
-      .select(
-        "id, settings"
-      )
-      .eq(
-        "id",
-        1
-      )
-      .maybeSingle();
+  const input =
+    document.getElementById(
+      "image"
+    );
 
-
-  if(error){
-
-    console.error(error);
-
-    throw error;
-
-  }
-
-
-  const saved =
-    data &&
-    data.settings
-      ? data.settings
-      : {};
-
-
-  const settings = {
-
-    ...defaults,
-
-    ...saved
-
-  };
-
-
-  settings.accounts =
-    normalizeAccounts(
-      settings
+  const preview =
+    document.getElementById(
+      "preview"
     );
 
 
-  fillForm(
-    settings
-  );
-
-}
+  const url =
+    input.value.trim();
 
 
-
-/* =========================================================
-   FILL FORM
-   ========================================================= */
-
-function fillForm(data){
-
-  const fields = {
-
-    shopName:
-      data.shopName,
-
-    subtitle:
-      data.subtitle,
-
-    accountName:
-      data.accountName,
-
-    statusRight:
-      data.statusRight,
-
-    statusText:
-      data.statusText,
-
-    intro:
-      data.intro,
-
-    copyHint:
-      data.copyHint,
-
-    paymentTitle:
-      data.paymentTitle,
-
-    wrongTransfer:
-      data.wrongTransfer,
-
-    slipText:
-      data.slipText,
-
-    footer:
-      data.footer,
-
-    walletExtraFee:
-      data.walletExtraFee,
-
-    musicUrl:
-      data.musicUrl,
-
-    backgroundUrl:
-      data.backgroundUrl,
-
-    previewTitle:
-      data.previewTitle,
-
-    previewDescription:
-      data.previewDescription,
-
-    previewImage:
-      data.previewImage,
-
-    image:
-      data.image
-
-  };
-
-
-  Object.keys(fields)
-    .forEach(
-      function(id){
-
-        const element =
-          document.getElementById(
-            id
-          );
-
-
-        if(element){
-
-          element.value =
-            fields[id] ?? "";
-
-        }
-
-      }
-    );
-
-
-  document.getElementById(
-    "musicEnabled"
-  ).checked =
-    !!data.musicEnabled;
-
-
-  document.getElementById(
-    "backgroundEnabled"
-  ).checked =
-    !!data.backgroundEnabled;
-
-
-  document.getElementById(
-    "memberEnabled"
-  ).checked =
-    data.memberEnabled !== false;
-
-
-  document.getElementById(
-    "preview"
-  ).src =
-    data.image ||
+  preview.src =
+    url ||
     defaults.image;
 
 
-  renderAccounts(
-    data.accounts ||
-    []
-  );
+  preview.onerror =
+    ()=>{
+      preview.src =
+        defaults.image;
+    };
 
 }
 
-
-
-/* =========================================================
-   GET FORM DATA
-   ========================================================= */
-
-function getFormData(){
-
-  const accounts =
-    getAccountsFromForm();
-
-
-  /*
-     รองรับข้อมูลเก่า
-     โดยเอาบัญชี KBank / TrueMoney
-     กลับไปเก็บใน field เดิมด้วย
-  */
-
-  let kbank = "";
-
-  let trueMoney = "";
-
-
-  accounts.forEach(
-    function(account){
-
-      const name =
-        (
-          account.name ||
-          ""
-        ).toLowerCase();
-
-
-      if(
-        !kbank &&
-        (
-          name.includes("kbank") ||
-          name.includes("กสิกร")
-        )
-      ){
-
-        kbank =
-          account.number;
-
-      }
-
-
-      if(
-        !trueMoney &&
-        (
-          name.includes("truemoney") ||
-          name.includes("true money") ||
-          name.includes("ทรู")
-        )
-      ){
-
-        trueMoney =
-          account.number;
-
-      }
-
-    }
-  );
-
-
-  return {
-
-    shopName:
-      document.getElementById(
-        "shopName"
-      ).value.trim(),
-
-    subtitle:
-      document.getElementById(
-        "subtitle"
-      ).value.trim(),
-
-    accountName:
-      document.getElementById(
-        "accountName"
-      ).value.trim(),
-
-    /*
-       legacy fields
-    */
-
-    kbank:
-      kbank,
-
-    trueMoney:
-      trueMoney,
-
-    /*
-       new multiple-account system
-    */
-
-    accounts:
-      accounts,
-
-    statusRight:
-      document.getElementById(
-        "statusRight"
-      ).value.trim(),
-
-    statusText:
-      document.getElementById(
-        "statusText"
-      ).value.trim(),
-
-    intro:
-      document.getElementById(
-        "intro"
-      ).value.trim(),
-
-    copyHint:
-      document.getElementById(
-        "copyHint"
-      ).value.trim(),
-
-    paymentTitle:
-      document.getElementById(
-        "paymentTitle"
-      ).value.trim(),
-
-    wrongTransfer:
-      document.getElementById(
-        "wrongTransfer"
-      ).value.trim(),
-
-    slipText:
-      document.getElementById(
-        "slipText"
-      ).value.trim(),
-
-    footer:
-      document.getElementById(
-        "footer"
-      ).value.trim(),
-
-    walletExtraFee:
-      document.getElementById(
-        "walletExtraFee"
-      ).value.trim(),
-
-    musicEnabled:
-      document.getElementById(
-        "musicEnabled"
-      ).checked,
-
-    musicUrl:
-      document.getElementById(
-        "musicUrl"
-      ).value.trim(),
-
-    backgroundEnabled:
-      document.getElementById(
-        "backgroundEnabled"
-      ).checked,
-
-    backgroundUrl:
-      document.getElementById(
-        "backgroundUrl"
-      ).value.trim(),
-
-    memberEnabled:
-      document.getElementById(
-        "memberEnabled"
-      ).checked,
-
-    previewTitle:
-      document.getElementById(
-        "previewTitle"
-      ).value.trim(),
-
-    previewDescription:
-      document.getElementById(
-        "previewDescription"
-      ).value.trim(),
-
-    previewImage:
-      document.getElementById(
-        "previewImage"
-      ).value.trim(),
-
-    image:
-      document.getElementById(
-        "image"
-      ).value.trim()
-
-  };
-
-}
-
-
-
-/* =========================================================
-   SAVE SETTINGS
-   ========================================================= */
 
 document
-  .getElementById("save")
+  .getElementById(
+    "image"
+  )
   .addEventListener(
-    "click",
-    async function(){
-
-      const message =
-        document.getElementById(
-          "message"
-        );
-
-
-      message.textContent =
-        "กำลังบันทึก...";
-
-
-      try{
-
-        const settings =
-          getFormData();
-
-
-        const {
-          error
-        } =
-          await supabaseClient
-            .from("site_settings")
-            .upsert(
-              {
-                id:1,
-                settings:settings
-              },
-              {
-                onConflict:"id"
-              }
-            );
-
-
-        if(error){
-
-          console.error(error);
-
-
-          message.textContent =
-            "บันทึกไม่สำเร็จ: " +
-            error.message;
-
-
-          return;
-
-        }
-
-
-        message.textContent =
-          "บันทึกข้อมูลเรียบร้อยแล้ว ✓";
-
-
-        setTimeout(
-          function(){
-
-            message.textContent =
-              "";
-
-          },
-          2500
-        );
-
-
-      }catch(error){
-
-        console.error(error);
-
-
-        message.textContent =
-          "เกิดข้อผิดพลาดในการบันทึกค่ะ";
-
-      }
-
-    }
+    "input",
+    updateImagePreview
   );
 
 
-
-/* =========================================================
-   IMAGE FILE
-   ========================================================= */
-
 document
-  .getElementById("imageFile")
+  .getElementById(
+    "imageFile"
+  )
   .addEventListener(
     "change",
-    function(event){
+    event=>{
 
       const file =
-        event.target.files[0];
+        event.target.files?.[0];
 
 
       if(!file){
@@ -2146,10 +2274,9 @@ document
         )
       ){
 
-        alert(
-          "กรุณาเลือกไฟล์รูปภาพค่ะ"
+        showToast(
+          "กรุณาเลือกไฟล์รูปภาพ"
         );
-
 
         return;
 
@@ -2161,23 +2288,32 @@ document
 
 
       reader.onload =
-        function(){
-
-          const value =
-            reader.result;
-
-
-          document.getElementById(
-            "image"
-          ).value =
-            value;
+        ()=>{
+          
+          const result =
+            String(
+              reader.result || ""
+            );
 
 
-          document.getElementById(
-            "preview"
-          ).src =
-            value;
+          document
+            .getElementById(
+              "image"
+            )
+            .value =
+              result;
 
+
+          updateImagePreview();
+
+        };
+
+
+      reader.onerror =
+        ()=>{
+          showToast(
+            "อ่านไฟล์รูปไม่สำเร็จ"
+          );
         };
 
 
@@ -2189,267 +2325,305 @@ document
   );
 
 
-
 /* =========================================================
-   IMAGE URL PREVIEW
-   ========================================================= */
+   SHARE PREVIEW
+========================================================= */
+
+function updateSharePreview(){
+
+  const input =
+    document.getElementById(
+      "previewImage"
+    );
+
+  const preview =
+    document.getElementById(
+      "previewShareImage"
+    );
+
+
+  const url =
+    input.value.trim();
+
+
+  preview.src =
+    url ||
+    defaults.previewImage;
+
+
+  preview.onerror =
+    ()=>{
+      preview.src =
+        defaults.previewImage;
+    };
+
+}
+
 
 document
-  .getElementById("image")
+  .getElementById(
+    "previewImage"
+  )
   .addEventListener(
     "input",
-    function(){
-
-      const value =
-        this.value.trim();
-
-
-      if(value){
-
-        document.getElementById(
-          "preview"
-        ).src =
-          value;
-
-      }
-
-    }
+    updateSharePreview
   );
 
+
+/* =========================================================
+   SAVE
+========================================================= */
+
+document
+  .getElementById(
+    "save"
+  )
+  .addEventListener(
+    "click",
+    saveSettings
+  );
 
 
 /* =========================================================
    RESET
-   ========================================================= */
+========================================================= */
 
 document
-  .getElementById("reset")
+  .getElementById(
+    "reset"
+  )
   .addEventListener(
     "click",
-    function(){
+    ()=>{
 
-      if(
-        !confirm(
-          "คืนค่าเริ่มต้นของข้อมูลในแบบฟอร์มใช่ไหม?"
-        )
-      ){
+      const ok =
+        confirm(
+          "คืนค่าข้อมูลเริ่มต้นทั้งหมดใช่ไหม?\n\nข้อมูลที่เคยบันทึกไว้จะถูกลบจากเครื่องนี้"
+        );
+
+
+      if(!ok){
 
         return;
 
       }
 
 
-      fillForm(
-        {
-          ...defaults,
-          accounts:
-            defaultAccounts
-        }
+      localStorage.removeItem(
+        ADMIN_SETTINGS_STORAGE_KEY
       );
 
 
-      document.getElementById(
-        "message"
-      ).textContent =
-        "คืนค่าในแบบฟอร์มแล้ว — กดบันทึกหากต้องการใช้ค่าเหล่านี้";
-
-    }
-  );
+      settings =
+        clone(defaults);
 
 
+      accounts =
+        clone(defaults.accounts);
 
-/* =========================================================
-   PAYMENT GENERATOR OPEN
-   ========================================================= */
 
-document
-  .getElementById(
-    "paymentGeneratorButton"
-  )
-  .addEventListener(
-    "click",
-    function(){
+      fillForm(
+        settings
+      );
 
-      paymentGenerator.classList.remove(
-        "hidden"
+
+      const message =
+        document.getElementById(
+          "message"
+        );
+
+
+      message.textContent =
+        "คืนค่าเริ่มต้นแล้ว ✓";
+
+      message.className =
+        "text-center text-sm mt-3 min-h-[22px] text-green-600";
+
+
+      showToast(
+        "คืนค่าเริ่มต้นแล้ว"
       );
 
 
       setTimeout(
-        function(){
-
-          paymentGenerator.scrollIntoView({
-            behavior:"smooth",
-            block:"start"
-          });
-
-
-          document
-            .getElementById(
-              "paymentAmount"
-            )
-            .focus();
-
+        ()=>{
+          message.textContent = "";
         },
-        50
+        2500
       );
 
     }
   );
-
 
 
 /* =========================================================
-   WEBSITE ADMIN BUTTON
-   ========================================================= */
+   PAYMENT GENERATOR
+========================================================= */
 
-document
-  .getElementById(
-    "websiteAdminButton"
-  )
-  .addEventListener(
-    "click",
-    function(){
-
-      paymentGenerator.classList.add(
-        "hidden"
-      );
-
-
-      window.scrollTo({
-        top:0,
-        behavior:"smooth"
-      });
-
-    }
+const paymentGenerator =
+  document.getElementById(
+    "paymentGenerator"
   );
 
+
+/*
+  เปิดส่วนสร้างลิงก์
+  ใช้แบบเดิม: scroll ลงมาที่ Payment Generator
+*/
+
+function openPaymentGenerator(){
+
+  paymentGenerator.classList.remove(
+    "hidden"
+  );
+
+
+  setTimeout(
+    ()=>{
+
+      paymentGenerator.scrollIntoView({
+        behavior:"smooth",
+        block:"start"
+      });
+
+
+      document
+        .getElementById(
+          "paymentAmount"
+        )
+        .focus();
+
+    },
+    50
+  );
+
+}
 
 
 /* =========================================================
    GENERATE PAYMENT LINK
-   ========================================================= */
+========================================================= */
 
 document
   .getElementById(
-    "generatePayment"
+    "generatePaymentLink"
   )
   .addEventListener(
     "click",
-    function(){
-
-      const amountInput =
-        document.getElementById(
-          "paymentAmount"
-        );
-
-      const noteInput =
-        document.getElementById(
-          "paymentNote"
-        );
-
-      const result =
-        document.getElementById(
-          "paymentResult"
-        );
-
-      const linkInput =
-        document.getElementById(
-          "paymentLink"
-        );
-
-      const message =
-        document.getElementById(
-          "paymentGeneratorMessage"
-        );
-
+    ()=>{
 
       const amount =
-        amountInput.value.trim();
+        document
+          .getElementById(
+            "paymentAmount"
+          )
+          .value
+          .trim();
 
 
       const note =
-        noteInput.value.trim();
+        document
+          .getElementById(
+            "paymentNote"
+          )
+          .value
+          .trim();
 
 
-      if(
-        !amount ||
-        Number(amount) <= 0
-      ){
+      if(!amount){
 
-        message.textContent =
-          "กรุณาใส่จำนวนเงินมากกว่า 0 บาทค่ะ";
-
-
-        result.classList.add(
-          "hidden"
+        showToast(
+          "กรุณาใส่จำนวนเงินก่อน"
         );
 
-
-        amountInput.focus();
-
+        document
+          .getElementById(
+            "paymentAmount"
+          )
+          .focus();
 
         return;
 
       }
 
 
-      try{
-
-        const url =
-          new URL(
-            "payment.html",
-            window.location.href
-          );
+      const numericAmount =
+        Number(amount);
 
 
-        url.searchParams.set(
-          "amount",
-          amount
+      if(
+        !Number.isFinite(
+          numericAmount
+        ) ||
+        numericAmount < 0
+      ){
+
+        showToast(
+          "จำนวนเงินไม่ถูกต้อง"
+        );
+
+        return;
+
+      }
+
+
+      const url =
+        new URL(
+          "payment.html",
+          window.location.href
         );
 
 
-        if(note){
-
-          url.searchParams.set(
-            "note",
-            note
-          );
-
-        }
+      url.searchParams.set(
+        "amount",
+        String(
+          numericAmount
+        )
+      );
 
 
-        linkInput.value =
-          url.href;
+      if(note){
+
+        url.searchParams.set(
+          "note",
+          note
+        );
+
+      }
 
 
-        result.classList.remove(
+      const finalUrl =
+        url.href;
+
+
+      document
+        .getElementById(
+          "generatedPaymentLink"
+        )
+        .value =
+          finalUrl;
+
+
+      document
+        .getElementById(
+          "paymentLinkResult"
+        )
+        .classList.remove(
           "hidden"
         );
 
 
-        message.textContent =
-          "สร้างลิงก์เรียบร้อยแล้ว ✓";
-
-
-      }catch(error){
-
-        console.error(error);
-
-
-        message.textContent =
-          "สร้างลิงก์ไม่สำเร็จค่ะ";
-
-      }
+      showToast(
+        "สร้างลิงก์เรียบร้อยแล้ว"
+      );
 
     }
   );
 
 
-
 /* =========================================================
    COPY PAYMENT LINK
-   ========================================================= */
+========================================================= */
 
 document
   .getElementById(
@@ -2457,144 +2631,254 @@ document
   )
   .addEventListener(
     "click",
-    async function(){
+    async ()=>{
 
       const input =
         document.getElementById(
-          "paymentLink"
+          "generatedPaymentLink"
         );
 
 
-      if(!input.value){
+      const value =
+        input.value;
+
+
+      if(!value){
 
         return;
 
       }
 
 
-      const originalText =
-        this.textContent;
-
-
       try{
 
         await navigator.clipboard.writeText(
-          input.value
+          value
         );
+
+
+        showToast(
+          "คัดลอกลิงก์แล้ว ✓"
+        );
+
 
       }catch(error){
 
-        input.focus();
-
         input.select();
+        input.setSelectionRange(
+          0,
+          input.value.length
+        );
+
 
         document.execCommand(
           "copy"
         );
 
+
+        showToast(
+          "คัดลอกลิงก์แล้ว ✓"
+        );
+
       }
-
-
-      this.textContent =
-        "✓ คัดลอกแล้ว";
-
-
-      setTimeout(
-        () => {
-
-          this.textContent =
-            originalText;
-
-        },
-        1800
-      );
 
     }
   );
 
 
-
 /* =========================================================
-   LOGOUT
-   ========================================================= */
+   ADMIN AUTH
+========================================================= */
 
-document
-  .getElementById(
-    "logoutButton"
-  )
-  .addEventListener(
-    "click",
-    async function(){
+async function getAdminUser(){
 
-      this.disabled =
-        true;
+  const {
+    data,
+    error
+  } =
+    await supabaseClient
+      .from("admin_users")
+      .select("*")
+      .eq(
+        "user_id",
+        (
+          await supabaseClient.auth.getUser()
+        ).data.user?.id
+      )
+      .maybeSingle();
 
 
-      this.textContent =
-        "กำลังออกจากระบบ...";
+  if(error){
 
+    console.error(
+      "Admin check error:",
+      error
+    );
+
+    return null;
+
+  }
+
+
+  return data;
+
+}
+
+
+async function requireAdmin(){
+
+  try{
+
+    const {
+      data:{
+        session
+      }
+    } =
+      await supabaseClient
+        .auth
+        .getSession();
+
+
+    if(!session){
+
+      window.location.replace(
+        "admin-login.html?next=admin.html"
+      );
+
+      return false;
+
+    }
+
+
+    /*
+      ตรวจสิทธิ์ Admin
+    */
+
+    const user =
+      session.user;
+
+
+    const {
+      data,
+      error
+    } =
+      await supabaseClient
+        .from("admin_users")
+        .select("*")
+        .eq(
+          "user_id",
+          user.id
+        )
+        .maybeSingle();
+
+
+    if(
+      error ||
+      !data
+    ){
+
+      /*
+        fallback ไปใช้ RPC เดิม
+        เพื่อไม่ทำให้ระบบ Login เดิมพัง
+      */
 
       try{
+
+        const {
+          data:rpcData,
+          error:rpcError
+        } =
+          await supabaseClient.rpc(
+            "is_admin"
+          );
+
+
+        if(
+          rpcError ||
+          rpcData !== true
+        ){
+
+          await supabaseClient
+            .auth
+            .signOut();
+
+
+          alert(
+            "บัญชีนี้ไม่มีสิทธิ์เข้า Admin"
+          );
+
+
+          window.location.replace(
+            "admin-login.html?next=admin.html"
+          );
+
+
+          return false;
+
+        }
+
+      }catch(rpcError){
+
+        console.error(
+          "Admin RPC error:",
+          rpcError
+        );
+
 
         await supabaseClient
           .auth
           .signOut();
 
-      }catch(error){
 
-        console.error(
-          "Logout error:",
-          error
+        alert(
+          "บัญชีนี้ไม่มีสิทธิ์เข้า Admin"
         );
+
+
+        window.location.replace(
+          "admin-login.html?next=admin.html"
+        );
+
+
+        return false;
 
       }
 
-
-      window.location.replace(
-        "admin-login.html"
-      );
-
     }
-  );
 
 
+    return true;
 
-/* =========================================================
-   AUTH STATE
-   ========================================================= */
 
-supabaseClient.auth.onAuthStateChange(
-  function(
-    event,
-    session
-  ){
+  }catch(error){
 
-    if(
-      event ===
-      "SIGNED_OUT"
-    ){
+    console.error(
+      "Require admin error:",
+      error
+    );
 
-      window.location.replace(
-        "admin-login.html"
-      );
 
-    }
+    window.location.replace(
+      "admin-login.html?next=admin.html"
+    );
+
+
+    return false;
 
   }
-);
 
+}
 
 
 /* =========================================================
-   INITIALIZE
-   ========================================================= */
+   INIT
+========================================================= */
 
 async function init(){
 
-  adminScreen.classList.add(
-    "hidden"
-  );
-
+  /*
+    ตรวจ Login ก่อน
+  */
 
   const allowed =
     await requireAdmin();
@@ -2607,26 +2891,18 @@ async function init(){
   }
 
 
-  adminScreen.classList.remove(
-    "hidden"
-  );
+  /*
+    โหลดข้อมูลที่บันทึกไว้
+  */
 
-
-  try{
-
-    await loadSettings();
-
-  }catch(error){
-
-    console.error(
-      "Initial load settings error:",
-      error
-    );
-
-  }
+  loadSettings();
 
 }
 
+
+/* =========================================================
+   START
+========================================================= */
 
 init();
 
