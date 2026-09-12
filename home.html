@@ -1,0 +1,1272 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Bennie Choco ♡</title>
+
+<meta name="theme-color" content="#FDEAF7">
+
+<style>
+*{
+  box-sizing:border-box;
+  -webkit-tap-highlight-color:transparent;
+}
+
+html,body{
+  margin:0;
+  padding:0;
+  min-height:100%;
+}
+
+body{
+  min-height:100vh;
+  overflow-x:hidden;
+  font-family:
+    "Trebuchet MS",
+    "Arial Rounded MT Bold",
+    "Noto Sans Thai",
+    Arial,
+    sans-serif;
+
+  color:#805768;
+
+  background:
+    radial-gradient(circle at 10% 12%, rgba(255,255,255,.95) 0 2px, transparent 3px),
+    radial-gradient(circle at 82% 18%, rgba(255,255,255,.9) 0 2px, transparent 3px),
+    radial-gradient(circle at 25% 72%, rgba(255,255,255,.8) 0 2px, transparent 3px),
+    radial-gradient(circle at 91% 76%, rgba(255,255,255,.8) 0 2px, transparent 3px),
+    linear-gradient(
+      180deg,
+      #fffaff 0%,
+      #fdeaf7 48%,
+      #f9d6e8 100%
+    );
+
+  background-size:
+    150px 150px,
+    190px 190px,
+    220px 220px,
+    180px 180px,
+    100% 100%;
+}
+
+/* ==============================
+   FLOATING DECOR
+============================== */
+
+.sparkle{
+  position:fixed;
+  pointer-events:none;
+  z-index:1;
+  color:#fff;
+  text-shadow:
+    0 0 5px #fff,
+    0 0 12px #f2a9c7;
+  animation:twinkle 3s ease-in-out infinite;
+}
+
+.s1{
+  top:9%;
+  left:8%;
+  font-size:20px;
+}
+
+.s2{
+  top:15%;
+  right:9%;
+  font-size:14px;
+  animation-delay:.8s;
+}
+
+.s3{
+  top:42%;
+  left:4%;
+  font-size:13px;
+  animation-delay:1.4s;
+}
+
+.s4{
+  top:51%;
+  right:5%;
+  font-size:22px;
+  animation-delay:.4s;
+}
+
+.s5{
+  bottom:16%;
+  left:10%;
+  font-size:15px;
+  animation-delay:1.8s;
+}
+
+.s6{
+  bottom:12%;
+  right:12%;
+  font-size:18px;
+  animation-delay:1s;
+}
+
+@keyframes twinkle{
+  0%,100%{
+    opacity:.35;
+    transform:scale(.8) rotate(0deg);
+  }
+
+  50%{
+    opacity:1;
+    transform:scale(1.25) rotate(12deg);
+  }
+}
+
+
+/* ==============================
+   MAIN
+============================== */
+
+.page{
+  position:relative;
+  z-index:2;
+
+  width:min(100%,560px);
+  min-height:100vh;
+
+  margin:auto;
+  padding:
+    24px 18px
+    35px;
+
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+}
+
+
+/* ==============================
+   TOP DECOR
+============================== */
+
+.top-decoration{
+  width:100%;
+  text-align:center;
+
+  color:#d78eac;
+
+  font-size:13px;
+  letter-spacing:1px;
+
+  margin-bottom:4px;
+}
+
+.top-decoration span{
+  display:inline-block;
+  margin:0 4px;
+}
+
+
+/* ==============================
+   LOGO
+============================== */
+
+.logo{
+  text-align:center;
+  position:relative;
+  margin-top:3px;
+}
+
+.logo-bunny{
+  position:relative;
+
+  width:76px;
+  height:72px;
+
+  margin:0 auto 2px;
+}
+
+/* ears */
+
+.logo-ear{
+  position:absolute;
+
+  width:24px;
+  height:45px;
+
+  top:0;
+
+  background:#fff;
+
+  border:2px solid #dca8bb;
+
+  border-radius:
+    60% 60%
+    45% 45%;
+}
+
+.logo-ear::after{
+  content:"";
+
+  position:absolute;
+
+  left:6px;
+  right:6px;
+  top:8px;
+  bottom:8px;
+
+  border-radius:inherit;
+
+  background:#f6c4d8;
+}
+
+.logo-ear.left{
+  left:15px;
+  transform:rotate(-10deg);
+}
+
+.logo-ear.right{
+  right:15px;
+  transform:rotate(10deg);
+}
+
+/* face */
+
+.logo-face{
+  position:absolute;
+
+  left:50%;
+  bottom:0;
+
+  transform:translateX(-50%);
+
+  width:67px;
+  height:57px;
+
+  border-radius:50%;
+
+  background:#fff;
+
+  border:2px solid #dca8bb;
+
+  box-shadow:
+    0 5px 12px rgba(170,100,130,.12);
+}
+
+.logo-face::before{
+  content:"• ᴗ •";
+
+  position:absolute;
+
+  left:50%;
+  top:20px;
+
+  transform:translateX(-50%);
+
+  white-space:nowrap;
+
+  color:#76515f;
+
+  font-size:13px;
+
+  letter-spacing:4px;
+}
+
+.logo-name{
+  margin:0;
+
+  color:#714858;
+
+  font-family:
+    "Georgia",
+    "Times New Roman",
+    serif;
+
+  font-size:
+    clamp(27px,8vw,39px);
+
+  font-weight:bold;
+
+  letter-spacing:.5px;
+
+  text-shadow:
+    1px 1px 0 #fff,
+    0 3px 8px rgba(184,111,141,.15);
+}
+
+.logo-sub{
+  margin:5px 0 0;
+
+  color:#b17b91;
+
+  font-size:10px;
+
+  letter-spacing:2px;
+}
+
+
+/* ==============================
+   CUTE MESSAGE
+============================== */
+
+.message{
+  margin-top:16px;
+
+  text-align:center;
+
+  color:#966a7d;
+
+  font-size:13px;
+
+  line-height:1.75;
+}
+
+.message .decor{
+  color:#d98cab;
+  font-size:15px;
+}
+
+
+/* ==============================
+   LITTLE HOUSE
+============================== */
+
+.house-card{
+  position:relative;
+
+  width:100%;
+
+  margin-top:15px;
+
+  padding:
+    18px
+    15px
+    24px;
+
+  border-radius:34px;
+
+  background:
+    linear-gradient(
+      180deg,
+      rgba(255,255,255,.84),
+      rgba(255,241,248,.72)
+    );
+
+  border:
+    2px solid rgba(220,164,187,.65);
+
+  box-shadow:
+    0 15px 35px rgba(171,105,135,.13),
+    inset 0 0 0 4px rgba(255,255,255,.45);
+}
+
+
+/* ==============================
+   ROOF
+============================== */
+
+.roof{
+  position:relative;
+
+  width:88%;
+  height:47px;
+
+  margin:
+    0 auto
+    5px;
+
+  background:#f5b8d0;
+
+  border:
+    3px solid #d99bb6;
+
+  border-radius:
+    50% 50%
+    18px 18px;
+
+  box-shadow:
+    0 5px 0 #d999b3;
+}
+
+.roof::before{
+  content:"♡ ୨୧ ♡";
+
+  position:absolute;
+
+  left:50%;
+  top:50%;
+
+  transform:translate(-50%,-50%);
+
+  color:#fff;
+
+  font-size:15px;
+
+  white-space:nowrap;
+
+  text-shadow:
+    0 1px 3px rgba(178,100,130,.25);
+}
+
+
+/* ==============================
+   HOUSE BODY
+============================== */
+
+.house{
+  position:relative;
+
+  width:92%;
+
+  min-height:190px;
+
+  margin:auto;
+
+  padding:
+    15px
+    12px
+    20px;
+
+  background:#fff0e8;
+
+  border:
+    3px solid #d8a18e;
+
+  border-radius:
+    20px
+    20px
+    28px
+    28px;
+
+  box-shadow:
+    inset 0 0 0 3px rgba(255,255,255,.5);
+}
+
+
+/* windows */
+
+.window{
+  position:absolute;
+
+  top:17px;
+
+  width:43px;
+  height:52px;
+
+  background:#d9f0ee;
+
+  border:
+    4px solid #c99182;
+
+  border-radius:12px;
+}
+
+.window::before{
+  content:"";
+
+  position:absolute;
+
+  width:3px;
+
+  top:0;
+  bottom:0;
+
+  left:50%;
+
+  transform:translateX(-50%);
+
+  background:#c99182;
+}
+
+.window::after{
+  content:"";
+
+  position:absolute;
+
+  height:3px;
+
+  left:0;
+  right:0;
+
+  top:50%;
+
+  transform:translateY(-50%);
+
+  background:#c99182;
+}
+
+.window.left{
+  left:12px;
+}
+
+.window.right{
+  right:12px;
+}
+
+
+/* house name */
+
+.house-name{
+  position:relative;
+
+  z-index:2;
+
+  width:max-content;
+  max-width:70%;
+
+  margin:
+    3px auto
+    0;
+
+  padding:
+    7px 15px;
+
+  background:#fff8e9;
+
+  border:
+    2px solid #d8b18e;
+
+  border-radius:15px;
+
+  box-shadow:
+    0 3px 0 #c9957e;
+
+  color:#835565;
+
+  font-family:
+    Georgia,
+    serif;
+
+  font-size:16px;
+
+  font-weight:bold;
+}
+
+
+/* ==============================
+   BUNNIES
+============================== */
+
+.bunnies{
+  position:relative;
+
+  z-index:5;
+
+  display:flex;
+
+  justify-content:center;
+  align-items:flex-end;
+
+  gap:7px;
+
+  margin-top:16px;
+}
+
+.bunny{
+  width:31%;
+
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+}
+
+
+/* ears */
+
+.ears{
+  position:relative;
+
+  width:48px;
+  height:31px;
+
+  margin-bottom:-4px;
+}
+
+.ear{
+  position:absolute;
+
+  width:18px;
+  height:34px;
+
+  background:#fff;
+
+  border:
+    2px solid #d6a8b7;
+
+  border-radius:
+    70% 70%
+    45% 45%;
+}
+
+.ear::after{
+  content:"";
+
+  position:absolute;
+
+  inset:6px 5px;
+
+  border-radius:inherit;
+
+  background:#f5c2d5;
+}
+
+.ear.left{
+  left:3px;
+
+  transform:rotate(-8deg);
+}
+
+.ear.right{
+  right:3px;
+
+  transform:rotate(8deg);
+}
+
+
+/* face */
+
+.face{
+  position:relative;
+
+  width:53px;
+  height:45px;
+
+  background:#fff;
+
+  border:
+    2px solid #d6a8b7;
+
+  border-radius:50%;
+
+  box-shadow:
+    0 4px 7px rgba(120,70,90,.08);
+}
+
+.bunny:nth-child(2) .face{
+  background:#fff5ed;
+}
+
+.bunny:nth-child(3) .face{
+  background:#fff;
+}
+
+.eyes{
+  position:absolute;
+
+  left:50%;
+  top:17px;
+
+  transform:translateX(-50%);
+
+  width:29px;
+
+  display:flex;
+  justify-content:space-between;
+
+  color:#694a55;
+
+  font-size:9px;
+
+  font-weight:bold;
+}
+
+.nose{
+  position:absolute;
+
+  left:50%;
+  top:25px;
+
+  transform:translateX(-50%);
+
+  color:#db82a1;
+
+  font-size:10px;
+}
+
+.cheek{
+  position:absolute;
+
+  top:27px;
+
+  width:11px;
+  height:5px;
+
+  border-radius:50%;
+
+  background:#f2aec3;
+
+  opacity:.7;
+}
+
+.cheek.left{
+  left:6px;
+}
+
+.cheek.right{
+  right:6px;
+}
+
+
+/* ==============================
+   90s GLITTER BUTTONS
+============================== */
+
+.menu{
+  position:relative;
+
+  width:100%;
+
+  margin-top:9px;
+}
+
+.menu a{
+  position:relative;
+
+  display:flex;
+
+  flex-direction:column;
+
+  align-items:center;
+  justify-content:center;
+
+  width:100%;
+
+  min-height:68px;
+
+  padding:8px 5px;
+
+  border-radius:18px;
+
+  color:#714c5b;
+
+  border:
+    2px solid #e0a7bd;
+
+  background:
+    linear-gradient(
+      180deg,
+      #fffafd 0%,
+      #fbd9e9 48%,
+      #f2b8d1 100%
+    );
+
+  box-shadow:
+    0 5px 0 #d18ea9,
+    0 8px 13px rgba(150,83,112,.14),
+    inset 0 2px 0 rgba(255,255,255,.9),
+    inset 0 -4px 8px rgba(208,126,158,.12);
+
+  transition:
+    transform .18s ease,
+    box-shadow .18s ease,
+    filter .18s ease;
+
+  overflow:hidden;
+}
+
+
+/* glitter shine */
+
+.menu a::before{
+  content:"";
+
+  position:absolute;
+
+  width:90px;
+  height:150%;
+
+  top:-20%;
+  left:-110px;
+
+  transform:rotate(20deg);
+
+  background:
+    linear-gradient(
+      90deg,
+      transparent,
+      rgba(255,255,255,.75),
+      transparent
+    );
+
+  animation:
+    shine 4s ease-in-out infinite;
+}
+
+@keyframes shine{
+  0%,55%{
+    left:-120px;
+  }
+
+  75%,100%{
+    left:130%;
+  }
+}
+
+
+/* tiny stars */
+
+.menu a::after{
+  content:"✦  ˚  ✧";
+
+  position:absolute;
+
+  right:7px;
+  top:5px;
+
+  color:#fff;
+
+  font-size:8px;
+
+  text-shadow:
+    0 0 4px #fff,
+    0 0 6px #e68eae;
+
+  opacity:.9;
+}
+
+.menu a:hover{
+  transform:translateY(-3px);
+
+  filter:brightness(1.04);
+
+  box-shadow:
+    0 8px 0 #d18ea9,
+    0 12px 18px rgba(150,83,112,.15);
+}
+
+.menu a:active{
+  transform:translateY(4px);
+
+  box-shadow:
+    0 1px 0 #d18ea9,
+    0 3px 7px rgba(150,83,112,.12);
+}
+
+.menu-icon{
+  position:relative;
+  z-index:2;
+
+  font-size:19px;
+
+  line-height:1;
+
+  margin-bottom:3px;
+
+  filter:
+    drop-shadow(
+      0 2px 2px rgba(180,100,130,.15)
+    );
+}
+
+.menu-title{
+  position:relative;
+  z-index:2;
+
+  font-size:12px;
+
+  font-weight:bold;
+
+  line-height:1.2;
+}
+
+.menu-sub{
+  position:relative;
+  z-index:2;
+
+  margin-top:2px;
+
+  color:#ae788e;
+
+  font-size:8px;
+
+  letter-spacing:1px;
+}
+
+
+/* ==============================
+   BOTTOM DECOR
+============================== */
+
+.bottom-decoration{
+  width:100%;
+
+  margin-top:17px;
+
+  text-align:center;
+
+  color:#c2839b;
+
+  font-size:11px;
+
+  line-height:1.8;
+}
+
+.bottom-decoration .line{
+  color:#df9db7;
+
+  letter-spacing:2px;
+
+  font-size:12px;
+}
+
+
+/* ==============================
+   FOOTER
+============================== */
+
+.footer{
+  margin-top:12px;
+
+  text-align:center;
+
+  color:#ad7b8f;
+
+  font-size:10px;
+
+  line-height:1.7;
+}
+
+
+/* ==============================
+   MOBILE
+============================== */
+
+@media(max-width:390px){
+
+  .page{
+    padding-left:12px;
+    padding-right:12px;
+  }
+
+  .house-card{
+    padding-left:10px;
+    padding-right:10px;
+  }
+
+  .house{
+    width:95%;
+  }
+
+  .menu-title{
+    font-size:11px;
+  }
+
+  .menu a{
+    min-height:64px;
+  }
+
+  .logo-name{
+    font-size:29px;
+  }
+}
+
+@media(max-width:340px){
+
+  .bunnies{
+    gap:3px;
+  }
+
+  .bunny{
+    width:32%;
+  }
+
+  .menu-title{
+    font-size:10px;
+  }
+
+  .house-name{
+    font-size:14px;
+  }
+}
+</style>
+</head>
+
+
+<body>
+
+<!-- FLOATING 90s DECOR -->
+
+<div class="sparkle s1">✦</div>
+<div class="sparkle s2">♡</div>
+<div class="sparkle s3">✧</div>
+<div class="sparkle s4">୨୧</div>
+<div class="sparkle s5">˚₊‧</div>
+<div class="sparkle s6">✦</div>
+
+
+<main class="page">
+
+  <!-- TOP -->
+
+  <div class="top-decoration">
+    <span>•</span>
+    <span>୨୧</span>
+    <span>♡</span>
+    <span>ྀི</span>
+    <span>♡</span>
+    <span>୨୧</span>
+    <span>•</span>
+  </div>
+
+
+  <!-- LOGO -->
+
+  <section class="logo">
+
+    <div class="logo-bunny">
+
+      <div class="logo-ear left"></div>
+      <div class="logo-ear right"></div>
+
+      <div class="logo-face"></div>
+
+    </div>
+
+    <h1 class="logo-name">
+      Bennie Choco
+    </h1>
+
+    <p class="logo-sub">
+      SWEET LITTLE HOUSE ♡
+    </p>
+
+  </section>
+
+
+  <!-- MESSAGE -->
+
+  <div class="message">
+
+    <div class="decor">
+      • ୨୧ •
+    </div>
+
+    ยินดีต้อนรับเข้าบ้านของ Bennie Choco ค่าา ♡<br>
+
+    เลือกสิ่งที่อยากทำได้เลยน้า
+
+    <div class="decor">
+      ྀི ˚₊‧ ♡ ‧₊˚ ྀི
+    </div>
+
+  </div>
+
+
+  <!-- HOUSE -->
+
+  <section class="house-card">
+
+    <div class="roof">
+    </div>
+
+
+    <div class="house">
+
+      <div class="window left"></div>
+      <div class="window right"></div>
+
+
+      <div class="house-name">
+        ♡ welcome ♡
+      </div>
+
+
+      <!-- BUNNIES -->
+
+      <div class="bunnies">
+
+
+        <!-- BUNNY 1 -->
+
+        <div class="bunny">
+
+          <div class="ears">
+
+            <div class="ear left"></div>
+            <div class="ear right"></div>
+
+          </div>
+
+          <div class="face">
+
+            <div class="eyes">
+              <span>•</span>
+              <span>•</span>
+            </div>
+
+            <div class="nose">
+              ♡
+            </div>
+
+            <div class="cheek left"></div>
+            <div class="cheek right"></div>
+
+          </div>
+
+
+          <div class="menu">
+
+            <a href="index.html">
+
+              <div class="menu-icon">
+                💳
+              </div>
+
+              <div class="menu-title">
+                ช่องทางชำระเงิน
+              </div>
+
+              <div class="menu-sub">
+                PAYMENT
+              </div>
+
+            </a>
+
+          </div>
+
+        </div>
+
+
+
+        <!-- BUNNY 2 -->
+
+        <div class="bunny">
+
+          <div class="ears">
+
+            <div class="ear left"></div>
+            <div class="ear right"></div>
+
+          </div>
+
+          <div class="face">
+
+            <div class="eyes">
+              <span>^</span>
+              <span>^</span>
+            </div>
+
+            <div class="nose">
+              ♡
+            </div>
+
+            <div class="cheek left"></div>
+            <div class="cheek right"></div>
+
+          </div>
+
+
+          <div class="menu">
+
+            <a href="member.html">
+
+              <div class="menu-icon">
+                🎀
+              </div>
+
+              <div class="menu-title">
+                Member &<br>
+                สะสมแต้ม
+              </div>
+
+              <div class="menu-sub">
+                STAMP
+              </div>
+
+            </a>
+
+          </div>
+
+        </div>
+
+
+
+        <!-- BUNNY 3 -->
+
+        <div class="bunny">
+
+          <div class="ears">
+
+            <div class="ear left"></div>
+            <div class="ear right"></div>
+
+          </div>
+
+          <div class="face">
+
+            <div class="eyes">
+              <span>•</span>
+              <span>•</span>
+            </div>
+
+            <div class="nose">
+              ♡
+            </div>
+
+            <div class="cheek left"></div>
+            <div class="cheek right"></div>
+
+          </div>
+
+
+          <div class="menu">
+
+            <a href="review.html">
+
+              <div class="menu-icon">
+                💌
+              </div>
+
+              <div class="menu-title">
+                Review<br>
+                Plus One
+              </div>
+
+              <div class="menu-sub">
+                REVIEW
+              </div>
+
+            </a>
+
+          </div>
+
+        </div>
+
+
+      </div>
+
+    </div>
+
+  </section>
+
+
+  <!-- DECORATIVE TEXT -->
+
+  <div class="bottom-decoration">
+
+    <div class="line">
+      ── ୨୧ ── ♡ ── ୨୧ ──
+    </div>
+
+    <div>
+      ྀི  .  ♡  made with little sweetness ♡  .  ྀི
+    </div>
+
+    <div class="line">
+      ✦ ˚₊‧ ♡ ‧₊˚ ✦
+    </div>
+
+  </div>
+
+
+  <!-- FOOTER -->
+
+  <footer class="footer">
+
+    Bennie Choco ♡<br>
+    thank you for visiting our little house
+
+  </footer>
+
+</main>
+
+</body>
+</html>
