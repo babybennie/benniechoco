@@ -272,7 +272,7 @@ tailwind.config={
     fill="currentColor"
     viewBox="0 0 24 24"
   >
-    <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
+    <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5c0-1.74.81-3.41 2.09-4.5C3.81 3.81 5.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3c3.08 0 5.5 2.42 5.5 5.5 0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
   </svg>
 
   <svg
@@ -288,7 +288,7 @@ tailwind.config={
     fill="currentColor"
     viewBox="0 0 24 24"
   >
-    <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
+    <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5c0-3.08 2.42-5.5 5.5-5.5 1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3c3.08 0 5.5 2.42 5.5 5.5 0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
   </svg>
 
   <svg
@@ -304,7 +304,7 @@ tailwind.config={
     fill="currentColor"
     viewBox="0 0 24 24"
   >
-    <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
+    <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3c3.08 0 5.5 2.42 5.5 5.5 0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
   </svg>
 
   <svg
@@ -440,7 +440,7 @@ tailwind.config={
         fill="currentColor"
         class="w-6 h-6 text-pink-400 anim-pulse transform -scale-x-100"
       >
-        <path d="M11.645 20.91l-.007-.003-.022-.012a15.247 15.247 0 01-.383-.218C4.688 15.36 2.25 12.174 2.25 8.25 2.25 5.322 4.714 3 7.688 3A5.5 5.5 0 0112 5.052 5.5 5.5 0 0116.313 3c2.973 0 5.437 2.322 5.437 5.25 0 3.925-2.438 7.111-4.739 9.256a25.175 25.175 0 01-4.244 3.17 15.247 15.247 0 01-.383.219l-.022.012-.007.004-.003.001a.752.752 0 01-.704 0z"/>
+        <path d="M11.645 20.91l-.007-.003-.022-.012a15.175 15.175 0 01-.383-.219l-.022-.012-.007-.004-.003-.001a.752.752 0 01-.704 0l-.007-.003-.022-.012a15.247 15.247 0 01-.383-.218C4.688 15.36 2.25 12.174 2.25 8.25 2.25 5.322 4.714 3 7.688 3A5.5 5.5 0 0112 5.052 5.5 5.5 0 0116.313 3c2.973 0 5.437 2.322 5.437 5.25 0 3.925-2.438 7.111-4.739 9.256a25.175 25.175 0 01-4.244 3.17 15.175 15.175 0 01-.383.219l-.022.012-.007.004-.003.001a.752.752 0 01-.704 0z"/>
       </svg>
 
     </h1>
@@ -886,9 +886,15 @@ tailwind.config={
 </div>
 
 
+<!--
+  สำคัญ:
+  ปุ่ม Admin ต้องเข้าหน้า Login ก่อน
+  ไม่ให้เปิด admin.html โดยตรง
+-->
+
 <a
   class="admin-link bg-brown-600 text-white px-3 py-2 rounded-full text-xs shadow-lg opacity-70 hover:opacity-100"
-  href="admin.html"
+  href="admin-login.html"
 >
   Admin
 </a>
@@ -966,12 +972,6 @@ const defaults = {
 
   walletExtraFee:
     "+20 บาท",
-
-  /*
-    เปิดเพลงเป็นค่าเริ่มต้น
-    ถ้า Admin บันทึกค่าใหม่ใน Supabase
-    ค่าจาก Supabase จะถูกใช้แทน
-  */
 
   musicEnabled:
     true,
@@ -1131,11 +1131,6 @@ async function loadSettings(){
 
   try{
 
-    /*
-      ตาราง site_settings ใช้คอลัมน์ "data"
-      เป็นข้อมูลกลางของทุกหน้าเว็บ
-    */
-
     const {
       data,
       error
@@ -1155,11 +1150,6 @@ async function loadSettings(){
       );
 
 
-      /*
-        ถ้าดึงข้อมูลกลางไม่ได้
-        ให้ใช้ defaults
-      */
-
       currentSettings = {
         ...defaults
       };
@@ -1171,10 +1161,6 @@ async function loadSettings(){
 
     }
 
-
-    /*
-      อ่านข้อมูลจาก site_settings.data
-    */
 
     const saved =
       data &&
@@ -1818,10 +1804,6 @@ async function applyMusic(){
   }
 
 
-  /*
-    หยุดเพลงเดิมก่อน
-  */
-
   audio.pause();
 
 
@@ -1838,11 +1820,6 @@ async function applyMusic(){
   );
 
 
-  /*
-    ถ้า Admin ปิดเพลง
-    จะไม่เปิดเพลง
-  */
-
   if(
     currentSettings.musicEnabled === false
   ){
@@ -1851,11 +1828,6 @@ async function applyMusic(){
 
   }
 
-
-  /*
-    ใช้ URL จาก Admin ก่อน
-    ถ้าไม่มี ใช้ MP3 ค่าเริ่มต้น
-  */
 
   const musicUrl =
     safeString(
@@ -1870,12 +1842,6 @@ async function applyMusic(){
 
   }
 
-
-  /*
-    ถ้าเป็น YouTube
-    ให้ปุ่มเปิด YouTube
-    (รองรับของเดิมไว้)
-  */
 
   const youtubeId =
     getYouTubeId(
@@ -1914,10 +1880,6 @@ async function applyMusic(){
   }
 
 
-  /*
-    เพลง MP3 / audio URL
-  */
-
   audio.src =
     musicUrl;
 
@@ -1934,18 +1896,9 @@ async function applyMusic(){
     "auto";
 
 
-  /*
-    ระดับเสียงเริ่มต้น
-  */
-
   audio.volume =
     0.35;
 
-
-  /*
-    แสดงปุ่มไว้ก่อน
-    เผื่อ Browser บล็อก autoplay
-  */
 
   button.classList.remove(
     "hidden"
@@ -1955,10 +1908,6 @@ async function applyMusic(){
   button.textContent =
     "♫ เปิดเพลง";
 
-
-  /*
-    ปุ่มเปิด / ปิดเพลง
-  */
 
   button.onclick =
     async function(){
@@ -1997,10 +1946,6 @@ async function applyMusic(){
     };
 
 
-  /*
-    ถ้าเพลงกำลังเล่น
-  */
-
   audio.onplay =
     function(){
 
@@ -2009,10 +1954,6 @@ async function applyMusic(){
 
     };
 
-
-  /*
-    ถ้าเพลงหยุด
-  */
 
   audio.onpause =
     function(){
@@ -2023,19 +1964,9 @@ async function applyMusic(){
     };
 
 
-  /*
-    พยายามเปิดเพลงอัตโนมัติ
-  */
-
   try{
 
     await audio.play();
-
-
-    /*
-      ถ้า autoplay สำเร็จ
-      ซ่อนปุ่ม
-    */
 
     button.classList.add(
       "hidden"
@@ -2043,12 +1974,6 @@ async function applyMusic(){
 
 
   }catch(error){
-
-    /*
-      iPhone / Safari / Browser
-      อาจบล็อก autoplay
-      ให้ผู้ใช้กดปุ่มแทน
-    */
 
     console.log(
       "Autoplay blocked:",
@@ -2448,10 +2373,6 @@ supabaseClient.auth.onAuthStateChange(
 
 async function init(){
 
-  /*
-    แสดงค่า default ก่อน
-  */
-
   currentSettings = {
     ...defaults
   };
@@ -2459,11 +2380,6 @@ async function init(){
 
   render();
 
-
-  /*
-    จากนั้นดึงข้อมูลจริงจาก
-    site_settings.data
-  */
 
   await loadSettings();
 
