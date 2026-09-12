@@ -827,8 +827,22 @@ const supabaseClient =
 
 
 /* =========================================================
+   CENTRAL DATABASE
+   site_settings
+   id = 1
+   data = JSON
+========================================================= */
+
+const SITE_SETTINGS_TABLE =
+  "site_settings";
+
+const SITE_SETTINGS_ID =
+  1;
+
+
+/* =========================================================
    LOCAL STORAGE
-   ตัวนี้เป็นตัวเก็บค่าที่กดบันทึกจาก Admin
+   ใช้เป็น cache / fallback เท่านั้น
 ========================================================= */
 
 const ADMIN_SETTINGS_STORAGE_KEY =
@@ -936,9 +950,7 @@ const defaults = {
 
 
 /* =========================================================
-   OLD VALUES ที่เคยใช้
-   ถ้าพบค่าเก่า ให้เปลี่ยนเป็นค่าใหม่
-   แต่จะไม่ทับค่าที่ผู้ใช้เพิ่งแก้เอง
+   OLD VALUES
 ========================================================= */
 
 const OLD_KBANK_VALUES = [
@@ -990,6 +1002,7 @@ function showToast(message){
       },
       2200
     );
+
 }
 
 
@@ -1060,11 +1073,6 @@ function normalizeAccounts(data){
       );
 
 
-  /*
-    ถ้าไม่มี accounts
-    ให้สร้างจากข้อมูลหลักทันที
-  */
-
   if(!list.length){
 
     list = [
@@ -1110,11 +1118,6 @@ function migrateLegacyData(data){
     };
 
 
-  /*
-    ถ้าค่าเดิมเป็นเลขชุดเก่าที่เคยใช้
-    ให้เปลี่ยนเป็นเลขชุดใหม่
-  */
-
   if(
     !result.kbank ||
     OLD_KBANK_VALUES.includes(
@@ -1153,10 +1156,6 @@ function migrateLegacyData(data){
 
   }
 
-
-  /*
-    accounts
-  */
 
   result.accounts =
     normalizeAccounts(result);
@@ -1226,10 +1225,6 @@ function migrateLegacyData(data){
     );
 
 
-  /*
-    ให้ legacy fields ตรงกับ accounts
-  */
-
   const kbankAccount =
     result.accounts.find(
       account=>{
@@ -1292,11 +1287,6 @@ function migrateLegacyData(data){
   }
 
 
-  /*
-    ถ้า Preview Image หาย
-    ให้ใช้ค่าที่กำหนดไว้
-  */
-
   if(!result.previewImage){
 
     result.previewImage =
@@ -1311,10 +1301,10 @@ function migrateLegacyData(data){
 
 
 /* =========================================================
-   LOAD SETTINGS
+   LOAD FROM LOCAL STORAGE
 ========================================================= */
 
-function loadSettings(){
+function loadLocalSettings(){
 
   try{
 
@@ -1324,52 +1314,215 @@ function loadSettings(){
       );
 
 
-    let saved = {};
+    if(!raw){
+
+      return null;
+
+    }
 
 
-    if(raw){
+    const parsed =
+      safeJsonParse(raw);
 
-      const parsed =
-        safeJsonParse(raw);
 
-      if(
-        parsed &&
-        typeof parsed === "object"
-      ){
+    if(
+      !parsed ||
+      typeof parsed !== "object"
+    ){
 
-        saved = parsed;
+      return null;
+
+    }
+
+
+    return migrateLegacyData(
+      parsed
+    );
+
+  }catch(error){
+
+    console.error(
+      "Local settings error:",
+      error
+    );
+
+    return null;
+
+  }
+
+}
+
+
+/* =========================================================
+   LOAD FROM SUPABASE
+========================================================= */
+
+async function loadCentralSettings(){
+
+  try{
+
+    const {
+      data,
+      error
+    } =
+      await supabaseClient
+        .from(SITE_SETTINGS_TABLE)
+        .select("id,data")
+        .eq(
+          "id",
+          SITE_SETTINGS_ID
+        )
+        .maybeSingle();
+
+
+    if(error){
+
+      console.error(
+        "Load site_settings error:",
+        error
+      );
+
+      return null;
+
+    }
+
+
+    if(
+      !data ||
+      !data.data ||
+      typeof data.data !== "object"
+    ){
+
+      return null;
+
+    }
+
+
+    return migrateLegacyData(
+      data.data
+    );
+
+  }catch(error){
+
+    console.error(
+      "Central settings exception:",
+      error
+    );
+
+    return null;
+
+  }
+
+}
+
+
+/* =========================================================
+   LOAD SETTINGS
+   CENTRAL DATABASE FIRST
+   LOCAL STORAGE SECOND
+   DEFAULTS LAST
+========================================================= */
+
+async function loadSettings(){
+
+  try{
+
+    /*
+      1. พยายามอ่านจาก Supabase ก่อน
+    */
+
+    const central =
+      await loadCentralSettings();
+
+
+    if(central){
+
+      settings =
+        central;
+
+      accounts =
+        normalizeAccounts(
+          settings
+        );
+
+      settings.accounts =
+        clone(accounts);
+
+
+      /*
+        cache ไว้ในเครื่องด้วย
+      */
+
+      try{
+
+        localStorage.setItem(
+          ADMIN_SETTINGS_STORAGE_KEY,
+          JSON.stringify(settings)
+        );
+
+      }catch(error){
+
+        console.warn(
+          "Local cache unavailable:",
+          error
+        );
 
       }
 
+
+      fillForm(settings);
+
+      return;
+
     }
-
-
-    settings =
-      migrateLegacyData(saved);
 
 
     /*
-      ถ้า localStorage ยังไม่มีข้อมูล
-      ให้ตั้งต้นจาก defaults
+      2. ถ้า Supabase ยังไม่มีข้อมูล
+      ใช้ localStorage
     */
 
-    if(!raw){
+    const local =
+      loadLocalSettings();
+
+
+    if(local){
 
       settings =
-        migrateLegacyData(
-          defaults
+        local;
+
+      accounts =
+        normalizeAccounts(
+          settings
         );
+
+      settings.accounts =
+        clone(accounts);
+
+      fillForm(settings);
+
+      return;
 
     }
 
 
-    accounts =
-      normalizeAccounts(settings);
+    /*
+      3. ถ้าไม่มีทั้งคู่
+      ใช้ defaults
+    */
 
+    settings =
+      migrateLegacyData(
+        defaults
+      );
+
+    accounts =
+      normalizeAccounts(
+        settings
+      );
 
     settings.accounts =
       clone(accounts);
-
 
     fillForm(settings);
 
@@ -1382,74 +1535,14 @@ function loadSettings(){
     );
 
 
-    settings =
-      clone(defaults);
-
-    accounts =
-      clone(defaults.accounts);
-
-    fillForm(settings);
-
-  }
-
-}
-
-
-/* =========================================================
-   SAVE SETTINGS
-========================================================= */
-
-function saveSettings(){
-
-  try{
-
-    const newData =
-      getFormData();
-
-
-    /*
-      บันทึกลง localStorage
-      และใช้ข้อมูลนี้เป็นค่าหลักจนกว่าจะบันทึกใหม่
-    */
-
-    localStorage.setItem(
-      ADMIN_SETTINGS_STORAGE_KEY,
-      JSON.stringify(newData)
-    );
-
-
-    /*
-      ตรวจสอบว่าบันทึกจริง
-    */
-
-    const verifyRaw =
-      localStorage.getItem(
-        ADMIN_SETTINGS_STORAGE_KEY
-      );
-
-
-    const verify =
-      safeJsonParse(
-        verifyRaw
-      );
-
-
-    if(
-      !verify ||
-      verify.shopName !==
-        newData.shopName
-    ){
-
-      throw new Error(
-        "ตรวจสอบข้อมูลหลังบันทึกไม่สำเร็จ"
-      );
-
-    }
+    const local =
+      loadLocalSettings();
 
 
     settings =
+      local ||
       migrateLegacyData(
-        verify
+        defaults
       );
 
 
@@ -1459,17 +1552,156 @@ function saveSettings(){
       );
 
 
+    settings.accounts =
+      clone(accounts);
+
+
     fillForm(settings);
 
+  }
 
-    const message =
-      document.getElementById(
-        "message"
-      );
+}
+
+
+/* =========================================================
+   SAVE TO SUPABASE
+   ใช้ site_settings.data
+========================================================= */
+
+async function saveToCentralDatabase(newData){
+
+  const {
+    data,
+    error
+  } =
+    await supabaseClient
+      .from(SITE_SETTINGS_TABLE)
+      .upsert(
+        {
+          id:
+            SITE_SETTINGS_ID,
+
+          data:
+            newData
+        },
+        {
+          onConflict:"id"
+        }
+      )
+      .select("id,data")
+      .single();
+
+
+  if(error){
+
+    throw error;
+
+  }
+
+
+  if(
+    !data ||
+    Number(data.id) !== SITE_SETTINGS_ID
+  ){
+
+    throw new Error(
+      "ไม่สามารถตรวจสอบข้อมูลที่บันทึกใน Supabase ได้"
+    );
+
+  }
+
+
+  return data.data;
+
+}
+
+
+/* =========================================================
+   SAVE SETTINGS
+========================================================= */
+
+async function saveSettings(){
+
+  const message =
+    document.getElementById(
+      "message"
+    );
+
+
+  const saveButton =
+    document.getElementById(
+      "save"
+    );
+
+
+  try{
+
+    const newData =
+      getFormData();
+
+
+    saveButton.disabled =
+      true;
+
+    saveButton.textContent =
+      "กำลังบันทึก...";
 
 
     message.textContent =
-      "บันทึกแล้ว ✓";
+      "กำลังบันทึกข้อมูลกลาง...";
+
+    message.className =
+      "text-center text-sm mt-3 min-h-[22px] text-pink-500";
+
+
+    /*
+      สำคัญ:
+      บันทึก Supabase ก่อน
+      เพราะข้อมูลกลางต้องเป็นตัวหลัก
+    */
+
+    const savedCentralData =
+      await saveToCentralDatabase(
+        newData
+      );
+
+
+    /*
+      normalize หลังบันทึก
+    */
+
+    settings =
+      migrateLegacyData(
+        savedCentralData
+      );
+
+
+    accounts =
+      normalizeAccounts(
+        settings
+      );
+
+
+    settings.accounts =
+      clone(accounts);
+
+
+    /*
+      เก็บ cache ในเครื่อง
+      หลังจาก Supabase บันทึกสำเร็จแล้วเท่านั้น
+    */
+
+    localStorage.setItem(
+      ADMIN_SETTINGS_STORAGE_KEY,
+      JSON.stringify(settings)
+    );
+
+
+    fillForm(settings);
+
+
+    message.textContent =
+      "บันทึกข้อมูลแล้ว ✓";
 
     message.className =
       "text-center text-sm mt-3 min-h-[22px] text-green-600";
@@ -1496,15 +1728,12 @@ function saveSettings(){
     );
 
 
-    const message =
-      document.getElementById(
-        "message"
-      );
-
-
     message.textContent =
       "บันทึกไม่สำเร็จ: " +
-      error.message;
+      (
+        error?.message ||
+        "เกิดข้อผิดพลาด"
+      );
 
 
     message.className =
@@ -1514,6 +1743,15 @@ function saveSettings(){
     showToast(
       "บันทึกไม่สำเร็จ"
     );
+
+
+  }finally{
+
+    saveButton.disabled =
+      false;
+
+    saveButton.textContent =
+      "บันทึกข้อมูล";
 
   }
 
@@ -1635,11 +1873,6 @@ function getFormData(){
   let trueMoney =
     getValue("trueMoney").trim();
 
-
-  /*
-    ถ้ามีบัญชี KBank ใน Accounts
-    ใช้เลขจากตรงนั้น
-  */
 
   const kbankAccount =
     formAccounts.find(
@@ -2136,12 +2369,6 @@ document
     "click",
     ()=>{
 
-      const cards =
-        document.querySelectorAll(
-          ".account-card"
-        );
-
-
       const newAccount = {
 
         id:
@@ -2289,7 +2516,7 @@ document
 
       reader.onload =
         ()=>{
-          
+
           const result =
             String(
               reader.result || ""
@@ -2394,11 +2621,11 @@ document
   )
   .addEventListener(
     "click",
-    ()=>{
+    async ()=>{
 
       const ok =
         confirm(
-          "คืนค่าข้อมูลเริ่มต้นทั้งหมดใช่ไหม?\n\nข้อมูลที่เคยบันทึกไว้จะถูกลบจากเครื่องนี้"
+          "คืนค่าข้อมูลเริ่มต้นทั้งหมดใช่ไหม?\n\nข้อมูลที่เคยบันทึกไว้จะถูกแทนที่ด้วยค่าเริ่มต้น"
         );
 
 
@@ -2409,48 +2636,103 @@ document
       }
 
 
-      localStorage.removeItem(
-        ADMIN_SETTINGS_STORAGE_KEY
-      );
-
-
-      settings =
-        clone(defaults);
-
-
-      accounts =
-        clone(defaults.accounts);
-
-
-      fillForm(
-        settings
-      );
-
-
       const message =
         document.getElementById(
           "message"
         );
 
 
-      message.textContent =
-        "คืนค่าเริ่มต้นแล้ว ✓";
+      try{
 
-      message.className =
-        "text-center text-sm mt-3 min-h-[22px] text-green-600";
+        /*
+          Reset ก็ต้องบันทึกค่าใหม่ลง Supabase
+          เพื่อให้ทุกเครื่องเปลี่ยนตามกัน
+        */
+
+        const resetData =
+          migrateLegacyData(
+            defaults
+          );
 
 
-      showToast(
-        "คืนค่าเริ่มต้นแล้ว"
-      );
+        const saved =
+          await saveToCentralDatabase(
+            resetData
+          );
 
 
-      setTimeout(
-        ()=>{
-          message.textContent = "";
-        },
-        2500
-      );
+        settings =
+          migrateLegacyData(
+            saved
+          );
+
+
+        accounts =
+          normalizeAccounts(
+            settings
+          );
+
+
+        settings.accounts =
+          clone(accounts);
+
+
+        localStorage.setItem(
+          ADMIN_SETTINGS_STORAGE_KEY,
+          JSON.stringify(settings)
+        );
+
+
+        fillForm(
+          settings
+        );
+
+
+        message.textContent =
+          "คืนค่าเริ่มต้นแล้ว ✓";
+
+        message.className =
+          "text-center text-sm mt-3 min-h-[22px] text-green-600";
+
+
+        showToast(
+          "คืนค่าเริ่มต้นแล้ว"
+        );
+
+
+        setTimeout(
+          ()=>{
+            message.textContent = "";
+          },
+          2500
+        );
+
+
+      }catch(error){
+
+        console.error(
+          "Reset error:",
+          error
+        );
+
+
+        message.textContent =
+          "คืนค่าไม่สำเร็จ: " +
+          (
+            error?.message ||
+            "เกิดข้อผิดพลาด"
+          );
+
+
+        message.className =
+          "text-center text-sm mt-3 min-h-[22px] text-red-500";
+
+
+        showToast(
+          "คืนค่าไม่สำเร็จ"
+        );
+
+      }
 
     }
   );
@@ -2465,11 +2747,6 @@ const paymentGenerator =
     "paymentGenerator"
   );
 
-
-/*
-  เปิดส่วนสร้างลิงก์
-  ใช้แบบเดิม: scroll ลงมาที่ Payment Generator
-*/
 
 function openPaymentGenerator(){
 
@@ -2750,10 +3027,6 @@ async function requireAdmin(){
     }
 
 
-    /*
-      ตรวจสิทธิ์ Admin
-    */
-
     const user =
       session.user;
 
@@ -2776,11 +3049,6 @@ async function requireAdmin(){
       error ||
       !data
     ){
-
-      /*
-        fallback ไปใช้ RPC เดิม
-        เพื่อไม่ทำให้ระบบ Login เดิมพัง
-      */
 
       try{
 
@@ -2876,10 +3144,6 @@ async function requireAdmin(){
 
 async function init(){
 
-  /*
-    ตรวจ Login ก่อน
-  */
-
   const allowed =
     await requireAdmin();
 
@@ -2891,11 +3155,7 @@ async function init(){
   }
 
 
-  /*
-    โหลดข้อมูลที่บันทึกไว้
-  */
-
-  loadSettings();
+  await loadSettings();
 
 }
 
