@@ -292,7 +292,7 @@
       <div
         class="mt-4 p-3 rounded-2xl bg-pink-50/70 border border-pink-100 text-xs text-pink-700"
       >
-        ซื้อ 1 ครั้ง = 1 แสตมป์ · ครบ 10 แสตมป์
+        ยอดสั่งซื้อมากกว่า 50 บาท = 1 แสตมป์ · ครบ 10 แสตมป์
       </div>
 
     </section>
@@ -444,14 +444,14 @@
         <p
           class="text-xs text-gray-500 mt-1"
         >
-          สร้าง Member ID ให้อัตโนมัติ
+          สร้าง Member ID ให้อัตโนมัติ และกำหนดรหัสสมาชิกสำหรับเข้าดูบัตร
         </p>
 
       </div>
 
 
       <div
-        class="grid md:grid-cols-3 gap-3"
+        class="grid md:grid-cols-2 gap-3"
       >
 
         <div>
@@ -486,6 +486,33 @@
             type="text"
             placeholder="เช่น LINE"
           >
+
+        </div>
+
+
+        <div>
+
+          <label
+            class="block text-xs text-gray-500 mb-1.5"
+          >
+            รหัสสมาชิก
+          </label>
+
+          <input
+            id="newMemberPin"
+            class="input"
+            type="text"
+            inputmode="numeric"
+            autocomplete="off"
+            maxlength="20"
+            placeholder="ตั้งรหัสสำหรับเข้าดูบัตร"
+          >
+
+          <div
+            class="text-[11px] text-gray-400 mt-1.5"
+          >
+            รหัสนี้จะอยู่กับสมาชิกคนนี้ตลอด จนกว่าจะลบสมาชิก
+          </div>
 
         </div>
 
@@ -651,7 +678,13 @@
         "",
 
       memberStampEmptyImage:
-        ""
+        "",
+
+      musicEnabled:
+        true,
+
+      musicUrl:
+        "https://www.image2url.com/r2/default/audio/1789223045833-c1830056-9b42-4cf1-aa59-b28c86ba0c11.mp3"
 
     };
 
@@ -720,11 +753,6 @@
 
         }
 
-
-        /*
-         * ใช้ is_admin() จาก Supabase
-         * แทนการเช็คแค่หน้าเว็บ
-         */
 
         const {
           data: isAdmin,
@@ -904,6 +932,22 @@
 
 
     /* =====================================================
+       CLEAN MEMBER PIN
+       ===================================================== */
+
+    function cleanMemberPin(
+      value
+    ){
+
+      return String(
+        value ?? ""
+      )
+        .trim();
+
+    }
+
+
+    /* =====================================================
        MEMBER URL
        ===================================================== */
 
@@ -944,7 +988,7 @@
             "site_settings"
           )
           .select(
-            "settings"
+            "data"
           )
           .eq(
             "id",
@@ -964,7 +1008,7 @@
 
         ...defaultStore,
 
-        ...(data?.settings || {})
+        ...(data?.data || {})
 
       };
 
@@ -992,11 +1036,8 @@
               id:
                 SETTINGS_ID,
 
-              settings:
-                store,
-
-              updated_at:
-                new Date().toISOString()
+              data:
+                store
 
             },
             {
@@ -1030,7 +1071,7 @@
             "members"
           )
           .select(
-            "id,member_code,name,channel,stamps,created_at,updated_at"
+            "id,member_code,name,channel,stamps,member_pin,created_at,updated_at"
           )
           .order(
             "updated_at",
@@ -1172,6 +1213,16 @@
           .trim();
 
 
+      const pin =
+        cleanMemberPin(
+          document
+            .getElementById(
+              "newMemberPin"
+            )
+            .value
+        );
+
+
       const stamps =
         clamp(
           document
@@ -1186,6 +1237,18 @@
 
         toast(
           "กรุณาใส่ชื่อลูกค้าก่อน"
+        );
+
+
+        return;
+
+      }
+
+
+      if(!pin){
+
+        toast(
+          "กรุณาตั้งรหัสสมาชิกก่อน"
         );
 
 
@@ -1218,7 +1281,12 @@
           await uniqueCode();
 
 
+        const now =
+          new Date().toISOString();
+
+
         const {
+          data: createdMember,
           error
         } =
           await db
@@ -1239,16 +1307,41 @@
                 stamps:
                   stamps,
 
+                member_pin:
+                  pin,
+
                 updated_at:
-                  new Date().toISOString()
+                  now
 
               }
-            );
+            )
+            .select(
+              "id,member_code,name,channel,stamps,member_pin,created_at,updated_at"
+            )
+            .single();
 
 
         if(error){
 
           throw error;
+
+        }
+
+
+        /*
+         * แสดงสมาชิกทันทีจากข้อมูลที่เพิ่งบันทึก
+         * ไม่ต้องรอให้สร้างสมาชิกคนใหม่ก่อน
+         */
+
+        if(createdMember){
+
+          members =
+            [
+              createdMember,
+              ...members
+            ];
+
+          renderMembers();
 
         }
 
@@ -1271,11 +1364,23 @@
 
         document
           .getElementById(
+            "newMemberPin"
+          )
+          .value =
+          "";
+
+
+        document
+          .getElementById(
             "newMemberStamps"
           )
           .value =
           "0";
 
+
+        /*
+         * โหลดจาก Supabase อีกครั้งเพื่อยืนยันข้อมูลล่าสุด
+         */
 
         await loadMembers();
 
@@ -1663,6 +1768,20 @@
       }
 
 
+      const pin =
+        prompt(
+          "รหัสสมาชิก\n\nรหัสนี้ใช้สำหรับเข้าดูบัตรของลูกค้า",
+          member.member_pin || ""
+        );
+
+
+      if(pin === null){
+
+        return;
+
+      }
+
+
       const cleanName =
         name.trim();
 
@@ -1671,10 +1790,28 @@
         channel.trim();
 
 
+      const cleanPin =
+        cleanMemberPin(
+          pin
+        );
+
+
       if(!cleanName){
 
         toast(
           "ชื่อลูกค้าห้ามว่าง"
+        );
+
+
+        return;
+
+      }
+
+
+      if(!cleanPin){
+
+        toast(
+          "รหัสสมาชิกห้ามว่าง"
         );
 
 
@@ -1697,6 +1834,9 @@
 
               channel:
                 cleanChannel || "-",
+
+              member_pin:
+                cleanPin,
 
               updated_at:
                 new Date().toISOString()
@@ -1731,7 +1871,7 @@
 
 
       toast(
-        "แก้ไขข้อมูลแล้ว"
+        "แก้ไขข้อมูลและรหัสสมาชิกแล้ว"
       );
 
     }
@@ -2048,6 +2188,14 @@
             );
 
 
+          const hasPin =
+            Boolean(
+              cleanMemberPin(
+                member.member_pin
+              )
+            );
+
+
           const card =
             document.createElement(
               "div"
@@ -2089,6 +2237,20 @@
                     ${esc(member.member_code)}
                   </div>
 
+                  <div
+                    class="text-xs mt-1 ${
+                      hasPin
+                        ? "text-green-500"
+                        : "text-red-400"
+                    }"
+                  >
+                    ${
+                      hasPin
+                        ? "✓ ตั้งรหัสสมาชิกแล้ว"
+                        : "⚠ ยังไม่ได้ตั้งรหัสสมาชิก"
+                    }
+                  </div>
+
                 </div>
 
 
@@ -2101,7 +2263,7 @@
                     <div
                       class="completed px-3 py-1.5 rounded-full text-xs font-medium text-pink-600 whitespace-nowrap"
                     >
-                      ครบ 10 ดวง 🎉
+                      ครบ 10 แสตมป์ 🎉
                     </div>
                   `
 
