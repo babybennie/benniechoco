@@ -1,12 +1,14 @@
 <!DOCTYPE html>
 <html lang="th">
 <head>
+
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <title>Bennie Choco Admin</title>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
 <script src="https://cdn.tailwindcss.com"></script>
 
 <link
@@ -18,182 +20,127 @@
 
 body{
   font-family:Prompt,sans-serif;
-  background:linear-gradient(
-    135deg,
-    #fff9fb,
-    #fcecf2
-  );
+
+  background:
+    linear-gradient(
+      135deg,
+      #fff9fb,
+      #fcecf2
+    );
+
   min-height:100vh;
 }
 
 .panel{
+
   background:#ffffffdd;
+
   backdrop-filter:blur(15px);
   -webkit-backdrop-filter:blur(15px);
+
   border:1px solid #fff;
-  box-shadow:0 20px 50px #f472b633;
+
+  box-shadow:
+    0 20px 50px
+    #f472b633;
+
 }
 
 .field{
+
   width:100%;
-  border:1px solid #fbcfe8;
+
+  border:
+    1px solid
+    #fbcfe8;
+
   border-radius:14px;
-  padding:10px 12px;
+
+  padding:
+    10px 12px;
+
   outline:0;
+
   background:#fff;
+
 }
 
 .field:focus{
+
   border-color:#f472b6;
-  box-shadow:0 0 0 3px #fce7f3;
+
+  box-shadow:
+    0 0 0 3px
+    #fce7f3;
+
 }
 
 .label{
+
   font-size:12px;
+
   font-weight:600;
+
   color:#8b5e3c;
+
   margin-bottom:5px;
+
   display:block;
+
 }
 
 .hidden{
-  display:none!important;
-}
 
-.login-card{
-  background:#ffffffee;
-  backdrop-filter:blur(20px);
-  -webkit-backdrop-filter:blur(20px);
-  border:1px solid #fff;
-  box-shadow:0 25px 70px rgba(244,114,182,.20);
+  display:none!important;
+
 }
 
 .nav-btn{
+
   display:flex;
+
   align-items:center;
+
   justify-content:center;
+
   min-height:52px;
+
   border-radius:16px;
+
   font-weight:600;
+
   transition:.2s;
+
 }
 
 .nav-btn:active{
+
   transform:scale(.98);
+
 }
 
 .message{
+
   min-height:20px;
+
 }
 
 </style>
+
 </head>
 
+
 <body class="p-4 text-brown-600">
-
-<!-- =====================================================
-     LOGIN SCREEN
-     ===================================================== -->
-
-<div id="loginScreen" class="min-h-[90vh] flex items-center justify-center">
-
-  <div class="w-full max-w-md">
-
-    <div class="text-center mb-6">
-
-      <h1 class="text-3xl font-bold text-pink-500">
-        bennie choco
-      </h1>
-
-      <p class="text-sm text-brown-400 mt-1">
-        Admin System
-      </p>
-
-    </div>
-
-    <div class="login-card rounded-[30px] p-6">
-
-      <h2 class="text-xl font-bold text-brown-600 mb-2">
-        เข้าสู่ระบบ Admin
-      </h2>
-
-      <p class="text-xs text-brown-400 leading-relaxed mb-5">
-        กรุณาเข้าสู่ระบบเพื่อจัดการเว็บไซต์
-        ข้อมูลการชำระเงิน และระบบสมาชิก
-      </p>
-
-      <form id="loginForm">
-
-        <div class="mb-4">
-
-          <label class="label">
-            อีเมล Admin
-          </label>
-
-          <input
-            id="loginEmail"
-            class="field"
-            type="email"
-            autocomplete="username"
-            placeholder="อีเมลที่ใช้สร้าง Supabase Auth"
-            required
-          >
-
-        </div>
-
-        <div class="mb-4">
-
-          <label class="label">
-            รหัสผ่าน
-          </label>
-
-          <input
-            id="loginPassword"
-            class="field"
-            type="password"
-            autocomplete="current-password"
-            placeholder="รหัสผ่าน"
-            required
-          >
-
-        </div>
-
-        <button
-          id="loginButton"
-          type="submit"
-          class="w-full py-3 rounded-2xl bg-pink-500 hover:bg-pink-600 text-white font-bold transition"
-        >
-          เข้าสู่ระบบ
-        </button>
-
-      </form>
-
-      <div
-        id="loginMessage"
-        class="message text-center text-xs mt-4"
-      ></div>
-
-      <a
-        href="index.html"
-        class="block text-center text-xs text-brown-400 mt-5"
-      >
-        ← กลับหน้าเว็บไซต์
-      </a>
-
-    </div>
-
-  </div>
-
-</div>
 
 
 <!-- =====================================================
      ADMIN SCREEN
      ===================================================== -->
 
-<div id="adminScreen" class="hidden">
+<div id="adminScreen">
 
   <div class="max-w-4xl mx-auto">
+
 
     <!-- HEADER -->
 
@@ -209,14 +156,22 @@ body{
           id="adminUserText"
           class="text-xs text-brown-400 mt-1"
         >
-          Admin
+          กำลังตรวจสอบสิทธิ์...
         </p>
 
       </div>
 
+
       <button
         id="logoutButton"
-        class="px-4 py-2 rounded-full bg-brown-600 text-white text-sm"
+        class="
+          px-4
+          py-2
+          rounded-full
+          bg-brown-600
+          text-white
+          text-sm
+        "
       >
         ออกจากระบบ
       </button>
@@ -232,28 +187,51 @@ body{
 
       <button
         id="websiteAdminButton"
-        class="nav-btn bg-pink-500 text-white"
+        class="
+          nav-btn
+          bg-pink-500
+          text-white
+        "
       >
         ⚙️ Website Admin
       </button>
 
+
       <button
         id="paymentGeneratorButton"
-        class="nav-btn bg-white border border-pink-200 text-pink-500"
+        class="
+          nav-btn
+          bg-white
+          border
+          border-pink-200
+          text-pink-500
+        "
       >
         💰 สร้างลิงก์ชำระเงิน
       </button>
 
+
       <a
         href="member-admin.html"
-        class="nav-btn bg-white border border-pink-200 text-pink-500"
+        class="
+          nav-btn
+          bg-white
+          border
+          border-pink-200
+          text-pink-500
+        "
       >
         🎫 Member Admin
       </a>
 
+
       <a
         href="index.html"
-        class="nav-btn bg-brown-600 text-white"
+        class="
+          nav-btn
+          bg-brown-600
+          text-white
+        "
       >
         🌐 หน้าเว็บไซต์
       </a>
@@ -278,67 +256,92 @@ body{
 
         <div class="grid md:grid-cols-2 gap-3">
 
+
           <div>
+
             <label class="label">
               ชื่อเว็บ
             </label>
+
             <input
               id="shopName"
               class="field"
             >
+
           </div>
 
+
           <div>
+
             <label class="label">
               ข้อความใต้ชื่อ
             </label>
+
             <input
               id="subtitle"
               class="field"
             >
+
           </div>
 
+
           <div>
+
             <label class="label">
               ชื่อบัญชีร้าน
             </label>
+
             <input
               id="accountName"
               class="field"
             >
+
           </div>
 
+
           <div>
+
             <label class="label">
               เลขบัญชีกสิกร
             </label>
+
             <input
               id="kbank"
               class="field"
               inputmode="numeric"
             >
+
           </div>
 
+
           <div>
+
             <label class="label">
               เบอร์ TrueMoney
             </label>
+
             <input
               id="trueMoney"
               class="field"
               inputmode="numeric"
             >
+
           </div>
 
+
           <div>
+
             <label class="label">
               ข้อความสถานะขวา
             </label>
+
             <input
               id="statusRight"
               class="field"
             >
+
           </div>
+
 
         </div>
 
@@ -353,80 +356,110 @@ body{
           ข้อความบนหน้าเว็บไซต์
         </h2>
 
+
         <div class="space-y-3">
 
+
           <div>
+
             <label class="label">
               แถบสถานะ
             </label>
+
             <input
               id="statusText"
               class="field"
             >
+
           </div>
 
+
           <div>
+
             <label class="label">
               ข้อความนำ
             </label>
+
             <input
               id="intro"
               class="field"
             >
+
           </div>
 
+
           <div>
+
             <label class="label">
               ข้อความแนะนำการคัดลอก
             </label>
+
             <input
               id="copyHint"
               class="field"
             >
+
           </div>
 
+
           <div>
+
             <label class="label">
               หัวข้อช่องทางชำระเงิน
             </label>
+
             <input
               id="paymentTitle"
               class="field"
             >
+
           </div>
 
+
           <div>
+
             <label class="label">
               เตือนโอนผิด — ใช้ | แบ่งบรรทัด
             </label>
+
             <textarea
               id="wrongTransfer"
               class="field"
               rows="3"
             ></textarea>
+
           </div>
 
+
           <div>
+
             <label class="label">
               เตือนแปะสลิป — ใช้ | แบ่งบรรทัด
             </label>
+
             <textarea
               id="slipText"
               class="field"
               rows="3"
             ></textarea>
+
           </div>
 
+
           <div>
+
             <label class="label">
               ท้ายหน้า — ใช้ | แบ่งบรรทัด
             </label>
+
             <textarea
               id="footer"
               class="field"
               rows="3"
             ></textarea>
+
           </div>
+
 
         </div>
 
@@ -441,15 +474,18 @@ body{
           ค่าธรรมเนียม Wallet
         </h2>
 
+
         <label class="label">
           ข้อความค่าธรรมเนียมเพิ่มเติม
         </label>
+
 
         <input
           id="walletExtraFee"
           class="field"
           placeholder="+5 บาท"
         >
+
 
         <p class="text-[11px] text-brown-400 mt-2">
           ตัวอย่าง: +20 บาท
@@ -466,9 +502,11 @@ body{
           รูปภาพชำระเงิน
         </h2>
 
+
         <label class="label">
           URL รูปภาพ
         </label>
+
 
         <input
           id="image"
@@ -476,9 +514,11 @@ body{
           placeholder="https://..."
         >
 
+
         <label class="label">
           หรือเลือกรูปจากเครื่อง
         </label>
+
 
         <input
           id="imageFile"
@@ -487,9 +527,18 @@ body{
           class="field"
         >
 
+
         <img
           id="preview"
-          class="mt-3 w-40 h-40 object-cover rounded-2xl border border-pink-100"
+          class="
+            mt-3
+            w-40
+            h-40
+            object-cover
+            rounded-2xl
+            border
+            border-pink-100
+          "
           alt="Preview"
         >
 
@@ -504,15 +553,18 @@ body{
           เพลงพื้นหลัง
         </h2>
 
+
         <label class="label">
           URL เพลง
         </label>
+
 
         <input
           id="musicUrl"
           class="field"
           placeholder="YouTube หรือไฟล์เสียง .mp3/.m4a"
         >
+
 
         <label class="flex items-center gap-2 mt-3 text-sm">
 
@@ -537,15 +589,18 @@ body{
           พื้นหลัง
         </h2>
 
+
         <label class="label">
           URL รูปพื้นหลัง
         </label>
+
 
         <input
           id="backgroundUrl"
           class="field"
           placeholder="https://..."
         >
+
 
         <label class="flex items-center gap-2 mt-3 text-sm">
 
@@ -570,6 +625,7 @@ body{
           ระบบสมาชิก
         </h2>
 
+
         <label class="flex items-center gap-2 text-sm">
 
           <input
@@ -593,7 +649,9 @@ body{
           ตัวอย่างตอนแชร์ลิงก์
         </h2>
 
+
         <div class="space-y-3">
+
 
           <div>
 
@@ -608,6 +666,7 @@ body{
             >
 
           </div>
+
 
           <div>
 
@@ -624,6 +683,7 @@ body{
 
           </div>
 
+
           <div>
 
             <label class="label">
@@ -638,6 +698,7 @@ body{
 
           </div>
 
+
         </div>
 
       </section>
@@ -647,26 +708,48 @@ body{
 
       <div class="flex gap-2 pt-2">
 
+
         <button
           id="save"
-          class="flex-1 rounded-2xl bg-pink-500 text-white font-bold py-3"
+          class="
+            flex-1
+            rounded-2xl
+            bg-pink-500
+            text-white
+            font-bold
+            py-3
+          "
         >
           บันทึกข้อมูล
         </button>
 
+
         <button
           id="reset"
-          class="rounded-2xl bg-brown-100 text-brown-600 px-5"
+          class="
+            rounded-2xl
+            bg-brown-100
+            text-brown-600
+            px-5
+          "
         >
           คืนค่าเริ่มต้น
         </button>
 
+
       </div>
+
 
       <p
         id="message"
-        class="text-center text-xs text-brown-400 min-h-[20px]"
+        class="
+          text-center
+          text-xs
+          text-brown-400
+          min-h-[20px]
+        "
       ></p>
+
 
     </div>
 
@@ -675,16 +758,24 @@ body{
 
     <div
       id="paymentGenerator"
-      class="hidden panel rounded-3xl p-5 mt-5"
+      class="
+        hidden
+        panel
+        rounded-3xl
+        p-5
+        mt-5
+      "
     >
 
       <h2 class="font-bold text-pink-500 mb-4">
         สร้างลิงก์ชำระเงิน
       </h2>
 
+
       <label class="label">
         จำนวนเงิน
       </label>
+
 
       <input
         id="paymentAmount"
@@ -695,9 +786,11 @@ body{
         placeholder="เช่น 199"
       >
 
+
       <label class="label mt-4">
         หมายเหตุ
       </label>
+
 
       <input
         id="paymentNote"
@@ -705,21 +798,33 @@ body{
         placeholder="เช่น ค่าสินค้า"
       >
 
+
       <button
         id="generatePayment"
-        class="w-full mt-4 py-3 rounded-2xl bg-pink-500 text-white font-bold"
+        class="
+          w-full
+          mt-4
+          py-3
+          rounded-2xl
+          bg-pink-500
+          text-white
+          font-bold
+        "
       >
         สร้างลิงก์
       </button>
+
 
       <div
         id="paymentResult"
         class="hidden mt-4"
       >
 
+
         <label class="label">
           ลิงก์สำหรับส่งให้ลูกค้า
         </label>
+
 
         <textarea
           id="paymentLink"
@@ -728,20 +833,32 @@ body{
           readonly
         ></textarea>
 
+
         <button
           id="copyPaymentLink"
-          class="w-full mt-3 py-3 rounded-2xl bg-brown-600 text-white font-bold"
+          class="
+            w-full
+            mt-3
+            py-3
+            rounded-2xl
+            bg-brown-600
+            text-white
+            font-bold
+          "
         >
           คัดลอกลิงก์
         </button>
+
 
       </div>
 
     </div>
 
+
   </div>
 
 </div>
+
 
 
 <script>
@@ -753,8 +870,10 @@ body{
 const SUPABASE_URL =
   "https://jlcjcfhdvrbdihzwbdhu.supabase.co";
 
+
 const SUPABASE_KEY =
   "sb_publishable_bTlJbTM1h2Kl9Z1n7wVfaw_SRJLocBg";
+
 
 const supabaseClient =
   window.supabase.createClient(
@@ -770,17 +889,21 @@ const supabaseClient =
   );
 
 
+
 /* =========================================================
    DEFAULTS
    ========================================================= */
 
 const defaults = {
 
-  shopName:"Bennie Choco",
+  shopName:
+    "Bennie Choco",
 
-  subtitle:"Payment & Checkout",
+  subtitle:
+    "Payment & Checkout",
 
-  accountName:"Parinyasiri",
+  accountName:
+    "Parinyasiri",
 
   image:
     "https://i.postimg.cc/yYXXLQnm/att-YZKp-Oou02U1m01U9E7IVQ5yixn-Mty-Ak-Ll-S0rpd-OVE00.jpg",
@@ -845,61 +968,37 @@ const defaults = {
 };
 
 
+
 /* =========================================================
    ELEMENTS
    ========================================================= */
 
-const loginScreen =
-  document.getElementById("loginScreen");
-
 const adminScreen =
-  document.getElementById("adminScreen");
+  document.getElementById(
+    "adminScreen"
+  );
 
-const loginForm =
-  document.getElementById("loginForm");
-
-const loginEmail =
-  document.getElementById("loginEmail");
-
-const loginPassword =
-  document.getElementById("loginPassword");
-
-const loginButton =
-  document.getElementById("loginButton");
-
-const loginMessage =
-  document.getElementById("loginMessage");
 
 const adminUserText =
-  document.getElementById("adminUserText");
+  document.getElementById(
+    "adminUserText"
+  );
 
-
-/* =========================================================
-   LOGIN MESSAGE
-   ========================================================= */
-
-function setLoginMessage(
-  text,
-  success=false
-){
-
-  loginMessage.textContent =
-    text;
-
-  loginMessage.className =
-    "message text-center text-xs mt-4 " +
-    (
-      success
-        ? "text-green-600"
-        : "text-red-500"
-    );
-
-}
 
 
 /* =========================================================
-   CHECK ADMIN
+   ADMIN CHECK
    ========================================================= */
+
+/*
+   ใช้ admin_users ซึ่งเป็นวิธีตรวจ Admin
+   ของ admin.html ระบบเดิม
+
+   สำคัญ:
+   หน้า admin-login.html จะเป็นผู้ Login
+   ส่วนหน้านี้มีหน้าที่ "ตรวจ Session + สิทธิ์"
+   เท่านั้น
+*/
 
 async function getAdminUser(userId){
 
@@ -918,6 +1017,7 @@ async function getAdminUser(userId){
       )
       .maybeSingle();
 
+
   if(error){
 
     console.error(
@@ -926,67 +1026,144 @@ async function getAdminUser(userId){
     );
 
     throw error;
+
   }
 
+
   return data;
+
 }
 
 
+
 /* =========================================================
-   SHOW ADMIN
+   REDIRECT TO LOGIN
    ========================================================= */
 
-async function showAdmin(session){
+function redirectToLogin(){
+
+  window.location.replace(
+    "admin-login.html?next=admin.html"
+  );
+
+}
+
+
+
+/* =========================================================
+   REQUIRE ADMIN
+   ========================================================= */
+
+async function requireAdmin(){
 
   try{
+
+    /*
+       ขอ Session ปัจจุบัน
+    */
+
+    const {
+      data,
+      error
+    } =
+      await supabaseClient
+        .auth
+        .getSession();
+
+
+    if(error){
+
+      console.error(
+        "getSession error:",
+        error
+      );
+
+      redirectToLogin();
+
+      return false;
+
+    }
+
+
+    const session =
+      data?.session;
+
+
+    /*
+       ไม่มี Session
+       → กลับหน้า Login
+    */
+
+    if(!session){
+
+      redirectToLogin();
+
+      return false;
+
+    }
+
+
+    /*
+       มี Session
+       → ตรวจว่ามีรายชื่อใน admin_users
+    */
 
     const admin =
       await getAdminUser(
         session.user.id
       );
 
+
+    /*
+       ไม่มีสิทธิ์ Admin
+    */
+
     if(!admin){
+
+      console.warn(
+        "User is not an admin"
+      );
+
 
       await supabaseClient
         .auth
         .signOut();
 
-      showLogin();
 
-      setLoginMessage(
-        "บัญชีนี้ไม่มีสิทธิ์เข้า Admin ค่ะ"
+      window.location.replace(
+        "admin-login.html"
       );
 
+
       return false;
+
     }
 
 
-    loginScreen.classList.add(
-      "hidden"
-    );
-
-    adminScreen.classList.remove(
-      "hidden"
-    );
+    /*
+       ผ่านทุกอย่าง
+    */
 
     adminUserText.textContent =
       "เข้าสู่ระบบในชื่อ: " +
-      (admin.username || "Admin");
+      (
+        admin.username ||
+        "Admin"
+      );
 
-
-    await loadSettings();
 
     return true;
 
+
   }catch(error){
 
-    console.error(error);
-
-    showLogin();
-
-    setLoginMessage(
-      "ไม่สามารถตรวจสอบสิทธิ์ Admin ได้ค่ะ"
+    console.error(
+      "requireAdmin failed:",
+      error
     );
+
+
+    redirectToLogin();
 
     return false;
 
@@ -994,139 +1171,6 @@ async function showAdmin(session){
 
 }
 
-
-/* =========================================================
-   SHOW LOGIN
-   ========================================================= */
-
-function showLogin(){
-
-  adminScreen.classList.add(
-    "hidden"
-  );
-
-  loginScreen.classList.remove(
-    "hidden"
-  );
-
-}
-
-
-/* =========================================================
-   LOGIN
-   ========================================================= */
-
-loginForm.addEventListener(
-  "submit",
-  async function(event){
-
-    event.preventDefault();
-
-    setLoginMessage("");
-
-    loginButton.disabled =
-      true;
-
-    loginButton.textContent =
-      "กำลังเข้าสู่ระบบ...";
-
-    try{
-
-      const email =
-        loginEmail.value.trim();
-
-      const password =
-        loginPassword.value;
-
-
-      const {
-        data,
-        error
-      } =
-        await supabaseClient.auth
-          .signInWithPassword({
-            email,
-            password
-          });
-
-
-      if(error){
-
-        console.error(error);
-
-        setLoginMessage(
-          "อีเมลหรือรหัสผ่านไม่ถูกต้องค่ะ"
-        );
-
-        return;
-      }
-
-
-      if(
-        !data ||
-        !data.session ||
-        !data.user
-      ){
-
-        setLoginMessage(
-          "ไม่สามารถสร้าง Session ได้ค่ะ"
-        );
-
-        return;
-      }
-
-
-      await showAdmin(
-        data.session
-      );
-
-    }catch(error){
-
-      console.error(error);
-
-      setLoginMessage(
-        "เกิดข้อผิดพลาด กรุณาลองใหม่ค่ะ"
-      );
-
-    }finally{
-
-      loginButton.disabled =
-        false;
-
-      loginButton.textContent =
-        "เข้าสู่ระบบ";
-
-    }
-
-  }
-);
-
-
-/* =========================================================
-   LOGOUT
-   ========================================================= */
-
-document
-  .getElementById("logoutButton")
-  .addEventListener(
-    "click",
-    async function(){
-
-      await supabaseClient
-        .auth
-        .signOut();
-
-      showLogin();
-
-      loginPassword.value = "";
-
-      setLoginMessage(
-        "ออกจากระบบแล้วค่ะ",
-        true
-      );
-
-    }
-  );
 
 
 /* =========================================================
@@ -1156,6 +1200,7 @@ async function loadSettings(){
     console.error(error);
 
     throw error;
+
   }
 
 
@@ -1173,9 +1218,12 @@ async function loadSettings(){
     };
 
 
-  fillForm(settings);
+  fillForm(
+    settings
+  );
 
 }
+
 
 
 /* =========================================================
@@ -1186,63 +1234,88 @@ function fillForm(data){
 
   const fields = {
 
-    shopName:data.shopName,
+    shopName:
+      data.shopName,
 
-    subtitle:data.subtitle,
+    subtitle:
+      data.subtitle,
 
-    accountName:data.accountName,
+    accountName:
+      data.accountName,
 
-    kbank:data.kbank,
+    kbank:
+      data.kbank,
 
-    trueMoney:data.trueMoney,
+    trueMoney:
+      data.trueMoney,
 
-    statusRight:data.statusRight,
+    statusRight:
+      data.statusRight,
 
-    statusText:data.statusText,
+    statusText:
+      data.statusText,
 
-    intro:data.intro,
+    intro:
+      data.intro,
 
-    copyHint:data.copyHint,
+    copyHint:
+      data.copyHint,
 
-    paymentTitle:data.paymentTitle,
+    paymentTitle:
+      data.paymentTitle,
 
-    wrongTransfer:data.wrongTransfer,
+    wrongTransfer:
+      data.wrongTransfer,
 
-    slipText:data.slipText,
+    slipText:
+      data.slipText,
 
-    footer:data.footer,
+    footer:
+      data.footer,
 
-    walletExtraFee:data.walletExtraFee,
+    walletExtraFee:
+      data.walletExtraFee,
 
-    musicUrl:data.musicUrl,
+    musicUrl:
+      data.musicUrl,
 
-    backgroundUrl:data.backgroundUrl,
+    backgroundUrl:
+      data.backgroundUrl,
 
-    previewTitle:data.previewTitle,
+    previewTitle:
+      data.previewTitle,
 
-    previewDescription:data.previewDescription,
+    previewDescription:
+      data.previewDescription,
 
-    previewImage:data.previewImage,
+    previewImage:
+      data.previewImage,
 
-    image:data.image
+    image:
+      data.image
 
   };
 
 
   Object.keys(fields)
-    .forEach(function(id){
+    .forEach(
+      function(id){
 
-      const element =
-        document.getElementById(id);
+        const element =
+          document.getElementById(
+            id
+          );
 
-      if(element){
 
-        element.value =
-          fields[id] ?? "";
+        if(element){
+
+          element.value =
+            fields[id] ?? "";
+
+        }
 
       }
-
-    });
+    );
 
 
   document.getElementById(
@@ -1270,6 +1343,7 @@ function fillForm(data){
     defaults.image;
 
 }
+
 
 
 /* =========================================================
@@ -1400,6 +1474,7 @@ function getFormData(){
 }
 
 
+
 /* =========================================================
    SAVE SETTINGS
    ========================================================= */
@@ -1414,6 +1489,7 @@ document
         document.getElementById(
           "message"
         );
+
 
       message.textContent =
         "กำลังบันทึก...";
@@ -1445,11 +1521,14 @@ document
 
           console.error(error);
 
+
           message.textContent =
             "บันทึกไม่สำเร็จ: " +
             error.message;
 
+
           return;
+
         }
 
 
@@ -1472,6 +1551,7 @@ document
 
         console.error(error);
 
+
         message.textContent =
           "เกิดข้อผิดพลาดในการบันทึกค่ะ";
 
@@ -1479,6 +1559,7 @@ document
 
     }
   );
+
 
 
 /* =========================================================
@@ -1494,8 +1575,11 @@ document
       const file =
         event.target.files[0];
 
+
       if(!file){
+
         return;
+
       }
 
 
@@ -1509,7 +1593,9 @@ document
           "กรุณาเลือกไฟล์รูปภาพค่ะ"
         );
 
+
         return;
+
       }
 
 
@@ -1546,6 +1632,7 @@ document
   );
 
 
+
 /* =========================================================
    IMAGE URL PREVIEW
    ========================================================= */
@@ -1559,6 +1646,7 @@ document
       const value =
         this.value.trim();
 
+
       if(value){
 
         document.getElementById(
@@ -1570,6 +1658,7 @@ document
 
     }
   );
+
 
 
 /* =========================================================
@@ -1589,6 +1678,7 @@ document
       ){
 
         return;
+
       }
 
 
@@ -1604,6 +1694,7 @@ document
 
     }
   );
+
 
 
 /* =========================================================
@@ -1628,6 +1719,7 @@ document
 
     }
   );
+
 
 
 document
@@ -1665,7 +1757,9 @@ document
           "กรุณาใส่จำนวนเงินค่ะ"
         );
 
+
         return;
+
       }
 
 
@@ -1708,6 +1802,11 @@ document
   );
 
 
+
+/* =========================================================
+   COPY PAYMENT LINK
+   ========================================================= */
+
 document
   .getElementById(
     "copyPaymentLink"
@@ -1731,6 +1830,7 @@ document
       }catch(error){
 
         input.select();
+
 
         document.execCommand(
           "copy"
@@ -1757,6 +1857,7 @@ document
   );
 
 
+
 /* =========================================================
    WEBSITE ADMIN BUTTON
    ========================================================= */
@@ -1770,87 +1871,151 @@ document
     function(){
 
       window.scrollTo({
+
         top:0,
+
         behavior:"smooth"
+
       });
 
     }
   );
 
 
+
 /* =========================================================
-   INITIAL AUTH CHECK
+   LOGOUT
    ========================================================= */
 
-async function init(){
+document
+  .getElementById(
+    "logoutButton"
+  )
+  .addEventListener(
+    "click",
+    async function(){
 
-  try{
-
-    const {
-      data
-    } =
-      await supabaseClient
-        .auth
-        .getSession();
+      this.disabled =
+        true;
 
 
-    if(
-      data &&
-      data.session
-    ){
+      this.textContent =
+        "กำลังออกจากระบบ...";
 
-      await showAdmin(
-        data.session
+
+      try{
+
+        await supabaseClient
+          .auth
+          .signOut();
+
+      }catch(error){
+
+        console.error(
+          "Logout error:",
+          error
+        );
+
+      }
+
+
+      window.location.replace(
+        "admin-login.html"
       );
 
-    }else{
-
-      showLogin();
-
     }
+  );
 
 
-  }catch(error){
 
-    console.error(error);
-
-    showLogin();
-
-  }
-
-}
-
+/* =========================================================
+   AUTH STATE
+   ========================================================= */
 
 supabaseClient.auth.onAuthStateChange(
-  async function(
+  function(
     event,
     session
   ){
+
+    /*
+       ถ้า Session หายระหว่างใช้งาน
+       ให้กลับหน้า Login
+
+       ไม่ตรวจ SIGNED_IN ซ้ำที่นี่
+       เพราะ requireAdmin() จัดการตอนเปิดหน้าแล้ว
+    */
 
     if(
       event ===
       "SIGNED_OUT"
     ){
 
-      showLogin();
-
-      return;
-    }
-
-    if(
-      session &&
-      event ===
-      "SIGNED_IN"
-    ){
-
-      await showAdmin(
-        session
+      window.location.replace(
+        "admin-login.html"
       );
 
     }
 
   }
 );
+
+
+
+/* =========================================================
+   INITIALIZE
+   ========================================================= */
+
+async function init(){
+
+  /*
+     adminScreen แสดงเฉพาะเมื่อผ่าน
+     requireAdmin แล้ว
+
+     แต่เพื่อป้องกันการเห็นเนื้อหาก่อนตรวจ
+     เราจะซ่อนทั้งหน้าชั่วคราว
+  */
+
+  adminScreen.classList.add(
+    "hidden"
+  );
+
+
+  const allowed =
+    await requireAdmin();
+
+
+  if(!allowed){
+
+    return;
+
+  }
+
+
+  /*
+     ผ่านสิทธิ์แล้ว
+     ค่อยแสดงหน้า Admin
+  */
+
+  adminScreen.classList.remove(
+    "hidden"
+  );
+
+
+  try{
+
+    await loadSettings();
+
+  }catch(error){
+
+    console.error(
+      "Initial load settings error:",
+      error
+    );
+
+  }
+
+}
 
 
 init();
