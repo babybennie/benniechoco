@@ -1,0 +1,1780 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>bennie choco | Payment</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --primary: #ff66a0;
+      --secondary: #8b5e3c;
+      --cream: #fff8f1;
+      --brown: #5d4037;
+      --pink-soft: #fff0f6;
+      --white: #ffffff;
+      --danger: #c94a4a;
+      --success: #4d9b69;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: "Prompt", sans-serif;
+      color: var(--brown);
+      background:
+        radial-gradient(circle at top left, rgba(255, 183, 211, 0.35), transparent 35%),
+        radial-gradient(circle at bottom right, rgba(139, 94, 60, 0.12), transparent 35%),
+        var(--cream);
+      overflow-x: hidden;
+    }
+
+    button {
+      font-family: inherit;
+    }
+
+    .bg-overlay {
+      position: fixed;
+      inset: 0;
+      z-index: -1;
+      background-position: center;
+      background-size: cover;
+      background-repeat: no-repeat;
+      pointer-events: none;
+    }
+
+    .bg-overlay::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: rgba(255, 248, 241, 0.5);
+    }
+
+    .page {
+      width: 100%;
+      max-width: 480px;
+      margin: 0 auto;
+      padding: 20px 15px 40px;
+    }
+
+    /* =========================
+       ANIMATIONS
+    ========================= */
+
+    @keyframes float-up-down {
+      0%, 100% {
+        transform: translateY(0);
+      }
+
+      50% {
+        transform: translateY(-8px);
+      }
+    }
+
+    @keyframes float-left-right {
+      0%, 100% {
+        transform: translateX(0);
+      }
+
+      50% {
+        transform: translateX(6px);
+      }
+    }
+
+    @keyframes pulse-soft {
+      0%, 100% {
+        transform: scale(1);
+        opacity: 1;
+      }
+
+      50% {
+        transform: scale(1.03);
+        opacity: 0.9;
+      }
+    }
+
+    @keyframes spin-slow {
+      from {
+        transform: rotate(0deg);
+      }
+
+      to {
+        transform: rotate(360deg);
+      }
+    }
+
+    @keyframes dash-animation {
+      to {
+        stroke-dashoffset: -40;
+      }
+    }
+
+    .animate-float-1 {
+      animation: float-up-down 4s ease-in-out infinite;
+    }
+
+    .animate-float-2 {
+      animation: float-left-right 5s ease-in-out infinite;
+    }
+
+    .animate-pulse {
+      animation: pulse-soft 2.8s ease-in-out infinite;
+    }
+
+    .animate-spin {
+      animation: spin-slow 12s linear infinite;
+    }
+
+    .animate-dash {
+      animation: dash-animation 3s linear infinite;
+    }
+
+    /* =========================
+       HEADER
+    ========================= */
+
+    .header {
+      text-align: center;
+      margin-bottom: 18px;
+      position: relative;
+    }
+
+    .header-deco {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 16px;
+      margin-bottom: 5px;
+    }
+
+    .heart {
+      width: 27px;
+      height: 27px;
+      fill: var(--primary);
+      opacity: 0.8;
+    }
+
+    .brand {
+      margin: 0;
+      font-size: 30px;
+      line-height: 1.15;
+      font-weight: 700;
+      letter-spacing: 0.3px;
+      color: var(--secondary);
+    }
+
+    .subtitle {
+      margin: 5px 0 0;
+      font-size: 13px;
+      color: #a77d67;
+      letter-spacing: 0.5px;
+    }
+
+    /* =========================
+       CARD
+    ========================= */
+
+    .glass-card {
+      position: relative;
+      overflow: hidden;
+      border-radius: 28px;
+      padding: 20px 17px;
+      background: rgba(255, 255, 255, 0.78);
+      border: 1px solid rgba(255, 255, 255, 0.9);
+      box-shadow:
+        0 20px 50px rgba(125, 78, 91, 0.14),
+        inset 0 1px 0 rgba(255,255,255,0.8);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+    }
+
+    .card-decoration {
+      position: absolute;
+      pointer-events: none;
+      opacity: 0.16;
+    }
+
+    .deco-one {
+      width: 95px;
+      right: -25px;
+      top: -25px;
+      animation: spin-slow 16s linear infinite;
+    }
+
+    .deco-two {
+      width: 75px;
+      left: -25px;
+      bottom: 20px;
+      animation: float-up-down 5s ease-in-out infinite;
+    }
+
+    /* =========================
+       AMOUNT
+    ========================= */
+
+    .amount-box {
+      position: relative;
+      z-index: 2;
+      text-align: center;
+      padding: 17px 12px;
+      margin-bottom: 15px;
+      border-radius: 21px;
+      background: linear-gradient(
+        135deg,
+        rgba(255, 240, 246, 0.96),
+        rgba(255, 249, 244, 0.96)
+      );
+      border: 1px solid rgba(255, 102, 160, 0.16);
+    }
+
+    .amount-label {
+      margin: 0 0 3px;
+      font-size: 13px;
+      color: #9c7769;
+    }
+
+    .amount {
+      margin: 0;
+      font-size: 34px;
+      line-height: 1.2;
+      font-weight: 700;
+      color: var(--primary);
+    }
+
+    .amount.missing {
+      font-size: 20px;
+    }
+
+    .payment-note {
+      margin: 8px 0 0;
+      font-size: 13px;
+      color: #8a6759;
+      word-break: break-word;
+    }
+
+    /* =========================
+       QR
+    ========================= */
+
+    .qr-section {
+      position: relative;
+      z-index: 2;
+      text-align: center;
+    }
+
+    .qr-frame {
+      position: relative;
+      width: min(100%, 340px);
+      margin: 0 auto;
+      padding: 10px;
+      border-radius: 23px;
+      background: rgba(255,255,255,0.95);
+      box-shadow: 0 10px 30px rgba(100, 65, 75, 0.08);
+    }
+
+    .qr-border {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+    }
+
+    .qr-border rect {
+      fill: none;
+      stroke: var(--primary);
+      stroke-width: 2;
+      stroke-dasharray: 10 8;
+      stroke-linecap: round;
+      opacity: 0.75;
+    }
+
+    .qr-image {
+      display: block;
+      width: 100%;
+      max-height: 330px;
+      object-fit: contain;
+      border-radius: 15px;
+    }
+
+    .qr-fallback {
+      display: none;
+      padding: 60px 20px;
+      font-size: 14px;
+      color: #9b786b;
+    }
+
+    .intro-text {
+      margin: 15px 0 5px;
+      font-size: 17px;
+      font-weight: 600;
+      color: var(--secondary);
+    }
+
+    .account-owner {
+      margin: 0;
+      font-size: 14px;
+      color: #8a6a5e;
+    }
+
+    .copy-hint {
+      display: inline-block;
+      margin-top: 10px;
+      padding: 8px 13px;
+      border-radius: 999px;
+      background: var(--pink-soft);
+      color: #9a6479;
+      font-size: 12px;
+    }
+
+    /* =========================
+       DIVIDER
+    ========================= */
+
+    .divider {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin: 22px 0 15px;
+      color: #a27c6b;
+      font-size: 13px;
+      font-weight: 500;
+    }
+
+    .divider::before,
+    .divider::after {
+      content: "";
+      flex: 1;
+      height: 1px;
+      background: linear-gradient(
+        90deg,
+        transparent,
+        rgba(139, 94, 60, 0.2),
+        transparent
+      );
+    }
+
+    /* =========================
+       PAYMENT CHANNELS
+    ========================= */
+
+    .channels {
+      display: flex;
+      flex-direction: column;
+      gap: 11px;
+    }
+
+    .channel-card {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 13px;
+      border-radius: 19px;
+      background: rgba(255,255,255,0.85);
+      border: 1px solid rgba(139, 94, 60, 0.09);
+      box-shadow: 0 7px 20px rgba(90, 55, 60, 0.05);
+    }
+
+    .channel-icon {
+      flex: 0 0 43px;
+      width: 43px;
+      height: 43px;
+      display: grid;
+      place-items: center;
+      border-radius: 14px;
+      background: var(--pink-soft);
+      color: var(--primary);
+      font-weight: 700;
+      font-size: 12px;
+    }
+
+    .channel-info {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .channel-name {
+      margin: 0 0 2px;
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--secondary);
+    }
+
+    .channel-display {
+      margin: 0;
+      font-size: 11px;
+      color: #987b70;
+    }
+
+    .channel-number {
+      margin: 3px 0 0;
+      font-size: 16px;
+      font-weight: 600;
+      color: #594139;
+      letter-spacing: 0.5px;
+      word-break: break-all;
+    }
+
+    .copy-btn {
+      flex: 0 0 auto;
+      border: 0;
+      padding: 9px 12px;
+      border-radius: 12px;
+      cursor: pointer;
+      color: #fff;
+      background: var(--primary);
+      font-size: 12px;
+      font-weight: 500;
+      transition: 0.2s ease;
+    }
+
+    .copy-btn:hover {
+      transform: translateY(-1px);
+      filter: brightness(0.97);
+    }
+
+    .copy-btn:active {
+      transform: scale(0.96);
+    }
+
+    .copy-btn.copied {
+      background: var(--success);
+    }
+
+    /* =========================
+       WARNINGS
+    ========================= */
+
+    .warning-box {
+      margin-top: 14px;
+      padding: 12px 13px;
+      border-radius: 16px;
+      background: rgba(255, 245, 244, 0.92);
+      border: 1px solid rgba(201, 74, 74, 0.12);
+    }
+
+    .warning-title {
+      margin: 0 0 3px;
+      color: var(--danger);
+      font-size: 13px;
+      font-weight: 600;
+    }
+
+    .warning-text {
+      margin: 0;
+      font-size: 11px;
+      line-height: 1.6;
+      color: #956f69;
+    }
+
+    .slip-box {
+      margin-top: 11px;
+      padding: 12px 13px;
+      border-radius: 16px;
+      background: rgba(255, 249, 238, 0.92);
+      border: 1px solid rgba(176, 133, 61, 0.13);
+    }
+
+    .slip-title {
+      margin: 0 0 3px;
+      color: #a06f2f;
+      font-size: 13px;
+      font-weight: 600;
+    }
+
+    .slip-text {
+      margin: 0;
+      font-size: 11px;
+      line-height: 1.6;
+      color: #92765c;
+    }
+
+    /* =========================
+       MUSIC
+    ========================= */
+
+    .music-box {
+      display: none;
+      margin-top: 14px;
+      padding: 11px 13px;
+      border-radius: 17px;
+      background: rgba(255, 240, 246, 0.82);
+      align-items: center;
+      gap: 10px;
+    }
+
+    .music-box.show {
+      display: flex;
+    }
+
+    .music-icon {
+      font-size: 19px;
+      animation: pulse-soft 2s ease-in-out infinite;
+    }
+
+    .music-info {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .music-title {
+      margin: 0;
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--secondary);
+    }
+
+    .music-subtitle {
+      margin: 2px 0 0;
+      font-size: 10px;
+      color: #98776c;
+    }
+
+    .music-btn {
+      border: 0;
+      padding: 8px 11px;
+      border-radius: 11px;
+      background: var(--primary);
+      color: white;
+      cursor: pointer;
+      font-size: 11px;
+    }
+
+    /* =========================
+       MEMBER
+    ========================= */
+
+    .member-button {
+      display: block;
+      width: 100%;
+      margin-top: 16px;
+      padding: 13px 15px;
+      border-radius: 17px;
+      text-align: center;
+      text-decoration: none;
+      color: var(--secondary);
+      background: rgba(255,255,255,0.9);
+      border: 1px dashed var(--primary);
+      font-size: 13px;
+      font-weight: 500;
+      transition: 0.2s ease;
+    }
+
+    .member-button:hover {
+      background: var(--pink-soft);
+      transform: translateY(-1px);
+    }
+
+    /* =========================
+       FOOTER
+    ========================= */
+
+    .footer {
+      text-align: center;
+      margin-top: 18px;
+      color: #987b70;
+      font-size: 12px;
+      line-height: 1.7;
+    }
+
+    .footer p {
+      margin: 0;
+    }
+
+    /* =========================
+       TOAST
+    ========================= */
+
+    .toast {
+      position: fixed;
+      left: 50%;
+      bottom: 24px;
+      transform: translate(-50%, 120px);
+      z-index: 100;
+      min-width: 190px;
+      max-width: calc(100vw - 40px);
+      padding: 12px 17px;
+      border-radius: 999px;
+      background: rgba(70, 51, 45, 0.94);
+      color: white;
+      text-align: center;
+      font-size: 12px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.18);
+      transition: transform 0.3s ease;
+    }
+
+    .toast.show {
+      transform: translate(-50%, 0);
+    }
+
+    /* =========================
+       RESPONSIVE
+    ========================= */
+
+    @media (max-width: 380px) {
+      .page {
+        padding-left: 10px;
+        padding-right: 10px;
+      }
+
+      .brand {
+        font-size: 27px;
+      }
+
+      .amount {
+        font-size: 30px;
+      }
+
+      .channel-card {
+        padding: 11px;
+      }
+
+      .channel-number {
+        font-size: 14px;
+      }
+
+      .copy-btn {
+        padding: 8px 9px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="bg-overlay" id="backgroundOverlay"></div>
+
+  <main class="page">
+
+    <!-- HEADER -->
+    <header class="header">
+
+      <div class="header-deco">
+
+        <svg class="heart animate-float-1"
+             viewBox="0 0 24 24"
+             aria-hidden="true">
+          <path d="M12 21s-7.5-4.35-9.5-8.5C.8 8.9 3.1 5 6.7 5c2.1 0 3.7 1.2 5.3 3.1C13.6 6.2 15.2 5 17.3 5c3.6 0 5.9 3.9 4.2 7.5C19.5 16.65 12 21 12 21z"/>
+        </svg>
+
+        <h1 class="brand" id="shopName">bennie choco</h1>
+
+        <svg class="heart animate-float-2"
+             viewBox="0 0 24 24"
+             aria-hidden="true">
+          <path d="M12 21s-7.5-4.35-9.5-8.5C.8 8.9 3.1 5 6.7 5c2.1 0 3.7 1.2 5.3 3.1C13.6 6.2 15.2 5 17.3 5c3.6 0 5.9 3.9 4.2 7.5C19.5 16.65 12 21 12 21z"/>
+        </svg>
+
+      </div>
+
+      <p class="subtitle" id="subtitle">
+        Payment & Checkout
+      </p>
+
+    </header>
+
+
+    <!-- MAIN CARD -->
+    <section class="glass-card">
+
+      <svg class="card-decoration deco-one"
+           viewBox="0 0 100 100"
+           aria-hidden="true">
+        <circle cx="50" cy="50" r="35"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-dasharray="4 6"/>
+        <circle cx="50" cy="50" r="22"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="1"/>
+      </svg>
+
+      <svg class="card-decoration deco-two"
+           viewBox="0 0 100 100"
+           aria-hidden="true">
+        <path d="M50 8 L60 38 L92 50 L60 62 L50 92 L40 62 L8 50 L40 38 Z"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"/>
+      </svg>
+
+
+      <!-- AMOUNT -->
+      <div class="amount-box">
+
+        <p class="amount-label">
+          ยอดที่ต้องชำระ
+        </p>
+
+        <p class="amount" id="paymentAmount">
+          -
+        </p>
+
+        <p class="payment-note"
+           id="paymentNote"
+           style="display:none;">
+        </p>
+
+      </div>
+
+
+      <!-- QR -->
+      <div class="qr-section">
+
+        <div class="qr-frame">
+
+          <svg class="qr-border"
+               viewBox="0 0 100 100"
+               preserveAspectRatio="none"
+               aria-hidden="true">
+
+            <rect x="1.5"
+                  y="1.5"
+                  width="97"
+                  height="97"
+                  rx="8"
+                  class="animate-dash">
+            </rect>
+
+          </svg>
+
+          <img
+            id="qrImage"
+            class="qr-image"
+            src=""
+            alt="QR สำหรับชำระเงิน"
+          >
+
+          <div class="qr-fallback"
+               id="qrFallback">
+            ยังไม่ได้ตั้งค่ารูป QR
+          </div>
+
+        </div>
+
+
+        <p class="intro-text"
+           id="introText">
+          เลขบัญชีตามนี้เลยค่า
+        </p>
+
+        <p class="account-owner"
+           id="accountOwner">
+          Parinyasiri
+        </p>
+
+        <span class="copy-hint"
+              id="copyHint">
+          เซฟรูปสแกน หรือจิ้มคัดลอกเลขบัญชีได้เลยน้า
+        </span>
+
+      </div>
+
+
+      <!-- PAYMENT CHANNEL TITLE -->
+      <div class="divider">
+        <span id="paymentTitle">
+          เลือกช่องทางชำระเงิน
+        </span>
+      </div>
+
+
+      <!-- CHANNELS -->
+      <div class="channels"
+           id="channels">
+      </div>
+
+
+      <!-- WRONG TRANSFER -->
+      <div class="warning-box">
+
+        <p class="warning-title">
+          ⚠️ <span id="wrongTransferTitle">
+            โอนผิด โอนใหม่ ไม่โอนคืนนะคะ!
+          </span>
+        </p>
+
+        <p class="warning-text"
+           id="wrongTransferText">
+          รบกวนเช็คชื่อและเลขบัญชีให้ดีก่อนโอนน้า
+        </p>
+
+      </div>
+
+
+      <!-- SLIP -->
+      <div class="slip-box">
+
+        <p class="slip-title">
+          🧾 โอนแล้วอย่าลืมส่งสลิปนะคะ
+        </p>
+
+        <p class="slip-text"
+           id="slipText">
+          โอนแล้วรบกวน แปะสลิปทุกครั้ง ด้วยน้า
+          เค้าจะได้รีบเช็คยอดให้ไวๆ เลยค่า
+        </p>
+
+      </div>
+
+
+      <!-- MUSIC -->
+      <div class="music-box"
+           id="musicBox">
+
+        <div class="music-icon">
+          🎵
+        </div>
+
+        <div class="music-info">
+
+          <p class="music-title">
+            เพลงประกอบ
+          </p>
+
+          <p class="music-subtitle">
+            แตะปุ่มเพื่อเปิด/ปิดเพลง
+          </p>
+
+        </div>
+
+        <button class="music-btn"
+                id="musicButton"
+                type="button">
+          ▶ เปิดเพลง
+        </button>
+
+      </div>
+
+
+      <!-- MEMBER -->
+      <a href="member.html"
+         class="member-button"
+         id="memberButton">
+        ♡ ดูระบบสมาชิก / สะสมแต้ม
+      </a>
+
+    </section>
+
+
+    <!-- FOOTER -->
+    <footer class="footer">
+
+      <p id="footerMain">
+        ♡ ปกติเค้าจะตอบกลับไม่เกิน 5 นาทีค่า
+      </p>
+
+      <p id="footerSub">
+        (หากไม่ติดงานประจำ)
+      </p>
+
+    </footer>
+
+  </main>
+
+
+  <!-- TOAST -->
+  <div class="toast"
+       id="toast">
+    คัดลอกแล้วค่า ♡
+  </div>
+
+
+  <!-- AUDIO -->
+  <audio id="bgMusic"
+         loop
+         preload="none">
+  </audio>
+
+
+  <script>
+
+    /* ==========================================
+       STORAGE
+    ========================================== */
+
+    const STORAGE_KEY = "bennieChocoPaymentData";
+
+
+    const defaultData = {
+
+      shopName: "bennie choco",
+
+      subtitle: "Payment & Checkout",
+
+      accountName: "Parinyasiri",
+
+      image: "",
+
+      statusText: "เปิดรับออเดอร์อยู่ค่า",
+
+      statusRight: "พร้อมให้บริการ",
+
+      intro: "เลขบัญชีตามนี้เลยค่า",
+
+      copyHint:
+        "เซฟรูปสแกน หรือจิ้มคัดลอกเลขบัญชีได้เลยน้า",
+
+      paymentTitle:
+        "เลือกช่องทางชำระเงิน",
+
+      wrongTransfer:
+        "โอนผิด โอนใหม่ ไม่โอนคืนนะคะ!|รบกวนเช็คชื่อและเลขบัญชีให้ดีก่อนโอนน้า",
+
+      slipText:
+        "โอนแล้วรบกวน แปะสลิปทุกครั้ง ด้วยน้า|เค้าจะได้รีบเช็คยอดให้ไวๆ เลยค่า",
+
+      footer:
+        "♡ ปกติเค้าจะตอบกลับไม่เกิน 5 นาทีค่า|(หากไม่ติดงานประจำ)",
+
+      musicUrl: "",
+
+      musicEnabled: false,
+
+      backgroundImage: "",
+
+      backgroundOpacity: 0.55,
+
+      primaryColor: "#ff66a0",
+
+      secondaryColor: "#8b5e3c",
+
+      memberEnabled: true,
+
+      memberUrl: "member.html",
+
+      memberAdminUrl: "member-admin.html",
+
+      accounts: [
+
+        {
+          id: "kbank",
+          name: "KBank",
+          display: "กสิกรไทย (Parinyasiri)",
+          number: "2221396513"
+        },
+
+        {
+          id: "truemoney",
+          name: "TrueMoney",
+          display: "ทรูมันนี่ (Parinyasiri)",
+          number: "0943947154"
+        }
+
+      ]
+
+    };
+
+
+    function getData() {
+
+      try {
+
+        const saved =
+          localStorage.getItem(STORAGE_KEY);
+
+        if (!saved) {
+          return defaultData;
+        }
+
+        return {
+          ...defaultData,
+          ...JSON.parse(saved)
+        };
+
+      } catch (error) {
+
+        console.error(
+          "Cannot load payment data:",
+          error
+        );
+
+        return defaultData;
+      }
+
+    }
+
+
+    const data = getData();
+
+
+    /* ==========================================
+       QUERY PARAMETERS
+    ========================================== */
+
+    const params =
+      new URLSearchParams(
+        window.location.search
+      );
+
+
+    const amountParam =
+      params.get("amount");
+
+
+    const noteParam =
+      params.get("note");
+
+
+    /* ==========================================
+       THEME
+    ========================================== */
+
+    document.documentElement
+      .style
+      .setProperty(
+        "--primary",
+        data.primaryColor || "#ff66a0"
+      );
+
+
+    document.documentElement
+      .style
+      .setProperty(
+        "--secondary",
+        data.secondaryColor || "#8b5e3c"
+      );
+
+
+    /* ==========================================
+       BACKGROUND
+    ========================================== */
+
+    const backgroundOverlay =
+      document.getElementById(
+        "backgroundOverlay"
+      );
+
+
+    if (data.backgroundImage) {
+
+      backgroundOverlay.style.backgroundImage =
+        `url("${data.backgroundImage}")`;
+
+      const opacity =
+        Number.isFinite(
+          Number(data.backgroundOpacity)
+        )
+          ? Number(data.backgroundOpacity)
+          : 0.55;
+
+      backgroundOverlay.style.opacity =
+        opacity;
+
+    }
+
+
+    /* ==========================================
+       BASIC TEXT
+    ========================================== */
+
+    document.getElementById(
+      "shopName"
+    ).textContent =
+      data.shopName || "bennie choco";
+
+
+    document.getElementById(
+      "subtitle"
+    ).textContent =
+      data.subtitle || "Payment & Checkout";
+
+
+    document.getElementById(
+      "accountOwner"
+    ).textContent =
+      data.accountName || "Parinyasiri";
+
+
+    document.getElementById(
+      "introText"
+    ).textContent =
+      data.intro || "เลขบัญชีตามนี้เลยค่า";
+
+
+    document.getElementById(
+      "copyHint"
+    ).textContent =
+      data.copyHint ||
+      "เซฟรูปสแกน หรือจิ้มคัดลอกเลขบัญชีได้เลยน้า";
+
+
+    document.getElementById(
+      "paymentTitle"
+    ).textContent =
+      data.paymentTitle ||
+      "เลือกช่องทางชำระเงิน";
+
+
+    /* ==========================================
+       PAYMENT AMOUNT
+    ========================================== */
+
+    const amountElement =
+      document.getElementById(
+        "paymentAmount"
+      );
+
+
+    if (
+      amountParam !== null &&
+      amountParam !== "" &&
+      !Number.isNaN(
+        Number(amountParam)
+      )
+    ) {
+
+      const amount =
+        Number(amountParam);
+
+
+      amountElement.textContent =
+        `฿${amount.toLocaleString(
+          "th-TH",
+          {
+            minimumFractionDigits: 2,
+            maximumFractionDigits: 2
+          }
+        )}`;
+
+    } else {
+
+      amountElement.textContent =
+        "ไม่พบยอดชำระ";
+
+      amountElement.classList.add(
+        "missing"
+      );
+
+    }
+
+
+    /* ==========================================
+       NOTE
+    ========================================== */
+
+    const paymentNote =
+      document.getElementById(
+        "paymentNote"
+      );
+
+
+    if (noteParam) {
+
+      paymentNote.textContent =
+        noteParam;
+
+      paymentNote.style.display =
+        "block";
+
+    }
+
+
+    /* ==========================================
+       QR IMAGE
+    ========================================== */
+
+    const qrImage =
+      document.getElementById(
+        "qrImage"
+      );
+
+
+    const qrFallback =
+      document.getElementById(
+        "qrFallback"
+      );
+
+
+    if (data.image) {
+
+      qrImage.src =
+        data.image;
+
+      qrImage.style.display =
+        "block";
+
+      qrFallback.style.display =
+        "none";
+
+      qrImage.onerror =
+        function() {
+
+          qrImage.style.display =
+            "none";
+
+          qrFallback.style.display =
+            "block";
+
+        };
+
+    } else {
+
+      qrImage.style.display =
+        "none";
+
+      qrFallback.style.display =
+        "block";
+
+    }
+
+
+    /* ==========================================
+       CHANNELS
+    ========================================== */
+
+    const channels =
+      document.getElementById(
+        "channels"
+      );
+
+
+    function createChannelCard(
+      account,
+      index
+    ) {
+
+      const card =
+        document.createElement("div");
+
+      card.className =
+        "channel-card";
+
+
+      const icon =
+        document.createElement("div");
+
+      icon.className =
+        "channel-icon";
+
+      icon.textContent =
+        account.name
+          ? account.name
+              .substring(0, 3)
+              .toUpperCase()
+          : "PAY";
+
+
+      const info =
+        document.createElement("div");
+
+      info.className =
+        "channel-info";
+
+
+      const name =
+        document.createElement("p");
+
+      name.className =
+        "channel-name";
+
+      name.textContent =
+        account.name ||
+        `ช่องทางที่ ${index + 1}`;
+
+
+      const display =
+        document.createElement("p");
+
+      display.className =
+        "channel-display";
+
+      display.textContent =
+        account.display || "";
+
+
+      const number =
+        document.createElement("p");
+
+      number.className =
+        "channel-number";
+
+      number.textContent =
+        account.number || "-";
+
+
+      info.appendChild(name);
+
+      info.appendChild(display);
+
+      info.appendChild(number);
+
+
+      const copyButton =
+        document.createElement("button");
+
+      copyButton.className =
+        "copy-btn";
+
+      copyButton.type =
+        "button";
+
+      copyButton.textContent =
+        "คัดลอก";
+
+
+      copyButton.addEventListener(
+        "click",
+        function() {
+
+          copyText(
+            account.number || "",
+            copyButton
+          );
+
+        }
+      );
+
+
+      card.appendChild(icon);
+
+      card.appendChild(info);
+
+      card.appendChild(copyButton);
+
+
+      return card;
+
+    }
+
+
+    if (
+      Array.isArray(data.accounts) &&
+      data.accounts.length > 0
+    ) {
+
+      data.accounts.forEach(
+        function(account, index) {
+
+          channels.appendChild(
+            createChannelCard(
+              account,
+              index
+            )
+          );
+
+        }
+      );
+
+    } else {
+
+      const empty =
+        document.createElement("div");
+
+      empty.style.textAlign =
+        "center";
+
+      empty.style.padding =
+        "20px";
+
+      empty.style.fontSize =
+        "13px";
+
+      empty.style.color =
+        "#987b70";
+
+      empty.textContent =
+        "ยังไม่ได้ตั้งค่าช่องทางชำระเงิน";
+
+      channels.appendChild(
+        empty
+      );
+
+    }
+
+
+    /* ==========================================
+       WARNING TEXT
+    ========================================== */
+
+    const wrongTransfer =
+      String(
+        data.wrongTransfer || ""
+      ).split("|");
+
+
+    document.getElementById(
+      "wrongTransferTitle"
+    ).textContent =
+      wrongTransfer[0] ||
+      "โอนผิด โอนใหม่ ไม่โอนคืนนะคะ!";
+
+
+    document.getElementById(
+      "wrongTransferText"
+    ).textContent =
+      wrongTransfer[1] ||
+      "รบกวนเช็คชื่อและเลขบัญชีให้ดีก่อนโอนน้า";
+
+
+    /* ==========================================
+       SLIP TEXT
+    ========================================== */
+
+    const slipText =
+      String(
+        data.slipText || ""
+      ).split("|");
+
+
+    document.getElementById(
+      "slipText"
+    ).textContent =
+      `${slipText[0] || ""} ${
+        slipText[1] || ""
+      }`.trim();
+
+
+    /* ==========================================
+       FOOTER
+    ========================================== */
+
+    const footer =
+      String(
+        data.footer || ""
+      ).split("|");
+
+
+    document.getElementById(
+      "footerMain"
+    ).textContent =
+      footer[0] ||
+      "♡ ปกติเค้าจะตอบกลับไม่เกิน 5 นาทีค่า";
+
+
+    document.getElementById(
+      "footerSub"
+    ).textContent =
+      footer[1] ||
+      "(หากไม่ติดงานประจำ)";
+
+
+    /* ==========================================
+       MEMBER LINK
+    ========================================== */
+
+    const memberButton =
+      document.getElementById(
+        "memberButton"
+      );
+
+
+    if (
+      data.memberEnabled === false
+    ) {
+
+      memberButton.addEventListener(
+        "click",
+        function(event) {
+
+          event.preventDefault();
+
+          showToast(
+            "ระบบสมาชิกกำลังอยู่ระหว่างปรับปรุงค่า ♡"
+          );
+
+        }
+      );
+
+    } else {
+
+      memberButton.href =
+        data.memberUrl ||
+        "member.html";
+
+    }
+
+
+    /* ==========================================
+       MUSIC
+    ========================================== */
+
+    const musicBox =
+      document.getElementById(
+        "musicBox"
+      );
+
+
+    const musicButton =
+      document.getElementById(
+        "musicButton"
+      );
+
+
+    const bgMusic =
+      document.getElementById(
+        "bgMusic"
+      );
+
+
+    let musicPlaying =
+      false;
+
+
+    if (data.musicUrl) {
+
+      musicBox.classList.add(
+        "show"
+      );
+
+      bgMusic.src =
+        data.musicUrl;
+
+
+      musicButton.addEventListener(
+        "click",
+        async function() {
+
+          try {
+
+            if (
+              bgMusic.paused
+            ) {
+
+              await bgMusic.play();
+
+              musicPlaying =
+                true;
+
+              musicButton.textContent =
+                "Ⅱ ปิดเพลง";
+
+            } else {
+
+              bgMusic.pause();
+
+              musicPlaying =
+                false;
+
+              musicButton.textContent =
+                "▶ เปิดเพลง";
+
+            }
+
+          } catch (error) {
+
+            showToast(
+              "เบราว์เซอร์ยังไม่อนุญาตให้เปิดเพลงอัตโนมัติค่า"
+            );
+
+          }
+
+        }
+      );
+
+
+      /*
+        พยายามเปิดเพลงอัตโนมัติ
+        แต่ Chrome / Safari / iPhone
+        อาจบล็อก autoplay
+      */
+
+      if (
+        data.musicEnabled === true
+      ) {
+
+        bgMusic
+          .play()
+          .then(
+            function() {
+
+              musicPlaying =
+                true;
+
+              musicButton.textContent =
+                "Ⅱ ปิดเพลง";
+
+            }
+          )
+          .catch(
+            function() {
+
+              musicPlaying =
+                false;
+
+              musicButton.textContent =
+                "▶ เปิดเพลง";
+
+            }
+          );
+
+      }
+
+    }
+
+
+    /* ==========================================
+       COPY FUNCTION
+    ========================================== */
+
+    async function copyText(
+      text,
+      button
+    ) {
+
+      if (!text) {
+
+        showToast(
+          "ไม่มีเลขบัญชีให้คัดลอกค่า"
+        );
+
+        return;
+
+      }
+
+
+      try {
+
+        if (
+          navigator.clipboard &&
+          window.isSecureContext
+        ) {
+
+          await navigator.clipboard.writeText(
+            text
+          );
+
+        } else {
+
+          const textarea =
+            document.createElement(
+              "textarea"
+            );
+
+          textarea.value =
+            text;
+
+          textarea.style.position =
+            "fixed";
+
+          textarea.style.left =
+            "-999999px";
+
+          textarea.style.top =
+            "-999999px";
+
+          document.body.appendChild(
+            textarea
+          );
+
+          textarea.focus();
+
+          textarea.select();
+
+          document.execCommand(
+            "copy"
+          );
+
+          textarea.remove();
+
+        }
+
+
+        const original =
+          button.textContent;
+
+
+        button.textContent =
+          "คัดลอกแล้ว";
+
+
+        button.classList.add(
+          "copied"
+        );
+
+
+        showToast(
+          "คัดลอกเลขบัญชีแล้วค่า ♡"
+        );
+
+
+        setTimeout(
+          function() {
+
+            button.textContent =
+              original;
+
+            button.classList.remove(
+              "copied"
+            );
+
+          },
+          1600
+        );
+
+
+      } catch (error) {
+
+        showToast(
+          "คัดลอกไม่สำเร็จ ลองกดค้างที่เลขบัญชีแทนน้า"
+        );
+
+      }
+
+    }
+
+
+    /* ==========================================
+       TOAST
+    ========================================== */
+
+    let toastTimer;
+
+
+    function showToast(
+      message
+    ) {
+
+      const toast =
+        document.getElementById(
+          "toast"
+        );
+
+
+      toast.textContent =
+        message;
+
+
+      toast.classList.add(
+        "show"
+      );
+
+
+      clearTimeout(
+        toastTimer
+      );
+
+
+      toastTimer =
+        setTimeout(
+          function() {
+
+            toast.classList.remove(
+              "show"
+            );
+
+          },
+          2200
+        );
+
+    }
+
+  </script>
+
+</body>
+</html>
