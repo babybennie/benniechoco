@@ -2,779 +2,1325 @@
 <html lang="th">
 <head>
   <meta charset="UTF-8">
-  <meta
-    name="viewport"
-    content="width=device-width, initial-scale=1.0"
-  >
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title>bennie choco | Member</title>
+  <title>bennie choco | Stamp Card</title>
+
+  <script src="https://cdn.tailwindcss.com"></script>
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link
-    rel="preconnect"
-    href="https://fonts.gstatic.com"
-    crossorigin
-  >
-
-  <link
-    href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600;700&display=swap"
+    href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600&display=swap"
     rel="stylesheet"
   >
 
   <style>
-
-    :root {
-      --primary: #ff66a0;
-      --secondary: #8b5e3c;
-      --cream: #fff8f1;
-      --brown: #5d4037;
-      --pink-soft: #fff0f6;
-    }
-
-
     * {
       box-sizing: border-box;
     }
 
-
-    html {
-      scroll-behavior: smooth;
-    }
-
-
+    html,
     body {
       margin: 0;
-      min-height: 100vh;
+      padding: 0;
+      min-height: 100%;
+    }
+
+    body {
       font-family: "Prompt", sans-serif;
-      color: var(--brown);
-
-      background:
-        radial-gradient(
-          circle at top left,
-          rgba(255, 183, 211, 0.35),
-          transparent 35%
-        ),
-        radial-gradient(
-          circle at bottom right,
-          rgba(139, 94, 60, 0.12),
-          transparent 35%
-        ),
-        var(--cream);
-
+      background: #fff7fb;
+      color: #5b3948;
       overflow-x: hidden;
     }
 
+    /* =========================
+       Background
+    ========================= */
 
-    button,
-    a {
-      font-family: inherit;
-    }
-
-
-    /* ==================================
-       BACKGROUND
-    ================================== */
-
-    .background {
+    .page-bg {
       position: fixed;
       inset: 0;
-      z-index: -2;
+      z-index: -5;
+      background:
+        radial-gradient(
+          circle at 20% 15%,
+          rgba(255, 184, 213, 0.25),
+          transparent 32%
+        ),
+        radial-gradient(
+          circle at 85% 75%,
+          rgba(255, 214, 230, 0.30),
+          transparent 35%
+        ),
+        #fff7fb;
+    }
+
+    #customBackground {
+      position: fixed;
+      inset: 0;
+      z-index: -4;
       background-position: center;
       background-size: cover;
       background-repeat: no-repeat;
+      pointer-events: none;
     }
 
-
-    .background::after {
-      content: "";
-      position: absolute;
+    #backgroundOverlay {
+      position: fixed;
       inset: 0;
-      background: rgba(255, 248, 241, 0.55);
+      z-index: -3;
+      background: rgba(255, 247, 251, 0.55);
+      pointer-events: none;
     }
 
+    /* =========================
+       Decorative floating items
+    ========================= */
 
-    /* ==================================
-       DECORATIONS
-    ================================== */
-
-    .floating {
+    .deco {
       position: fixed;
       pointer-events: none;
+      user-select: none;
+      opacity: 0.65;
       z-index: -1;
-      opacity: 0.3;
     }
 
-
-    .floating.one {
-      top: 8%;
+    .deco-1 {
+      top: 7%;
       left: 7%;
-      font-size: 30px;
-      animation: floatOne 5s ease-in-out infinite;
+      font-size: 28px;
+      animation: floatUpDown 4s ease-in-out infinite;
     }
 
-
-    .floating.two {
-      right: 8%;
-      top: 20%;
-      font-size: 24px;
-      animation: floatTwo 6s ease-in-out infinite;
+    .deco-2 {
+      top: 17%;
+      right: 7%;
+      font-size: 22px;
+      animation: floatLeftRight 5s ease-in-out infinite;
     }
 
-
-    .floating.three {
-      left: 12%;
+    .deco-3 {
       bottom: 15%;
+      left: 8%;
       font-size: 20px;
-      animation: floatOne 7s ease-in-out infinite;
+      animation: floatUpDown 4.8s ease-in-out infinite;
     }
 
+    .deco-4 {
+      bottom: 9%;
+      right: 8%;
+      font-size: 30px;
+      animation: floatLeftRight 5.5s ease-in-out infinite;
+    }
 
-    @keyframes floatOne {
-
+    @keyframes floatUpDown {
       0%,
       100% {
         transform: translateY(0);
       }
 
       50% {
-        transform: translateY(-12px);
+        transform: translateY(-10px);
       }
-
     }
 
-
-    @keyframes floatTwo {
-
+    @keyframes floatLeftRight {
       0%,
       100% {
-        transform: translateX(0) rotate(0deg);
+        transform: translateX(0);
       }
 
       50% {
-        transform: translateX(9px) rotate(7deg);
+        transform: translateX(8px);
+      }
+    }
+
+    @keyframes pulseSoft {
+      0%,
+      100% {
+        transform: scale(1);
+        opacity: 0.9;
       }
 
+      50% {
+        transform: scale(1.04);
+        opacity: 1;
+      }
     }
 
+    /* =========================
+       Main
+    ========================= */
 
-    /* ==================================
-       PAGE
-    ================================== */
-
-    .page {
+    .page-container {
       width: 100%;
-      max-width: 470px;
+      max-width: 460px;
       margin: 0 auto;
-      padding: 25px 15px 40px;
+      padding: 28px 16px 45px;
     }
 
+    /* =========================
+       Header
+    ========================= */
 
-    /* ==================================
-       HEADER
-    ================================== */
-
-    .header {
+    .brand-header {
       text-align: center;
       margin-bottom: 18px;
     }
 
-
-    .header-icon {
-      font-size: 27px;
-      margin-bottom: 3px;
-      animation: floatOne 4s ease-in-out infinite;
-    }
-
-
-    .brand {
-      margin: 0;
-      color: var(--secondary);
-      font-size: 29px;
+    .brand-title {
+      color: var(--primary-color, #e85d93);
+      font-size: 30px;
+      font-weight: 600;
+      letter-spacing: 0.3px;
       line-height: 1.2;
-      font-weight: 700;
     }
 
-
-    .subtitle {
-      margin: 6px 0 0;
-      color: #9d7b6c;
+    .brand-subtitle {
+      margin-top: 5px;
       font-size: 13px;
+      color: var(--secondary-color, #8b5e3c);
+      opacity: 0.8;
+      letter-spacing: 0.8px;
     }
 
+    /* =========================
+       Card
+    ========================= */
 
-    /* ==================================
-       CARD
-    ================================== */
-
-    .card {
-      padding: 27px 20px;
-      border-radius: 28px;
-
+    .glass-card {
       background: rgba(255, 255, 255, 0.82);
-
-      border:
-        1px solid
-        rgba(255, 255, 255, 0.9);
-
+      border: 1px solid rgba(255, 255, 255, 0.85);
+      border-radius: 28px;
+      padding: 22px;
       box-shadow:
-        0 20px 55px
-        rgba(125, 78, 91, 0.13);
+        0 20px 55px rgba(122, 67, 91, 0.10),
+        inset 0 1px 0 rgba(255, 255, 255, 0.8);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+    }
 
-      backdrop-filter: blur(15px);
-      -webkit-backdrop-filter: blur(15px);
+    /* =========================
+       Member information
+    ========================= */
 
+    .member-heading {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    .member-label {
+      font-size: 12px;
+      color: var(--secondary-color, #8b5e3c);
+      opacity: 0.75;
+      margin-bottom: 4px;
+    }
+
+    .member-name {
+      font-size: 22px;
+      font-weight: 600;
+      color: var(--primary-color, #e85d93);
+      line-height: 1.35;
+      word-break: break-word;
+    }
+
+    .order-channel {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      margin-top: 9px;
+      padding: 6px 13px;
+      border-radius: 999px;
+      background: rgba(255, 225, 237, 0.85);
+      color: var(--secondary-color, #8b5e3c);
+      font-size: 12px;
+    }
+
+    /* =========================
+       Stamp Card
+    ========================= */
+
+    .stamp-card {
+      margin-top: 20px;
+      padding: 18px 14px 20px;
+      border-radius: 22px;
+      background: rgba(255, 248, 251, 0.9);
+      border: 1px solid rgba(232, 93, 147, 0.12);
+    }
+
+    .stamp-title {
+      text-align: center;
+      font-size: 18px;
+      font-weight: 500;
+      color: var(--secondary-color, #8b5e3c);
+      margin-bottom: 5px;
+    }
+
+    .stamp-subtitle {
+      text-align: center;
+      font-size: 12px;
+      color: #a47787;
+      margin-bottom: 17px;
+    }
+
+    .stamp-grid {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 11px;
+      max-width: 330px;
+      margin: 0 auto;
+    }
+
+    .stamp-slot {
+      position: relative;
+      aspect-ratio: 1 / 1;
+      border-radius: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+    }
+
+    .stamp-slot.empty {
+      border: 1.5px dashed rgba(232, 93, 147, 0.25);
+      background: rgba(255, 255, 255, 0.48);
+    }
+
+    .stamp-slot.filled {
+      border: 1px solid rgba(232, 93, 147, 0.12);
+      background: rgba(255, 255, 255, 0.72);
+      animation: pulseSoft 2.5s ease-in-out infinite;
+    }
+
+    .stamp-slot img {
+      width: 82%;
+      height: 82%;
+      object-fit: contain;
+      display: block;
+    }
+
+    .slot-number {
+      position: absolute;
+      left: 5px;
+      bottom: 4px;
+      min-width: 18px;
+      height: 18px;
+      padding: 0 4px;
+      border-radius: 999px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: rgba(255, 255, 255, 0.85);
+      color: #a47787;
+      font-size: 9px;
+      line-height: 1;
+    }
+
+    /* =========================
+       Progress
+    ========================= */
+
+    .progress-area {
+      margin-top: 21px;
       text-align: center;
     }
 
-
-    .member-icon {
-      width: 72px;
-      height: 72px;
-
-      display: grid;
-      place-items: center;
-
-      margin: 0 auto 17px;
-
-      border-radius: 50%;
-
-      background:
-        linear-gradient(
-          135deg,
-          #fff0f6,
-          #fff8f1
-        );
-
-      border:
-        1px solid
-        rgba(255, 102, 160, 0.15);
-
-      font-size: 34px;
-
-      box-shadow:
-        0 10px 25px
-        rgba(255, 102, 160, 0.1);
-
-      animation:
-        pulseSoft
-        3s
-        ease-in-out
-        infinite;
-    }
-
-
-    @keyframes pulseSoft {
-
-      0%,
-      100% {
-        transform: scale(1);
-      }
-
-      50% {
-        transform: scale(1.05);
-      }
-
-    }
-
-
-    .title {
-      margin: 0;
-
-      color: var(--secondary);
-
-      font-size: 21px;
+    .progress-number {
+      font-size: 25px;
       font-weight: 600;
+      color: var(--primary-color, #e85d93);
     }
 
-
-    .description {
-      margin: 9px auto 0;
-
-      max-width: 350px;
-
-      color: #927568;
-
-      font-size: 13px;
-      line-height: 1.8;
+    .progress-text {
+      margin-top: 2px;
+      color: #9d7886;
+      font-size: 12px;
     }
 
-
-    /* ==================================
-       STATUS
-    ================================== */
-
-    .status {
-      margin-top: 21px;
-      padding: 15px;
-
-      border-radius: 18px;
-
-      background: var(--pink-soft);
-
-      border:
-        1px solid
-        rgba(255, 102, 160, 0.12);
-    }
-
-
-    .status-badge {
-      display: inline-block;
-
-      padding: 5px 12px;
-
+    .progress-bar {
+      height: 8px;
+      margin: 12px auto 0;
+      max-width: 300px;
+      overflow: hidden;
       border-radius: 999px;
+      background: rgba(232, 93, 147, 0.12);
+    }
 
-      background: rgba(255, 255, 255, 0.75);
+    .progress-fill {
+      height: 100%;
+      width: 0%;
+      border-radius: inherit;
+      background: var(--primary-color, #e85d93);
+      transition: width 0.5s ease;
+    }
 
-      color: var(--primary);
+    /* =========================
+       Completed
+    ========================= */
 
-      font-size: 11px;
+    .completed-box {
+      display: none;
+      margin-top: 18px;
+      padding: 13px 15px;
+      border-radius: 16px;
+      text-align: center;
+      background: rgba(255, 228, 239, 0.9);
+      color: var(--primary-color, #e85d93);
+      font-size: 14px;
       font-weight: 500;
     }
 
+    /* =========================
+       Music
+    ========================= */
 
-    .status-text {
-      margin: 9px 0 0;
+    .music-box {
+      display: none;
+      margin-top: 18px;
+      padding: 12px 14px;
+      border-radius: 17px;
+      background: rgba(255, 255, 255, 0.72);
+      border: 1px solid rgba(232, 93, 147, 0.10);
+    }
 
-      color: #8e6c60;
+    .music-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+    }
 
+    .music-text {
+      min-width: 0;
+    }
+
+    .music-title {
       font-size: 12px;
-      line-height: 1.7;
+      font-weight: 500;
+      color: var(--secondary-color, #8b5e3c);
     }
 
-
-    /* ==================================
-       FUTURE FEATURES
-    ================================== */
-
-    .future-box {
-      margin-top: 15px;
-      text-align: left;
+    .music-status {
+      margin-top: 2px;
+      font-size: 10px;
+      color: #a47787;
     }
 
-
-    .future-title {
-      margin: 0 0 8px;
-
-      color: var(--secondary);
-
-      font-size: 13px;
-      font-weight: 600;
-    }
-
-
-    .future-list {
-      margin: 0;
-      padding: 0;
-
-      list-style: none;
-    }
-
-
-    .future-list li {
-      position: relative;
-
-      margin-bottom: 7px;
-
-      padding: 10px 12px 10px 32px;
-
-      border-radius: 13px;
-
-      background: rgba(255,255,255,0.72);
-
-      color: #907268;
-
+    .music-button {
+      flex-shrink: 0;
+      border: 0;
+      border-radius: 999px;
+      padding: 7px 12px;
+      background: var(--primary-color, #e85d93);
+      color: white;
+      font-family: inherit;
       font-size: 11px;
+      cursor: pointer;
     }
 
-
-    .future-list li::before {
-      content: "♡";
-
-      position: absolute;
-
-      left: 12px;
-      top: 8px;
-
-      color: var(--primary);
-
-      font-size: 14px;
-    }
-
-
-    /* ==================================
-       BACK BUTTON
-    ================================== */
+    /* =========================
+       Buttons
+    ========================= */
 
     .back-button {
-      display: block;
-
-      margin-top: 18px;
-
-      padding: 13px 15px;
-
-      border-radius: 17px;
-
-      text-align: center;
-
-      text-decoration: none;
-
-      color: white;
-
-      background: var(--primary);
-
+      width: 100%;
+      margin-top: 20px;
+      padding: 12px 15px;
+      border: 1px solid rgba(232, 93, 147, 0.18);
+      border-radius: 15px;
+      background: rgba(255, 255, 255, 0.75);
+      color: var(--secondary-color, #8b5e3c);
+      font-family: inherit;
       font-size: 13px;
-      font-weight: 500;
-
-      box-shadow:
-        0 8px 20px
-        rgba(255, 102, 160, 0.2);
-
+      cursor: pointer;
       transition: 0.2s ease;
     }
 
-
     .back-button:hover {
       transform: translateY(-1px);
-      filter: brightness(0.98);
+      background: white;
     }
 
+    /* =========================
+       Invalid member
+    ========================= */
 
-    /* ==================================
-       FOOTER
-    ================================== */
-
-    .footer {
-      margin-top: 18px;
-
+    .invalid-member {
       text-align: center;
+      padding: 35px 15px;
+    }
 
-      color: #987b70;
+    .invalid-icon {
+      font-size: 38px;
+      margin-bottom: 10px;
+    }
 
-      font-size: 11px;
+    .invalid-title {
+      font-size: 19px;
+      font-weight: 500;
+      color: var(--primary-color, #e85d93);
+    }
+
+    .invalid-text {
+      margin-top: 7px;
+      font-size: 12px;
       line-height: 1.7;
+      color: #9d7886;
     }
 
+    /* =========================
+       Toast
+    ========================= */
 
-    .footer p {
-      margin: 0;
+    #toast {
+      position: fixed;
+      left: 50%;
+      bottom: 22px;
+      z-index: 100;
+      transform: translate(-50%, 20px);
+      opacity: 0;
+      pointer-events: none;
+      padding: 10px 16px;
+      border-radius: 999px;
+      background: rgba(70, 45, 56, 0.92);
+      color: white;
+      font-size: 12px;
+      transition: 0.25s ease;
+      white-space: nowrap;
     }
 
+    #toast.show {
+      opacity: 1;
+      transform: translate(-50%, 0);
+    }
 
-    /* ==================================
-       RESPONSIVE
-    ================================== */
+    /* =========================
+       Mobile
+    ========================= */
 
     @media (max-width: 380px) {
-
-      .page {
-        padding-left: 10px;
-        padding-right: 10px;
+      .page-container {
+        padding-left: 12px;
+        padding-right: 12px;
       }
 
-
-      .card {
-        padding: 23px 15px;
+      .glass-card {
+        padding: 17px;
       }
 
-
-      .brand {
-        font-size: 27px;
+      .stamp-grid {
+        gap: 8px;
       }
 
+      .stamp-slot {
+        border-radius: 12px;
+      }
     }
-
   </style>
 </head>
 
-
 <body>
 
-  <div
-    class="background"
-    id="background"
-  ></div>
+  <div class="page-bg"></div>
+  <div id="customBackground"></div>
+  <div id="backgroundOverlay"></div>
 
+  <div class="deco deco-1">♡</div>
+  <div class="deco deco-2">✦</div>
+  <div class="deco deco-3">♡</div>
+  <div class="deco deco-4">✧</div>
 
-  <div class="floating one">
-    ♡
-  </div>
-
-  <div class="floating two">
-    ✦
-  </div>
-
-  <div class="floating three">
-    ♡
-  </div>
-
-
-  <main class="page">
-
+  <main class="page-container">
 
     <!-- HEADER -->
-
-    <header class="header">
-
-      <div class="header-icon">
-        ♡
+    <header class="brand-header">
+      <div id="shopName" class="brand-title">
+        bennie choco
       </div>
 
-      <h1
-        class="brand"
-        id="shopName"
-      >
-        bennie choco
-      </h1>
-
-      <p
-        class="subtitle"
-        id="subtitle"
-      >
-        Member
-      </p>
-
+      <div class="brand-subtitle">
+        Stamp Card
+      </div>
     </header>
 
+    <!-- MAIN CARD -->
+    <section class="glass-card">
 
-    <!-- MEMBER CARD -->
+      <!-- MEMBER INFO -->
+      <div id="memberContent">
 
-    <section class="card">
+        <div class="member-heading">
 
-      <div class="member-icon">
-        ♡
+          <div class="member-label">
+            MEMBER
+          </div>
+
+          <div id="memberName" class="member-name">
+            -
+          </div>
+
+          <div id="orderChannel" class="order-channel">
+            ช่องทางสั่งซื้อ -
+          </div>
+
+        </div>
+
+        <!-- STAMP CARD -->
+        <div class="stamp-card">
+
+          <div class="stamp-title">
+            ♡ Stamp Card ♡
+          </div>
+
+          <div class="stamp-subtitle">
+            ซื้อ 1 ครั้ง รับ 1 Stamp
+          </div>
+
+          <div id="stampGrid" class="stamp-grid">
+            <!-- JavaScript จะสร้าง 10 ช่อง -->
+          </div>
+
+          <div class="progress-area">
+
+            <div id="progressNumber" class="progress-number">
+              0 / 10
+            </div>
+
+            <div class="progress-text">
+              Stamps
+            </div>
+
+            <div class="progress-bar">
+              <div
+                id="progressFill"
+                class="progress-fill"
+              ></div>
+            </div>
+
+          </div>
+
+          <div id="completedBox" class="completed-box">
+            ✦ สะสมครบ 10 Stamps แล้ว ✦
+          </div>
+
+        </div>
+
+        <!-- MUSIC -->
+        <div id="musicBox" class="music-box">
+
+          <div class="music-row">
+
+            <div class="music-text">
+              <div class="music-title">
+                ♫ Music
+              </div>
+
+              <div id="musicStatus" class="music-status">
+                กำลังเตรียมเพลง...
+              </div>
+            </div>
+
+            <button
+              id="musicButton"
+              class="music-button"
+              type="button"
+            >
+              เปิดเพลง
+            </button>
+
+          </div>
+
+        </div>
+
       </div>
 
-
-      <h2 class="title">
-        ระบบสมาชิก / สะสมแต้ม
-      </h2>
-
-
-      <p class="description">
-        ขอบคุณที่สนับสนุน bennie choco นะคะ ♡
-        ระบบสมาชิกกำลังเตรียมเปิดให้บริการ
-        เพื่อให้ลูกค้าสามารถเช็คแต้มและสิทธิพิเศษต่าง ๆ ได้ในอนาคต
-      </p>
-
-
-      <!-- STATUS -->
-
-      <div class="status">
-
-        <span class="status-badge">
-          อยู่ระหว่างปรับปรุง
-        </span>
-
-        <p class="status-text">
-          ตอนนี้ระบบสะสมแต้มยังไม่เปิดใช้งานค่า
-          หากระบบพร้อมแล้ว สามารถกลับเข้ามาตรวจสอบแต้ม
-          และสิทธิพิเศษได้จากหน้านี้เลย ♡
-        </p>
-
-      </div>
-
-
-      <!-- FUTURE FEATURES -->
-
-      <div class="future-box">
-
-        <p class="future-title">
-          สิ่งที่จะมีในระบบสมาชิก
-        </p>
-
-
-        <ul class="future-list">
-
-          <li>
-            เช็คคะแนนสะสมของลูกค้า
-          </li>
-
-          <li>
-            ดูประวัติการสะสมแต้ม
-          </li>
-
-          <li>
-            ใช้แต้มแลกสิทธิพิเศษ
-          </li>
-
-          <li>
-            รับสิทธิพิเศษสำหรับสมาชิก
-          </li>
-
-        </ul>
-
-      </div>
-
-
-      <!-- BACK -->
-
-      <a
-        href="index.html"
-        class="back-button"
+      <!-- INVALID -->
+      <div
+        id="invalidMember"
+        class="invalid-member"
+        style="display:none;"
       >
-        ← กลับหน้าชำระเงิน
-      </a>
+
+        <div class="invalid-icon">
+          ♡
+        </div>
+
+        <div class="invalid-title">
+          ไม่พบข้อมูลสมาชิก
+        </div>
+
+        <div class="invalid-text">
+          กรุณาเปิดลิงก์สมาชิกที่ได้รับจากร้าน bennie choco
+        </div>
+
+      </div>
+
+      <button
+        class="back-button"
+        type="button"
+        onclick="location.href='index.html'"
+      >
+        ← กลับหน้าหลัก
+      </button>
 
     </section>
 
-
-    <!-- FOOTER -->
-
-    <footer class="footer">
-
-      <p>
-        ♡ bennie choco
-      </p>
-
-      <p>
-        ขอบคุณที่แวะมาอุดหนุนนะคะ
-      </p>
-
-    </footer>
-
-
   </main>
+
+  <!-- MUSIC PLAYER -->
+  <audio
+    id="backgroundMusic"
+    loop
+    preload="auto"
+  ></audio>
+
+  <!-- TOAST -->
+  <div id="toast"></div>
 
 
   <script>
 
-    /* ==========================================
+    /* =====================================================
        STORAGE
-    ========================================== */
+    ===================================================== */
 
-    const STORAGE_KEY =
-      "bennieChocoPaymentData";
+    const STORE_KEY = "bennieChocoPaymentData";
 
+    const defaultStore = {
 
-    const defaultData = {
+      shopName: "bennie choco",
 
-      shopName:
-        "bennie choco",
+      primaryColor: "#e85d93",
 
-      subtitle:
-        "Member",
+      secondaryColor: "#8b5e3c",
 
-      backgroundImage:
-        "",
+      backgroundImage: "",
 
-      backgroundOpacity:
-        0.55,
+      backgroundOpacity: 0.55,
 
-      primaryColor:
-        "#ff66a0",
+      musicUrl: "",
 
-      secondaryColor:
-        "#8b5e3c"
+      musicEnabled: false,
+
+      memberEnabled: true,
+
+      memberStampImage: "",
+
+      memberStampEmptyImage: ""
 
     };
 
 
-    function getData() {
+    function getStoreData() {
 
       try {
 
-        const saved =
-          localStorage.getItem(
-            STORAGE_KEY
-          );
+        const raw = localStorage.getItem(STORE_KEY);
 
-
-        if (!saved) {
-          return defaultData;
+        if (!raw) {
+          return { ...defaultStore };
         }
 
-
         return {
-          ...defaultData,
-          ...JSON.parse(saved)
+          ...defaultStore,
+          ...JSON.parse(raw)
         };
 
       } catch (error) {
 
-        console.error(
-          "Cannot load member settings:",
-          error
-        );
+        console.warn("Cannot read store data.", error);
 
-        return defaultData;
+        return { ...defaultStore };
 
       }
 
     }
 
 
-    const data =
-      getData();
+    const storeData = getStoreData();
 
 
-    /* ==========================================
+    /* =====================================================
+       MEMBER ID
+    ===================================================== */
+
+    const urlParams = new URLSearchParams(
+      window.location.search
+    );
+
+    const memberId =
+      urlParams.get("id");
+
+
+    /* =====================================================
+       TEMP MEMBER DATA
+       
+       จุดนี้เตรียมโครงสร้างไว้ให้ member-admin.html
+       และฐานข้อมูลออนไลน์มาเชื่อมต่อภายหลัง
+
+       รูปแบบข้อมูลที่ข้อ 5 ควรส่งมา:
+
+       {
+         id: "ABC123",
+         name: "ชื่อลูกค้า",
+         channel: "LINE",
+         stamps: 4
+       }
+
+    ===================================================== */
+
+    const demoMembers = {
+
+      /*
+      ตัวอย่างสำหรับทดสอบหน้าเว็บ
+
+      ABC123: {
+        id: "ABC123",
+        name: "น้อง A",
+        channel: "LINE",
+        stamps: 4
+      }
+      */
+
+    };
+
+
+    function getMemberData() {
+
+      /*
+       * ในเวอร์ชันจริง ข้อมูลส่วนนี้จะเปลี่ยนเป็น
+       * การดึงจากฐานข้อมูลออนไลน์
+       *
+       * ตอนนี้รองรับ localStorage ชั่วคราว
+       * เพื่อให้โครงสร้างหน้าเว็บทำงานได้ก่อน
+       */
+
+      try {
+
+        const raw =
+          localStorage.getItem("bennieChocoMembers");
+
+        if (raw) {
+
+          const members =
+            JSON.parse(raw);
+
+          if (
+            members &&
+            typeof members === "object" &&
+            memberId &&
+            members[memberId]
+          ) {
+
+            return members[memberId];
+
+          }
+
+        }
+
+      } catch (error) {
+
+        console.warn(
+          "Cannot read member data.",
+          error
+        );
+
+      }
+
+
+      if (
+        memberId &&
+        demoMembers[memberId]
+      ) {
+
+        return demoMembers[memberId];
+
+      }
+
+      return null;
+
+    }
+
+
+    /* =====================================================
        THEME
-    ========================================== */
+    ===================================================== */
 
-    document.documentElement
-      .style
-      .setProperty(
-        "--primary",
-        data.primaryColor ||
-        "#ff66a0"
+    function applyTheme() {
+
+      const root =
+        document.documentElement;
+
+      root.style.setProperty(
+        "--primary-color",
+        storeData.primaryColor ||
+        "#e85d93"
       );
 
-
-    document.documentElement
-      .style
-      .setProperty(
-        "--secondary",
-        data.secondaryColor ||
+      root.style.setProperty(
+        "--secondary-color",
+        storeData.secondaryColor ||
         "#8b5e3c"
       );
 
 
-    /* ==========================================
-       BASIC TEXT
-    ========================================== */
-
-    document.getElementById(
-      "shopName"
-    ).textContent =
-      data.shopName ||
-      "bennie choco";
+      document.getElementById("shopName")
+        .textContent =
+        storeData.shopName ||
+        "bennie choco";
 
 
-    document.getElementById(
-      "subtitle"
-    ).textContent =
-      "Member";
+      /* Background */
+
+      const background =
+        document.getElementById(
+          "customBackground"
+        );
+
+      const overlay =
+        document.getElementById(
+          "backgroundOverlay"
+        );
 
 
-    /* ==========================================
-       BACKGROUND
-    ========================================== */
+      if (storeData.backgroundImage) {
 
-    const background =
+        background.style.backgroundImage =
+          `url("${storeData.backgroundImage}")`;
+
+        background.style.display =
+          "block";
+
+        overlay.style.background =
+          `rgba(255,247,251,${
+            storeData.backgroundOpacity ??
+            0.55
+          })`;
+
+      } else {
+
+        background.style.display =
+          "none";
+
+        overlay.style.background =
+          "rgba(255,247,251,0)";
+
+      }
+
+    }
+
+
+    /* =====================================================
+       RENDER MEMBER
+    ===================================================== */
+
+    function renderMember() {
+
+      const member =
+        getMemberData();
+
+
+      const memberContent =
+        document.getElementById(
+          "memberContent"
+        );
+
+      const invalidMember =
+        document.getElementById(
+          "invalidMember"
+        );
+
+
+      if (!memberId || !member) {
+
+        memberContent.style.display =
+          "none";
+
+        invalidMember.style.display =
+          "block";
+
+        return;
+
+      }
+
+
+      memberContent.style.display =
+        "block";
+
+      invalidMember.style.display =
+        "none";
+
+
+      const name =
+        member.name ||
+        "สมาชิก bennie choco";
+
+
+      const channel =
+        member.channel ||
+        "ไม่ระบุ";
+
+
+      let stamps =
+        Number(member.stamps);
+
+
+      if (
+        Number.isNaN(stamps) ||
+        stamps < 0
+      ) {
+
+        stamps = 0;
+
+      }
+
+
+      if (stamps > 10) {
+        stamps = 10;
+      }
+
+
       document.getElementById(
-        "background"
+        "memberName"
+      ).textContent = name;
+
+
+      document.getElementById(
+        "orderChannel"
+      ).textContent =
+        `ช่องทางสั่งซื้อ ${channel}`;
+
+
+      renderStamps(stamps);
+
+    }
+
+
+    /* =====================================================
+       RENDER 10 STAMPS
+    ===================================================== */
+
+    function renderStamps(stamps) {
+
+      const grid =
+        document.getElementById(
+          "stampGrid"
+        );
+
+
+      grid.innerHTML = "";
+
+
+      for (
+        let i = 1;
+        i <= 10;
+        i++
+      ) {
+
+        const slot =
+          document.createElement("div");
+
+
+        slot.className =
+          "stamp-slot " +
+          (
+            i <= stamps
+              ? "filled"
+              : "empty"
+          );
+
+
+        const number =
+          document.createElement("span");
+
+
+        number.className =
+          "slot-number";
+
+        number.textContent = i;
+
+
+        /*
+         * ถ้าแอดมินมี PNG Stamp
+         * ใช้รูปนั้นในช่องที่ได้รับแล้ว
+         */
+
+        if (
+          i <= stamps &&
+          storeData.memberStampImage
+        ) {
+
+          const img =
+            document.createElement("img");
+
+          img.src =
+            storeData.memberStampImage;
+
+          img.alt =
+            `Stamp ${i}`;
+
+          img.onerror = function () {
+
+            this.remove();
+
+          };
+
+          slot.appendChild(img);
+
+        }
+
+
+        /*
+         * ถ้าแอดมินตั้ง PNG สำหรับช่องว่าง
+         * สามารถใช้รูปนั้นได้
+         */
+
+        else if (
+          i > stamps &&
+          storeData.memberStampEmptyImage
+        ) {
+
+          const img =
+            document.createElement("img");
+
+          img.src =
+            storeData.memberStampEmptyImage;
+
+          img.alt =
+            `Stamp slot ${i}`;
+
+          img.style.opacity =
+            "0.28";
+
+          img.onerror = function () {
+
+            this.remove();
+
+          };
+
+          slot.appendChild(img);
+
+        }
+
+
+        slot.appendChild(number);
+
+        grid.appendChild(slot);
+
+      }
+
+
+      const progressNumber =
+        document.getElementById(
+          "progressNumber"
+        );
+
+
+      progressNumber.textContent =
+        `${stamps} / 10`;
+
+
+      const progressFill =
+        document.getElementById(
+          "progressFill"
+        );
+
+
+      progressFill.style.width =
+        `${stamps * 10}%`;
+
+
+      const completedBox =
+        document.getElementById(
+          "completedBox"
+        );
+
+
+      if (stamps >= 10) {
+
+        completedBox.style.display =
+          "block";
+
+      } else {
+
+        completedBox.style.display =
+          "none";
+
+      }
+
+    }
+
+
+    /* =====================================================
+       MUSIC
+    ===================================================== */
+
+    const audio =
+      document.getElementById(
+        "backgroundMusic"
+      );
+
+    const musicBox =
+      document.getElementById(
+        "musicBox"
+      );
+
+    const musicButton =
+      document.getElementById(
+        "musicButton"
+      );
+
+    const musicStatus =
+      document.getElementById(
+        "musicStatus"
       );
 
 
-    if (data.backgroundImage) {
+    function setupMusic() {
 
-      background.style.backgroundImage =
-        `url("${data.backgroundImage}")`;
+      if (!storeData.musicUrl) {
 
+        musicBox.style.display =
+          "none";
 
-      const opacity =
-        Number.isFinite(
-          Number(data.backgroundOpacity)
-        )
-          ? Number(data.backgroundOpacity)
-          : 0.55;
+        return;
+
+      }
 
 
-      background.style.opacity =
-        opacity;
+      musicBox.style.display =
+        "block";
+
+
+      audio.src =
+        storeData.musicUrl;
+
+
+      musicButton.textContent =
+        "เปิดเพลง";
+
+
+      musicStatus.textContent =
+        "กดเปิดเพลงได้เลย ♫";
+
+
+      musicButton.onclick =
+        toggleMusic;
+
+
+      /*
+       * Browser ส่วนใหญ่ไม่อนุญาต
+       * autoplay ที่มีเสียง
+       */
+
+      if (storeData.musicEnabled) {
+
+        audio.play()
+          .then(() => {
+
+            musicButton.textContent =
+              "ปิดเพลง";
+
+            musicStatus.textContent =
+              "กำลังเล่นเพลง ♫";
+
+          })
+          .catch(() => {
+
+            musicStatus.textContent =
+              "แตะปุ่มเพื่อเปิดเพลง ♫";
+
+          });
+
+      }
 
     }
+
+
+    function toggleMusic() {
+
+      if (audio.paused) {
+
+        audio.play()
+          .then(() => {
+
+            musicButton.textContent =
+              "ปิดเพลง";
+
+            musicStatus.textContent =
+              "กำลังเล่นเพลง ♫";
+
+          })
+          .catch(() => {
+
+            showToast(
+              "ไม่สามารถเปิดเพลงได้ค่ะ"
+            );
+
+          });
+
+      } else {
+
+        audio.pause();
+
+        musicButton.textContent =
+          "เปิดเพลง";
+
+        musicStatus.textContent =
+          "หยุดเพลงแล้ว";
+
+      }
+
+    }
+
+
+    /* =====================================================
+       TOAST
+    ===================================================== */
+
+    let toastTimer;
+
+
+    function showToast(message) {
+
+      const toast =
+        document.getElementById(
+          "toast"
+        );
+
+
+      toast.textContent =
+        message;
+
+
+      toast.classList.add("show");
+
+
+      clearTimeout(toastTimer);
+
+
+      toastTimer =
+        setTimeout(() => {
+
+          toast.classList.remove(
+            "show"
+          );
+
+        }, 2200);
+
+    }
+
+
+    /* =====================================================
+       INIT
+    ===================================================== */
+
+    applyTheme();
+
+    renderMember();
+
+    setupMusic();
 
   </script>
 
