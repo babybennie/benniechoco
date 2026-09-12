@@ -1,1649 +1,1859 @@
 <!DOCTYPE html>
 <html lang="th">
-
 <head>
-
 <meta charset="UTF-8">
-
-<meta name="viewport"
-      content="width=device-width,initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <title>Bennie Choco Admin</title>
 
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="https://cdn.tailwindcss.com"></script>
 
-<link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600;700&display=swap"
-      rel="stylesheet">
+<link
+  href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600;700&display=swap"
+  rel="stylesheet"
+>
 
 <style>
 
 body{
-    font-family:'Prompt',sans-serif;
-    background:linear-gradient(
-        135deg,
-        #fff9fb,
-        #fcecf2
-    );
-    min-height:100vh;
+  font-family:Prompt,sans-serif;
+  background:linear-gradient(
+    135deg,
+    #fff9fb,
+    #fcecf2
+  );
+  min-height:100vh;
 }
 
 .panel{
-    background:#ffffffdd;
-    backdrop-filter:blur(15px);
-    border:1px solid #fff;
-    box-shadow:
-        0 20px 50px #f472b633;
+  background:#ffffffdd;
+  backdrop-filter:blur(15px);
+  -webkit-backdrop-filter:blur(15px);
+  border:1px solid #fff;
+  box-shadow:0 20px 50px #f472b633;
 }
 
 .field{
-    width:100%;
-    border:1px solid #fbcfe8;
-    border-radius:14px;
-    padding:10px 12px;
-    outline:0;
-    background:#fff;
-    font-family:'Prompt',sans-serif;
+  width:100%;
+  border:1px solid #fbcfe8;
+  border-radius:14px;
+  padding:10px 12px;
+  outline:0;
+  background:#fff;
 }
 
 .field:focus{
-    border-color:#f472b6;
-    box-shadow:0 0 0 3px #fce7f3;
+  border-color:#f472b6;
+  box-shadow:0 0 0 3px #fce7f3;
 }
 
 .label{
-    font-size:12px;
-    font-weight:600;
-    color:#8b5e3c;
-    margin-bottom:5px;
-    display:block;
+  font-size:12px;
+  font-weight:600;
+  color:#8b5e3c;
+  margin-bottom:5px;
+  display:block;
 }
 
-.section{
-    border:1px solid #fce7f3;
-    border-radius:24px;
-    padding:18px;
-    background:rgba(255,255,255,.72);
+.hidden{
+  display:none!important;
 }
 
-.account-item{
-    border:1px solid #fbcfe8;
-    border-radius:18px;
-    padding:14px;
-    background:#fff;
+.login-card{
+  background:#ffffffee;
+  backdrop-filter:blur(20px);
+  -webkit-backdrop-filter:blur(20px);
+  border:1px solid #fff;
+  box-shadow:0 25px 70px rgba(244,114,182,.20);
 }
 
-.small-btn{
-    border:0;
-    border-radius:10px;
-    padding:7px 11px;
-    font-size:12px;
-    font-weight:600;
-    cursor:pointer;
+.nav-btn{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  min-height:52px;
+  border-radius:16px;
+  font-weight:600;
+  transition:.2s;
 }
 
-.preview{
-    width:160px;
-    height:160px;
-    object-fit:cover;
-    border-radius:18px;
-    border:1px solid #fbcfe8;
-    background:#fff;
+.nav-btn:active{
+  transform:scale(.98);
 }
 
-.sticky-actions{
-    position:sticky;
-    bottom:12px;
-    z-index:30;
-    background:rgba(255,255,255,.92);
-    backdrop-filter:blur(12px);
-    border:1px solid #fce7f3;
-    border-radius:20px;
-    padding:10px;
-    box-shadow:0 10px 35px rgba(139,94,60,.12);
-}
-
-.link-box{
-    word-break:break-all;
-    background:#fff9fb;
-    border:1px dashed #f9a8d4;
-    border-radius:14px;
-    padding:12px;
-    font-size:12px;
-    color:#8b5e3c;
-}
-
-@media(max-width:640px){
-
-    .two-col{
-        grid-template-columns:1fr !important;
-    }
-
+.message{
+  min-height:20px;
 }
 
 </style>
-
 </head>
 
 <body class="p-4 text-brown-600">
 
-<div class="max-w-4xl mx-auto">
+<!-- =====================================================
+     LOGIN SCREEN
+     ===================================================== -->
+
+<div id="loginScreen" class="min-h-[90vh] flex items-center justify-center">
+
+  <div class="w-full max-w-md">
+
+    <div class="text-center mb-6">
+
+      <h1 class="text-3xl font-bold text-pink-500">
+        bennie choco
+      </h1>
+
+      <p class="text-sm text-brown-400 mt-1">
+        Admin System
+      </p>
+
+    </div>
+
+    <div class="login-card rounded-[30px] p-6">
+
+      <h2 class="text-xl font-bold text-brown-600 mb-2">
+        เข้าสู่ระบบ Admin
+      </h2>
+
+      <p class="text-xs text-brown-400 leading-relaxed mb-5">
+        กรุณาเข้าสู่ระบบเพื่อจัดการเว็บไซต์
+        ข้อมูลการชำระเงิน และระบบสมาชิก
+      </p>
+
+      <form id="loginForm">
+
+        <div class="mb-4">
+
+          <label class="label">
+            อีเมล Admin
+          </label>
+
+          <input
+            id="loginEmail"
+            class="field"
+            type="email"
+            autocomplete="username"
+            placeholder="อีเมลที่ใช้สร้าง Supabase Auth"
+            required
+          >
+
+        </div>
+
+        <div class="mb-4">
+
+          <label class="label">
+            รหัสผ่าน
+          </label>
+
+          <input
+            id="loginPassword"
+            class="field"
+            type="password"
+            autocomplete="current-password"
+            placeholder="รหัสผ่าน"
+            required
+          >
+
+        </div>
+
+        <button
+          id="loginButton"
+          type="submit"
+          class="w-full py-3 rounded-2xl bg-pink-500 hover:bg-pink-600 text-white font-bold transition"
+        >
+          เข้าสู่ระบบ
+        </button>
+
+      </form>
+
+      <div
+        id="loginMessage"
+        class="message text-center text-xs mt-4"
+      ></div>
+
+      <a
+        href="index.html"
+        class="block text-center text-xs text-brown-400 mt-5"
+      >
+        ← กลับหน้าเว็บไซต์
+      </a>
+
+    </div>
+
+  </div>
+
+</div>
+
+
+<!-- =====================================================
+     ADMIN SCREEN
+     ===================================================== -->
+
+<div id="adminScreen" class="hidden">
+
+  <div class="max-w-4xl mx-auto">
 
     <!-- HEADER -->
 
-    <div class="flex flex-col sm:flex-row
-                sm:items-center sm:justify-between
-                gap-3 mb-5">
+    <div class="flex items-center justify-between gap-3 mb-5">
 
-        <div>
+      <div>
 
-            <h1 class="text-2xl font-bold text-pink-500">
-                Bennie Choco Admin
-            </h1>
+        <h1 class="text-2xl font-bold text-pink-500">
+          Bennie Choco Admin
+        </h1>
 
-            <p class="text-xs text-brown-400 mt-1">
-                หลังบ้านจัดการหน้าเว็บและระบบชำระเงิน
-            </p>
+        <p
+          id="adminUserText"
+          class="text-xs text-brown-400 mt-1"
+        >
+          Admin
+        </p>
 
-        </div>
+      </div>
 
-        <div class="flex gap-2">
-
-            <a href="index.html"
-               class="px-4 py-2 rounded-full
-                      bg-brown-600 text-white text-sm">
-                ดูหน้าเว็บ
-            </a>
-
-            <a href="member-admin.html"
-               class="px-4 py-2 rounded-full
-                      bg-pink-500 text-white text-sm">
-                หลังบ้านสมาชิก
-            </a>
-
-        </div>
+      <button
+        id="logoutButton"
+        class="px-4 py-2 rounded-full bg-brown-600 text-white text-sm"
+      >
+        ออกจากระบบ
+      </button>
 
     </div>
 
 
-    <div class="panel rounded-3xl p-5 space-y-5">
-
-        <!-- =========================
-             WEBSITE
-        ========================== -->
-
-        <section class="section">
-
-            <h2 class="font-bold text-pink-500 mb-4">
-                1. ข้อมูลเว็บไซต์
-            </h2>
-
-            <div class="grid two-col grid-cols-2 gap-3">
-
-                <div>
-                    <label class="label">
-                        ชื่อเว็บ
-                    </label>
-
-                    <input id="shopName"
-                           class="field">
-                </div>
-
-                <div>
-                    <label class="label">
-                        ข้อความใต้ชื่อ
-                    </label>
-
-                    <input id="subtitle"
-                           class="field">
-                </div>
-
-                <div>
-                    <label class="label">
-                        ชื่อบัญชี
-                    </label>
-
-                    <input id="accountName"
-                           class="field">
-                </div>
-
-                <div>
-                    <label class="label">
-                        ข้อความสถานะด้านขวา
-                    </label>
-
-                    <input id="statusRight"
-                           class="field">
-                </div>
-
-                <div>
-                    <label class="label">
-                        ข้อความสถานะ
-                    </label>
-
-                    <input id="statusText"
-                           class="field">
-                </div>
-
-            </div>
-
-        </section>
-
-
-        <!-- =========================
-             IMAGE
-        ========================== -->
-
-        <section class="section">
-
-            <h2 class="font-bold text-pink-500 mb-4">
-                2. QR / รูปภาพชำระเงิน
-            </h2>
-
-            <label class="label">
-                URL รูปภาพ
-            </label>
-
-            <input id="image"
-                   class="field mb-3"
-                   placeholder="https://...">
-
-            <label class="label">
-                หรือเลือกรูปจากเครื่อง
-            </label>
-
-            <input id="imageFile"
-                   type="file"
-                   accept="image/*"
-                   class="field">
-
-            <div class="mt-3">
-
-                <img id="preview"
-                     class="preview"
-                     alt="Preview">
-
-            </div>
-
-            <p class="text-[11px] text-brown-400 mt-2">
-                ใช้เป็นรูป QR / รูปบัญชีหลักบนหน้าเว็บ
-            </p>
-
-        </section>
-
-
-        <!-- =========================
-             PAYMENT ACCOUNTS
-        ========================== -->
-
-        <section class="section">
-
-            <div class="flex items-center justify-between gap-2 mb-4">
-
-                <h2 class="font-bold text-pink-500">
-                    3. ช่องทางชำระเงิน
-                </h2>
-
-                <button id="addAccount"
-                        type="button"
-                        class="small-btn bg-pink-500 text-white">
-                    + เพิ่มช่องทาง
-                </button>
-
-            </div>
-
-            <p class="text-[11px] text-brown-400 mb-3">
-                เพิ่มธนาคาร / Wallet / พร้อมเพย์ / ช่องทางอื่น ๆ
-                ได้ตามต้องการ
-            </p>
-
-            <div id="accountsList"
-                 class="space-y-3">
-            </div>
-
-        </section>
-
-
-        <!-- =========================
-             TEXT
-        ========================== -->
-
-        <section class="section">
-
-            <h2 class="font-bold text-pink-500 mb-4">
-                4. ข้อความหน้าเว็บ
-            </h2>
-
-            <div class="space-y-3">
-
-                <div>
-                    <label class="label">
-                        ข้อความนำ
-                    </label>
-
-                    <input id="intro"
-                           class="field">
-                </div>
-
-                <div>
-                    <label class="label">
-                        ข้อความแนะนำการคัดลอก
-                    </label>
-
-                    <input id="copyHint"
-                           class="field">
-                </div>
-
-                <div>
-                    <label class="label">
-                        หัวข้อช่องทางชำระเงิน
-                    </label>
-
-                    <input id="paymentTitle"
-                           class="field">
-                </div>
-
-                <div>
-                    <label class="label">
-                        เตือนโอนผิด
-                    </label>
-
-                    <textarea id="wrongTransfer"
-                              class="field"
-                              rows="2"></textarea>
-
-                    <p class="text-[10px] text-brown-400 mt-1">
-                        ใช้ | แบ่งบรรทัด เช่น ข้อความหลัก|ข้อความรอง
-                    </p>
-                </div>
-
-                <div>
-                    <label class="label">
-                        เตือนแปะสลิป
-                    </label>
-
-                    <textarea id="slipText"
-                              class="field"
-                              rows="2"></textarea>
-
-                    <p class="text-[10px] text-brown-400 mt-1">
-                        ใช้ | แบ่งบรรทัด
-                    </p>
-                </div>
-
-                <div>
-                    <label class="label">
-                        ท้ายหน้า
-                    </label>
-
-                    <textarea id="footer"
-                              class="field"
-                              rows="2"></textarea>
-
-                    <p class="text-[10px] text-brown-400 mt-1">
-                        ใช้ | แบ่งบรรทัด
-                    </p>
-                </div>
-
-            </div>
-
-        </section>
-
-
-        <!-- =========================
-             MUSIC
-        ========================== -->
-
-        <section class="section">
-
-            <h2 class="font-bold text-pink-500 mb-4">
-                5. เพลงพื้นหลัง
-            </h2>
-
-            <div class="space-y-3">
-
-                <div>
-
-                    <label class="label">
-                        URL เพลง
-                    </label>
-
-                    <input id="musicUrl"
-                           class="field"
-                           placeholder="https://...">
-
-                </div>
-
-                <div>
-
-                    <label class="label">
-                        หรือเลือกไฟล์เพลงจากเครื่อง
-                    </label>
-
-                    <input id="musicFile"
-                           type="file"
-                           accept="audio/*"
-                           class="field">
-
-                </div>
-
-                <label class="flex items-center gap-2
-                              text-sm text-brown-600">
-
-                    <input id="musicEnabled"
-                           type="checkbox"
-                           class="accent-pink-500">
-
-                    เปิดระบบเพลงบนหน้าเว็บ
-
-                </label>
-
-                <p class="text-[11px] text-brown-400">
-                    มือถือส่วนใหญ่ไม่อนุญาตให้เว็บไซต์
-                    เปิดเพลงพร้อมเสียงอัตโนมัติ
-                    จึงมีปุ่มให้ลูกค้ากดเปิดเพลง
-                </p>
-
-            </div>
-
-        </section>
-
-
-        <!-- =========================
-             BACKGROUND / COLOR
-        ========================== -->
-
-        <section class="section">
-
-            <h2 class="font-bold text-pink-500 mb-4">
-                6. พื้นหลังและสีธีม
-            </h2>
-
-            <div class="space-y-3">
-
-                <div>
-
-                    <label class="label">
-                        URL รูปพื้นหลัง
-                    </label>
-
-                    <input id="backgroundImage"
-                           class="field"
-                           placeholder="https://...">
-
-                </div>
-
-                <div>
-
-                    <label class="label">
-                        หรืออัปโหลดรูปพื้นหลัง
-                    </label>
-
-                    <input id="backgroundFile"
-                           type="file"
-                           accept="image/*"
-                           class="field">
-
-                </div>
-
-                <div>
-
-                    <label class="label">
-                        ความโปร่งของพื้นทับรูป
-                    </label>
-
-                    <input id="backgroundOpacity"
-                           type="range"
-                           min="0"
-                           max="1"
-                           step="0.05"
-                           class="w-full accent-pink-500">
-
-                    <div id="opacityText"
-                         class="text-xs text-brown-400">
-                        55%
-                    </div>
-
-                </div>
-
-                <div class="grid two-col grid-cols-2 gap-3">
-
-                    <div>
-
-                        <label class="label">
-                            สีหลัก
-                        </label>
-
-                        <div class="flex gap-2">
-
-                            <input id="primaryColor"
-                                   type="color"
-                                   class="w-12 h-11">
-
-                            <input id="primaryColorText"
-                                   class="field"
-                                   value="#ff66a0">
-
-                        </div>
-
-                    </div>
-
-                    <div>
-
-                        <label class="label">
-                            สีรอง
-                        </label>
-
-                        <div class="flex gap-2">
-
-                            <input id="secondaryColor"
-                                   type="color"
-                                   class="w-12 h-11">
-
-                            <input id="secondaryColorText"
-                                   class="field"
-                                   value="#8b5e3c">
-
-                        </div>
-
-                    </div>
-
-                </div>
-
-            </div>
-
-        </section>
-
-
-        <!-- =========================
-             MEMBER
-        ========================== -->
-
-        <section class="section">
-
-            <h2 class="font-bold text-pink-500 mb-4">
-                7. ระบบสมาชิก / สะสมแต้ม
-            </h2>
-
-            <div class="space-y-3">
-
-                <label class="flex items-center gap-2 text-sm">
-
-                    <input id="memberEnabled"
-                           type="checkbox"
-                           class="accent-pink-500">
-
-                    เปิดปุ่มระบบสมาชิกให้ลูกค้าเห็น
-
-                </label>
-
-                <div>
-
-                    <label class="label">
-                        ลิงก์หน้าสมาชิกสำหรับลูกค้า
-                    </label>
-
-                    <input id="memberUrl"
-                           class="field"
-                           value="member.html">
-
-                </div>
-
-                <div>
-
-                    <label class="label">
-                        ลิงก์หลังบ้านสมาชิกสำหรับแอดมิน
-                    </label>
-
-                    <input id="memberAdminUrl"
-                           class="field"
-                           value="member-admin.html">
-
-                </div>
-
-                <div class="flex flex-wrap gap-2 pt-1">
-
-                    <a href="member.html"
-                       class="small-btn bg-pink-100 text-pink-500">
-                        หน้าสมาชิก
-                    </a>
-
-                    <a href="member-admin.html"
-                       class="small-btn bg-brown-100 text-brown-600">
-                        หลังบ้านสมาชิก
-                    </a>
-
-                </div>
-
-                <p class="text-[11px] text-brown-400">
-                    ถ้า member.html ยังไม่เสร็จ
-                    เราจะทำหน้า "อยู่ระหว่างปรับปรุง"
-                    ให้รองรับไว้ในชุดที่ 3
-                </p>
-
-            </div>
-
-        </section>
-
-
-        <!-- =========================
-             PAYMENT LINK
-        ========================== -->
-
-        <section class="section">
-
-            <h2 class="font-bold text-pink-500 mb-4">
-                8. สร้างลิงก์เรียกเก็บเงิน
-            </h2>
-
-            <div class="grid two-col grid-cols-2 gap-3">
-
-                <div>
-
-                    <label class="label">
-                        จำนวนเงิน
-                    </label>
-
-                    <input id="paymentAmountInput"
-                           type="number"
-                           min="0"
-                           step="0.01"
-                           class="field"
-                           placeholder="590">
-
-                </div>
-
-                <div>
-
-                    <label class="label">
-                        รายละเอียด / หมายเหตุ
-                    </label>
-
-                    <input id="paymentNoteInput"
-                           class="field"
-                           placeholder="ค่าบริการ / ออเดอร์ #123">
-
-                </div>
-
-            </div>
-
-            <button id="generatePaymentLink"
-                    type="button"
-                    class="w-full mt-3 rounded-2xl
-                           bg-pink-500 text-white
-                           font-bold py-3">
-
-                สร้างลิงก์ชำระเงิน
-            </button>
-
-            <div id="generatedLinkArea"
-                 class="hidden mt-4 space-y-2">
-
-                <div class="label">
-                    ลิงก์สำหรับส่งให้ลูกค้า
-                </div>
-
-                <div id="generatedLink"
-                     class="link-box">
-                </div>
-
-                <button id="copyGeneratedLink"
-                        type="button"
-                        class="w-full rounded-xl
-                               bg-brown-600 text-white
-                               py-2.5 text-sm font-semibold">
-
-                    คัดลอกลิงก์
-                </button>
-
-                <a id="openGeneratedLink"
-                   target="_blank"
-                   class="block text-center
-                          rounded-xl bg-pink-100
-                          text-pink-500 py-2.5
-                          text-sm font-semibold">
-
-                    เปิดหน้าลิงก์ทดสอบ
-                </a>
-
-            </div>
-
-        </section>
-
-
-        <!-- ACTIONS -->
-
-        <div class="sticky-actions">
-
-            <div class="flex gap-2">
-
-                <button id="save"
-                        type="button"
-                        class="flex-1 rounded-2xl
-                               bg-pink-500 text-white
-                               font-bold py-3">
-
-                    บันทึกและใช้กับเว็บ
-
-                </button>
-
-                <button id="reset"
-                        type="button"
-                        class="rounded-2xl
-                               bg-brown-100
-                               text-brown-600
-                               px-5">
-
-                    คืนค่าเดิม
-
-                </button>
-
-            </div>
-
-            <div id="message"
-                 class="text-center text-xs
-                        text-brown-400 mt-2">
-            </div>
-
-        </div>
-
-
-        <div class="text-center text-[11px]
-                    text-brown-400 pt-2">
-
-            ระบบเวอร์ชันนี้เก็บข้อมูลด้วย
-            <b>localStorage</b>
-            ของ browser
-
-            <br>
-
-            ถ้าต้องการให้แอดมินแก้แล้ว
-            ลูกค้าเปิดลิงก์จากมือถือเครื่องอื่นเห็นข้อมูลเดียวกัน
-            จะต้องต่อฐานข้อมูลจริงในขั้นถัดไป
-
-        </div>
+    <!-- =================================================
+         NAVIGATION
+         ================================================= -->
+
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-3 mb-5">
+
+      <button
+        id="websiteAdminButton"
+        class="nav-btn bg-pink-500 text-white"
+      >
+        ⚙️ Website Admin
+      </button>
+
+      <button
+        id="paymentGeneratorButton"
+        class="nav-btn bg-white border border-pink-200 text-pink-500"
+      >
+        💰 สร้างลิงก์ชำระเงิน
+      </button>
+
+      <a
+        href="member-admin.html"
+        class="nav-btn bg-white border border-pink-200 text-pink-500"
+      >
+        🎫 Member Admin
+      </a>
+
+      <a
+        href="index.html"
+        class="nav-btn bg-brown-600 text-white"
+      >
+        🌐 หน้าเว็บไซต์
+      </a>
 
     </div>
+
+
+    <!-- =================================================
+         MAIN ADMIN
+         ================================================= -->
+
+    <div class="panel rounded-3xl p-5 space-y-6">
+
+
+      <!-- WEBSITE SETTINGS -->
+
+      <section>
+
+        <h2 class="font-bold text-pink-500 mb-3">
+          ข้อมูลหลักของเว็บไซต์
+        </h2>
+
+        <div class="grid md:grid-cols-2 gap-3">
+
+          <div>
+            <label class="label">
+              ชื่อเว็บ
+            </label>
+            <input
+              id="shopName"
+              class="field"
+            >
+          </div>
+
+          <div>
+            <label class="label">
+              ข้อความใต้ชื่อ
+            </label>
+            <input
+              id="subtitle"
+              class="field"
+            >
+          </div>
+
+          <div>
+            <label class="label">
+              ชื่อบัญชีร้าน
+            </label>
+            <input
+              id="accountName"
+              class="field"
+            >
+          </div>
+
+          <div>
+            <label class="label">
+              เลขบัญชีกสิกร
+            </label>
+            <input
+              id="kbank"
+              class="field"
+              inputmode="numeric"
+            >
+          </div>
+
+          <div>
+            <label class="label">
+              เบอร์ TrueMoney
+            </label>
+            <input
+              id="trueMoney"
+              class="field"
+              inputmode="numeric"
+            >
+          </div>
+
+          <div>
+            <label class="label">
+              ข้อความสถานะขวา
+            </label>
+            <input
+              id="statusRight"
+              class="field"
+            >
+          </div>
+
+        </div>
+
+      </section>
+
+
+      <!-- WEBSITE TEXT -->
+
+      <section>
+
+        <h2 class="font-bold text-pink-500 mb-3">
+          ข้อความบนหน้าเว็บไซต์
+        </h2>
+
+        <div class="space-y-3">
+
+          <div>
+            <label class="label">
+              แถบสถานะ
+            </label>
+            <input
+              id="statusText"
+              class="field"
+            >
+          </div>
+
+          <div>
+            <label class="label">
+              ข้อความนำ
+            </label>
+            <input
+              id="intro"
+              class="field"
+            >
+          </div>
+
+          <div>
+            <label class="label">
+              ข้อความแนะนำการคัดลอก
+            </label>
+            <input
+              id="copyHint"
+              class="field"
+            >
+          </div>
+
+          <div>
+            <label class="label">
+              หัวข้อช่องทางชำระเงิน
+            </label>
+            <input
+              id="paymentTitle"
+              class="field"
+            >
+          </div>
+
+          <div>
+            <label class="label">
+              เตือนโอนผิด — ใช้ | แบ่งบรรทัด
+            </label>
+            <textarea
+              id="wrongTransfer"
+              class="field"
+              rows="3"
+            ></textarea>
+          </div>
+
+          <div>
+            <label class="label">
+              เตือนแปะสลิป — ใช้ | แบ่งบรรทัด
+            </label>
+            <textarea
+              id="slipText"
+              class="field"
+              rows="3"
+            ></textarea>
+          </div>
+
+          <div>
+            <label class="label">
+              ท้ายหน้า — ใช้ | แบ่งบรรทัด
+            </label>
+            <textarea
+              id="footer"
+              class="field"
+              rows="3"
+            ></textarea>
+          </div>
+
+        </div>
+
+      </section>
+
+
+      <!-- WALLET -->
+
+      <section>
+
+        <h2 class="font-bold text-pink-500 mb-3">
+          ค่าธรรมเนียม Wallet
+        </h2>
+
+        <label class="label">
+          ข้อความค่าธรรมเนียมเพิ่มเติม
+        </label>
+
+        <input
+          id="walletExtraFee"
+          class="field"
+          placeholder="+5 บาท"
+        >
+
+        <p class="text-[11px] text-brown-400 mt-2">
+          ตัวอย่าง: +20 บาท
+        </p>
+
+      </section>
+
+
+      <!-- PAYMENT IMAGE -->
+
+      <section>
+
+        <h2 class="font-bold text-pink-500 mb-3">
+          รูปภาพชำระเงิน
+        </h2>
+
+        <label class="label">
+          URL รูปภาพ
+        </label>
+
+        <input
+          id="image"
+          class="field mb-3"
+          placeholder="https://..."
+        >
+
+        <label class="label">
+          หรือเลือกรูปจากเครื่อง
+        </label>
+
+        <input
+          id="imageFile"
+          type="file"
+          accept="image/*"
+          class="field"
+        >
+
+        <img
+          id="preview"
+          class="mt-3 w-40 h-40 object-cover rounded-2xl border border-pink-100"
+          alt="Preview"
+        >
+
+      </section>
+
+
+      <!-- MUSIC -->
+
+      <section>
+
+        <h2 class="font-bold text-pink-500 mb-3">
+          เพลงพื้นหลัง
+        </h2>
+
+        <label class="label">
+          URL เพลง
+        </label>
+
+        <input
+          id="musicUrl"
+          class="field"
+          placeholder="YouTube หรือไฟล์เสียง .mp3/.m4a"
+        >
+
+        <label class="flex items-center gap-2 mt-3 text-sm">
+
+          <input
+            id="musicEnabled"
+            type="checkbox"
+            class="w-4 h-4"
+          >
+
+          เปิดใช้งานเพลง
+
+        </label>
+
+      </section>
+
+
+      <!-- BACKGROUND -->
+
+      <section>
+
+        <h2 class="font-bold text-pink-500 mb-3">
+          พื้นหลัง
+        </h2>
+
+        <label class="label">
+          URL รูปพื้นหลัง
+        </label>
+
+        <input
+          id="backgroundUrl"
+          class="field"
+          placeholder="https://..."
+        >
+
+        <label class="flex items-center gap-2 mt-3 text-sm">
+
+          <input
+            id="backgroundEnabled"
+            type="checkbox"
+            class="w-4 h-4"
+          >
+
+          เปิดใช้งานพื้นหลัง
+
+        </label>
+
+      </section>
+
+
+      <!-- MEMBER -->
+
+      <section>
+
+        <h2 class="font-bold text-pink-500 mb-3">
+          ระบบสมาชิก
+        </h2>
+
+        <label class="flex items-center gap-2 text-sm">
+
+          <input
+            id="memberEnabled"
+            type="checkbox"
+            class="w-4 h-4"
+          >
+
+          เปิดใช้งานปุ่ม Member
+
+        </label>
+
+      </section>
+
+
+      <!-- LINK PREVIEW -->
+
+      <section>
+
+        <h2 class="font-bold text-pink-500 mb-3">
+          ตัวอย่างตอนแชร์ลิงก์
+        </h2>
+
+        <div class="space-y-3">
+
+          <div>
+
+            <label class="label">
+              Preview Title
+            </label>
+
+            <input
+              id="previewTitle"
+              class="field"
+              placeholder="bennie choco"
+            >
+
+          </div>
+
+          <div>
+
+            <label class="label">
+              Preview Description
+            </label>
+
+            <textarea
+              id="previewDescription"
+              class="field"
+              rows="2"
+              placeholder="Payment & Checkout"
+            ></textarea>
+
+          </div>
+
+          <div>
+
+            <label class="label">
+              Preview Image URL
+            </label>
+
+            <input
+              id="previewImage"
+              class="field"
+              placeholder="https://..."
+            >
+
+          </div>
+
+        </div>
+
+      </section>
+
+
+      <!-- SAVE -->
+
+      <div class="flex gap-2 pt-2">
+
+        <button
+          id="save"
+          class="flex-1 rounded-2xl bg-pink-500 text-white font-bold py-3"
+        >
+          บันทึกข้อมูล
+        </button>
+
+        <button
+          id="reset"
+          class="rounded-2xl bg-brown-100 text-brown-600 px-5"
+        >
+          คืนค่าเริ่มต้น
+        </button>
+
+      </div>
+
+      <p
+        id="message"
+        class="text-center text-xs text-brown-400 min-h-[20px]"
+      ></p>
+
+    </div>
+
+
+    <!-- PAYMENT LINK GENERATOR -->
+
+    <div
+      id="paymentGenerator"
+      class="hidden panel rounded-3xl p-5 mt-5"
+    >
+
+      <h2 class="font-bold text-pink-500 mb-4">
+        สร้างลิงก์ชำระเงิน
+      </h2>
+
+      <label class="label">
+        จำนวนเงิน
+      </label>
+
+      <input
+        id="paymentAmount"
+        class="field"
+        type="number"
+        min="0"
+        step="1"
+        placeholder="เช่น 199"
+      >
+
+      <label class="label mt-4">
+        หมายเหตุ
+      </label>
+
+      <input
+        id="paymentNote"
+        class="field"
+        placeholder="เช่น ค่าสินค้า"
+      >
+
+      <button
+        id="generatePayment"
+        class="w-full mt-4 py-3 rounded-2xl bg-pink-500 text-white font-bold"
+      >
+        สร้างลิงก์
+      </button>
+
+      <div
+        id="paymentResult"
+        class="hidden mt-4"
+      >
+
+        <label class="label">
+          ลิงก์สำหรับส่งให้ลูกค้า
+        </label>
+
+        <textarea
+          id="paymentLink"
+          class="field"
+          rows="3"
+          readonly
+        ></textarea>
+
+        <button
+          id="copyPaymentLink"
+          class="w-full mt-3 py-3 rounded-2xl bg-brown-600 text-white font-bold"
+        >
+          คัดลอกลิงก์
+        </button>
+
+      </div>
+
+    </div>
+
+  </div>
 
 </div>
 
 
 <script>
 
-const KEY='bennieChocoPaymentData';
+/* =========================================================
+   SUPABASE
+   ========================================================= */
+
+const SUPABASE_URL =
+  "https://jlcjcfhdvrbdihzwbdhu.supabase.co";
+
+const SUPABASE_KEY =
+  "sb_publishable_bTlJbTM1h2Kl9Z1n7wVfaw_SRJLocBg";
+
+const supabaseClient =
+  window.supabase.createClient(
+    SUPABASE_URL,
+    SUPABASE_KEY,
+    {
+      auth:{
+        persistSession:true,
+        autoRefreshToken:true,
+        detectSessionInUrl:true
+      }
+    }
+  );
 
 
-const DEFAULTS={
+/* =========================================================
+   DEFAULTS
+   ========================================================= */
 
-    shopName:'Bennie Choco',
+const defaults = {
 
-    subtitle:'Payment & Checkout',
+  shopName:"Bennie Choco",
 
-    accountName:'Parinyasiri',
+  subtitle:"Payment & Checkout",
 
-    image:'https://i.postimg.cc/yYXXLQnm/att-YZKp-Oou02U1m01U9E7IVQ5yixn-Mty-Ak-Ll-S0rpd-OVE00.jpg',
+  accountName:"Parinyasiri",
 
-    statusText:'เปิดรับออเดอร์อยู่ค่า',
+  image:
+    "https://i.postimg.cc/yYXXLQnm/att-YZKp-Oou02U1m01U9E7IVQ5yixn-Mty-Ak-Ll-S0rpd-OVE00.jpg",
 
-    statusRight:'พร้อมให้บริการ',
+  statusText:
+    "เปิดรับออเดอร์อยู่ค่า",
 
-    intro:'เลขบัญชีตามนี้เลยค่า',
+  statusRight:
+    "พร้อมให้บริการ",
 
-    copyHint:'เซฟรูปสแกน หรือจิ้มคัดลอกเลขบัญชีได้เลยน้า',
+  intro:
+    "เลขบัญชีตามนี้เลยค่า",
 
-    paymentTitle:'เลือกช่องทางชำระเงิน',
+  copyHint:
+    "เซฟรูปสแกน หรือจิ้มคัดลอกเลขบัญชีได้เลยน้า",
 
-    wrongTransfer:'โอนผิด โอนใหม่ ไม่โอนคืนนะคะ!|รบกวนเช็คชื่อและเลขบัญชีให้ดีก่อนโอนน้า',
+  paymentTitle:
+    "เลือกช่องทางชำระเงิน",
 
-    slipText:'โอนแล้วรบกวน แปะสลิปทุกครั้ง ด้วยน้า|เค้าจะได้รีบเช็คยอดให้ไวๆ เลยค่า',
+  wrongTransfer:
+    "โอนผิด โอนใหม่ ไม่โอนคืนนะคะ!|รบกวนเช็คชื่อและเลขบัญชีให้ดีก่อนโอนน้า",
 
-    footer:'♡ ปกติเค้าจะตอบกลับไม่เกิน 5 นาทีค่า|(หากไม่ติดงานประจำ)',
+  slipText:
+    "โอนแล้วรบกวน แปะสลิปทุกครั้ง ด้วยน้า|เค้าจะได้รีบเช็คยอดให้ไวๆ เลยค่า",
 
-    musicUrl:'',
+  footer:
+    "♡ ปกติเค้าจะตอบกลับไม่เกิน 5 นาทีค่า|(หากไม่ติดงานประจำ)",
 
-    musicEnabled:false,
+  kbank:
+    "2221396513",
 
-    backgroundImage:'',
+  trueMoney:
+    "0943947154",
 
-    backgroundOpacity:.55,
+  walletExtraFee:
+    "+20 บาท",
 
-    primaryColor:'#ff66a0',
+  musicEnabled:
+    false,
 
-    secondaryColor:'#8b5e3c',
+  musicUrl:
+    "",
 
-    memberEnabled:true,
+  backgroundEnabled:
+    false,
 
-    memberUrl:'member.html',
+  backgroundUrl:
+    "",
 
-    memberAdminUrl:'member-admin.html',
+  memberEnabled:
+    true,
 
-    accounts:[
+  previewTitle:
+    "bennie choco",
 
-        {
-            id:'kbank',
-            name:'KBank',
-            display:'กสิกรไทย (Parinyasiri)',
-            number:'2221396513'
-        },
+  previewDescription:
+    "Payment & Checkout",
 
-        {
-            id:'truemoney',
-            name:'TrueMoney',
-            display:'ทรูมันนี่ (Parinyasiri)',
-            number:'0943947154'
-        }
-
-    ]
+  previewImage:
+    ""
 
 };
 
 
-let data=loadData();
+/* =========================================================
+   ELEMENTS
+   ========================================================= */
+
+const loginScreen =
+  document.getElementById("loginScreen");
+
+const adminScreen =
+  document.getElementById("adminScreen");
+
+const loginForm =
+  document.getElementById("loginForm");
+
+const loginEmail =
+  document.getElementById("loginEmail");
+
+const loginPassword =
+  document.getElementById("loginPassword");
+
+const loginButton =
+  document.getElementById("loginButton");
+
+const loginMessage =
+  document.getElementById("loginMessage");
+
+const adminUserText =
+  document.getElementById("adminUserText");
 
 
-function clone(obj){
+/* =========================================================
+   LOGIN MESSAGE
+   ========================================================= */
 
-    return JSON.parse(
-        JSON.stringify(obj)
+function setLoginMessage(
+  text,
+  success=false
+){
+
+  loginMessage.textContent =
+    text;
+
+  loginMessage.className =
+    "message text-center text-xs mt-4 " +
+    (
+      success
+        ? "text-green-600"
+        : "text-red-500"
     );
 
 }
 
 
-function loadData(){
+/* =========================================================
+   CHECK ADMIN
+   ========================================================= */
+
+async function getAdminUser(userId){
+
+  const {
+    data,
+    error
+  } =
+    await supabaseClient
+      .from("admin_users")
+      .select(
+        "user_id, username"
+      )
+      .eq(
+        "user_id",
+        userId
+      )
+      .maybeSingle();
+
+  if(error){
+
+    console.error(
+      "Admin check error:",
+      error
+    );
+
+    throw error;
+  }
+
+  return data;
+}
+
+
+/* =========================================================
+   SHOW ADMIN
+   ========================================================= */
+
+async function showAdmin(session){
+
+  try{
+
+    const admin =
+      await getAdminUser(
+        session.user.id
+      );
+
+    if(!admin){
+
+      await supabaseClient
+        .auth
+        .signOut();
+
+      showLogin();
+
+      setLoginMessage(
+        "บัญชีนี้ไม่มีสิทธิ์เข้า Admin ค่ะ"
+      );
+
+      return false;
+    }
+
+
+    loginScreen.classList.add(
+      "hidden"
+    );
+
+    adminScreen.classList.remove(
+      "hidden"
+    );
+
+    adminUserText.textContent =
+      "เข้าสู่ระบบในชื่อ: " +
+      (admin.username || "Admin");
+
+
+    await loadSettings();
+
+    return true;
+
+  }catch(error){
+
+    console.error(error);
+
+    showLogin();
+
+    setLoginMessage(
+      "ไม่สามารถตรวจสอบสิทธิ์ Admin ได้ค่ะ"
+    );
+
+    return false;
+
+  }
+
+}
+
+
+/* =========================================================
+   SHOW LOGIN
+   ========================================================= */
+
+function showLogin(){
+
+  adminScreen.classList.add(
+    "hidden"
+  );
+
+  loginScreen.classList.remove(
+    "hidden"
+  );
+
+}
+
+
+/* =========================================================
+   LOGIN
+   ========================================================= */
+
+loginForm.addEventListener(
+  "submit",
+  async function(event){
+
+    event.preventDefault();
+
+    setLoginMessage("");
+
+    loginButton.disabled =
+      true;
+
+    loginButton.textContent =
+      "กำลังเข้าสู่ระบบ...";
 
     try{
 
-        const saved =
-            JSON.parse(
-                localStorage.getItem(KEY) || 'null'
+      const email =
+        loginEmail.value.trim();
+
+      const password =
+        loginPassword.value;
+
+
+      const {
+        data,
+        error
+      } =
+        await supabaseClient.auth
+          .signInWithPassword({
+            email,
+            password
+          });
+
+
+      if(error){
+
+        console.error(error);
+
+        setLoginMessage(
+          "อีเมลหรือรหัสผ่านไม่ถูกต้องค่ะ"
+        );
+
+        return;
+      }
+
+
+      if(
+        !data ||
+        !data.session ||
+        !data.user
+      ){
+
+        setLoginMessage(
+          "ไม่สามารถสร้าง Session ได้ค่ะ"
+        );
+
+        return;
+      }
+
+
+      await showAdmin(
+        data.session
+      );
+
+    }catch(error){
+
+      console.error(error);
+
+      setLoginMessage(
+        "เกิดข้อผิดพลาด กรุณาลองใหม่ค่ะ"
+      );
+
+    }finally{
+
+      loginButton.disabled =
+        false;
+
+      loginButton.textContent =
+        "เข้าสู่ระบบ";
+
+    }
+
+  }
+);
+
+
+/* =========================================================
+   LOGOUT
+   ========================================================= */
+
+document
+  .getElementById("logoutButton")
+  .addEventListener(
+    "click",
+    async function(){
+
+      await supabaseClient
+        .auth
+        .signOut();
+
+      showLogin();
+
+      loginPassword.value = "";
+
+      setLoginMessage(
+        "ออกจากระบบแล้วค่ะ",
+        true
+      );
+
+    }
+  );
+
+
+/* =========================================================
+   LOAD SETTINGS
+   ========================================================= */
+
+async function loadSettings(){
+
+  const {
+    data,
+    error
+  } =
+    await supabaseClient
+      .from("site_settings")
+      .select(
+        "id, settings"
+      )
+      .eq(
+        "id",
+        1
+      )
+      .maybeSingle();
+
+
+  if(error){
+
+    console.error(error);
+
+    throw error;
+  }
+
+
+  const saved =
+    data &&
+    data.settings
+      ? data.settings
+      : {};
+
+
+  const settings =
+    {
+      ...defaults,
+      ...saved
+    };
+
+
+  fillForm(settings);
+
+}
+
+
+/* =========================================================
+   FILL FORM
+   ========================================================= */
+
+function fillForm(data){
+
+  const fields = {
+
+    shopName:data.shopName,
+
+    subtitle:data.subtitle,
+
+    accountName:data.accountName,
+
+    kbank:data.kbank,
+
+    trueMoney:data.trueMoney,
+
+    statusRight:data.statusRight,
+
+    statusText:data.statusText,
+
+    intro:data.intro,
+
+    copyHint:data.copyHint,
+
+    paymentTitle:data.paymentTitle,
+
+    wrongTransfer:data.wrongTransfer,
+
+    slipText:data.slipText,
+
+    footer:data.footer,
+
+    walletExtraFee:data.walletExtraFee,
+
+    musicUrl:data.musicUrl,
+
+    backgroundUrl:data.backgroundUrl,
+
+    previewTitle:data.previewTitle,
+
+    previewDescription:data.previewDescription,
+
+    previewImage:data.previewImage,
+
+    image:data.image
+
+  };
+
+
+  Object.keys(fields)
+    .forEach(function(id){
+
+      const element =
+        document.getElementById(id);
+
+      if(element){
+
+        element.value =
+          fields[id] ?? "";
+
+      }
+
+    });
+
+
+  document.getElementById(
+    "musicEnabled"
+  ).checked =
+    !!data.musicEnabled;
+
+
+  document.getElementById(
+    "backgroundEnabled"
+  ).checked =
+    !!data.backgroundEnabled;
+
+
+  document.getElementById(
+    "memberEnabled"
+  ).checked =
+    data.memberEnabled !== false;
+
+
+  document.getElementById(
+    "preview"
+  ).src =
+    data.image ||
+    defaults.image;
+
+}
+
+
+/* =========================================================
+   GET FORM DATA
+   ========================================================= */
+
+function getFormData(){
+
+  return {
+
+    shopName:
+      document.getElementById(
+        "shopName"
+      ).value.trim(),
+
+    subtitle:
+      document.getElementById(
+        "subtitle"
+      ).value.trim(),
+
+    accountName:
+      document.getElementById(
+        "accountName"
+      ).value.trim(),
+
+    kbank:
+      document.getElementById(
+        "kbank"
+      ).value.trim(),
+
+    trueMoney:
+      document.getElementById(
+        "trueMoney"
+      ).value.trim(),
+
+    statusRight:
+      document.getElementById(
+        "statusRight"
+      ).value.trim(),
+
+    statusText:
+      document.getElementById(
+        "statusText"
+      ).value.trim(),
+
+    intro:
+      document.getElementById(
+        "intro"
+      ).value.trim(),
+
+    copyHint:
+      document.getElementById(
+        "copyHint"
+      ).value.trim(),
+
+    paymentTitle:
+      document.getElementById(
+        "paymentTitle"
+      ).value.trim(),
+
+    wrongTransfer:
+      document.getElementById(
+        "wrongTransfer"
+      ).value.trim(),
+
+    slipText:
+      document.getElementById(
+        "slipText"
+      ).value.trim(),
+
+    footer:
+      document.getElementById(
+        "footer"
+      ).value.trim(),
+
+    walletExtraFee:
+      document.getElementById(
+        "walletExtraFee"
+      ).value.trim(),
+
+    musicEnabled:
+      document.getElementById(
+        "musicEnabled"
+      ).checked,
+
+    musicUrl:
+      document.getElementById(
+        "musicUrl"
+      ).value.trim(),
+
+    backgroundEnabled:
+      document.getElementById(
+        "backgroundEnabled"
+      ).checked,
+
+    backgroundUrl:
+      document.getElementById(
+        "backgroundUrl"
+      ).value.trim(),
+
+    memberEnabled:
+      document.getElementById(
+        "memberEnabled"
+      ).checked,
+
+    previewTitle:
+      document.getElementById(
+        "previewTitle"
+      ).value.trim(),
+
+    previewDescription:
+      document.getElementById(
+        "previewDescription"
+      ).value.trim(),
+
+    previewImage:
+      document.getElementById(
+        "previewImage"
+      ).value.trim(),
+
+    image:
+      document.getElementById(
+        "image"
+      ).value.trim()
+
+  };
+
+}
+
+
+/* =========================================================
+   SAVE SETTINGS
+   ========================================================= */
+
+document
+  .getElementById("save")
+  .addEventListener(
+    "click",
+    async function(){
+
+      const message =
+        document.getElementById(
+          "message"
+        );
+
+      message.textContent =
+        "กำลังบันทึก...";
+
+
+      try{
+
+        const settings =
+          getFormData();
+
+
+        const {
+          error
+        } =
+          await supabaseClient
+            .from("site_settings")
+            .upsert(
+              {
+                id:1,
+                settings:settings
+              },
+              {
+                onConflict:"id"
+              }
             );
 
-        if(!saved){
 
-            return clone(DEFAULTS);
+        if(error){
 
+          console.error(error);
+
+          message.textContent =
+            "บันทึกไม่สำเร็จ: " +
+            error.message;
+
+          return;
         }
 
-        return {
 
-            ...clone(DEFAULTS),
+        message.textContent =
+          "บันทึกข้อมูลเรียบร้อยแล้ว ✓";
 
-            ...saved,
 
-            accounts:
-                Array.isArray(saved.accounts)
-                ? saved.accounts
-                : clone(DEFAULTS.accounts)
+        setTimeout(
+          function(){
 
-        };
+            message.textContent =
+              "";
 
-    }catch(e){
-
-        return clone(DEFAULTS);
-
-    }
-
-}
-
-
-function saveData(){
-
-    localStorage.setItem(
-        KEY,
-        JSON.stringify(data)
-    );
-
-}
-
-
-function setValue(id,value){
-
-    const el=document.getElementById(id);
-
-    if(el){
-        el.value=value ?? '';
-    }
-
-}
-
-
-function getValue(id){
-
-    return document.getElementById(id).value;
-
-}
-
-
-/* =========================
-   ACCOUNT RENDER
-========================= */
-
-function renderAccounts(){
-
-    const list =
-        document.getElementById('accountsList');
-
-    if(!data.accounts.length){
-
-        list.innerHTML=`
-
-            <div class="text-center
-                        py-8
-                        text-sm
-                        text-brown-400
-                        border border-dashed
-                        border-pink-200
-                        rounded-2xl">
-
-                ยังไม่มีช่องทางชำระเงิน
-                <br>
-                กด "+ เพิ่มช่องทาง"
-
-            </div>
-
-        `;
-
-        return;
-
-    }
-
-
-    list.innerHTML =
-        data.accounts.map((account,index)=>`
-
-        <div class="account-item">
-
-            <div class="flex items-center
-                        justify-between gap-2 mb-3">
-
-                <div class="font-bold
-                            text-pink-500">
-
-                    ช่องทางที่ ${index+1}
-
-                </div>
-
-                <button type="button"
-                        class="small-btn
-                               bg-red-50
-                               text-red-500"
-                        onclick="removeAccount(${index})">
-
-                    ลบ
-
-                </button>
-
-            </div>
-
-
-            <div class="grid two-col
-                        grid-cols-2 gap-3">
-
-                <div>
-
-                    <label class="label">
-                        ชื่อช่องทาง
-                    </label>
-
-                    <input class="field account-name"
-                           data-index="${index}"
-                           value="${escapeAttr(account.name)}"
-                           placeholder="KBank">
-
-                </div>
-
-
-                <div>
-
-                    <label class="label">
-                        เลขบัญชี / เบอร์
-                    </label>
-
-                    <input class="field account-number"
-                           data-index="${index}"
-                           value="${escapeAttr(account.number)}"
-                           placeholder="เลขบัญชี">
-
-                </div>
-
-
-                <div class="col-span-full">
-
-                    <label class="label">
-                        ชื่อบัญชี / รายละเอียด
-                    </label>
-
-                    <input class="field account-display"
-                           data-index="${index}"
-                           value="${escapeAttr(account.display)}"
-                           placeholder="กสิกรไทย (Parinyasiri)">
-
-                </div>
-
-            </div>
-
-        </div>
-
-        `).join('');
-
-
-}
-
-
-function escapeAttr(value){
-
-    return String(value ?? '')
-        .replace(/&/g,'&amp;')
-        .replace(/"/g,'&quot;')
-        .replace(/</g,'&lt;')
-        .replace(/>/g,'&gt;');
-
-}
-
-
-function readAccounts(){
-
-    document
-        .querySelectorAll('.account-name')
-        .forEach(input=>{
-
-            const index=
-                Number(input.dataset.index);
-
-            if(data.accounts[index]){
-                data.accounts[index].name=
-                    input.value.trim();
-            }
-
-        });
-
-
-    document
-        .querySelectorAll('.account-number')
-        .forEach(input=>{
-
-            const index=
-                Number(input.dataset.index);
-
-            if(data.accounts[index]){
-                data.accounts[index].number=
-                    input.value.trim();
-            }
-
-        });
-
-
-    document
-        .querySelectorAll('.account-display')
-        .forEach(input=>{
-
-            const index=
-                Number(input.dataset.index);
-
-            if(data.accounts[index]){
-                data.accounts[index].display=
-                    input.value.trim();
-            }
-
-        });
-
-}
-
-
-window.removeAccount=function(index){
-
-    if(!confirm('ต้องการลบช่องทางนี้ใช่ไหม?')){
-        return;
-    }
-
-    readAccounts();
-
-    data.accounts.splice(index,1);
-
-    renderAccounts();
-
-};
-
-
-document.getElementById('addAccount')
-.addEventListener('click',function(){
-
-    readAccounts();
-
-    data.accounts.push({
-
-        id:
-            'account_' +
-            Date.now(),
-
-        name:'ช่องทางใหม่',
-
-        display:'',
-
-        number:''
-
-    });
-
-    renderAccounts();
-
-});
-
-
-/* =========================
-   FILL
-========================= */
-
-function fill(){
-
-    setValue('shopName',data.shopName);
-    setValue('subtitle',data.subtitle);
-    setValue('accountName',data.accountName);
-    setValue('statusRight',data.statusRight);
-    setValue('statusText',data.statusText);
-
-    setValue('image',data.image);
-
-    setValue('intro',data.intro);
-    setValue('copyHint',data.copyHint);
-    setValue('paymentTitle',data.paymentTitle);
-
-    setValue('wrongTransfer',data.wrongTransfer);
-    setValue('slipText',data.slipText);
-    setValue('footer',data.footer);
-
-    setValue('musicUrl',data.musicUrl);
-
-    document.getElementById('musicEnabled')
-        .checked=!!data.musicEnabled;
-
-    setValue(
-        'backgroundImage',
-        data.backgroundImage
-    );
-
-    setValue(
-        'backgroundOpacity',
-        data.backgroundOpacity
-    );
-
-    document.getElementById('opacityText')
-        .textContent=
-        Math.round(
-            Number(data.backgroundOpacity)*100
-        )+'%';
-
-    setValue(
-        'primaryColor',
-        data.primaryColor
-    );
-
-    setValue(
-        'primaryColorText',
-        data.primaryColor
-    );
-
-    setValue(
-        'secondaryColor',
-        data.secondaryColor
-    );
-
-    setValue(
-        'secondaryColorText',
-        data.secondaryColor
-    );
-
-    document.getElementById('memberEnabled')
-        .checked=!!data.memberEnabled;
-
-    setValue(
-        'memberUrl',
-        data.memberUrl
-    );
-
-    setValue(
-        'memberAdminUrl',
-        data.memberAdminUrl
-    );
-
-    document.getElementById('preview')
-        .src=data.image || DEFAULTS.image;
-
-    renderAccounts();
-
-}
-
-
-/* =========================
-   FILE READER
-========================= */
-
-function readFile(file){
-
-    return new Promise((resolve,reject)=>{
-
-        if(!file){
-
-            resolve('');
-
-            return;
-
-        }
-
-        const reader=
-            new FileReader();
-
-        reader.onload=()=>{
-            resolve(reader.result);
-        };
-
-        reader.onerror=reject;
-
-        reader.readAsDataURL(file);
-
-    });
-
-}
-
-
-/* =========================
-   IMAGE PREVIEW
-========================= */
-
-document.getElementById('image')
-.addEventListener('input',function(){
-
-    document.getElementById('preview')
-        .src=this.value;
-
-});
-
-
-document.getElementById('imageFile')
-.addEventListener('change',async function(){
-
-    const file=this.files[0];
-
-    if(!file){
-        return;
-    }
-
-    const result=
-        await readFile(file);
-
-    data.image=result;
-
-    document.getElementById('image')
-        .value=result;
-
-    document.getElementById('preview')
-        .src=result;
-
-});
-
-
-/* =========================
-   BACKGROUND
-========================= */
-
-document.getElementById('backgroundFile')
-.addEventListener('change',async function(){
-
-    const file=this.files[0];
-
-    if(!file){
-        return;
-    }
-
-    data.backgroundImage=
-        await readFile(file);
-
-    document.getElementById('backgroundImage')
-        .value=data.backgroundImage;
-
-});
-
-
-/* =========================
-   OPACITY
-========================= */
-
-document.getElementById('backgroundOpacity')
-.addEventListener('input',function(){
-
-    document.getElementById('opacityText')
-        .textContent=
-        Math.round(
-            Number(this.value)*100
-        )+'%';
-
-});
-
-
-/* =========================
-   COLORS
-========================= */
-
-document.getElementById('primaryColor')
-.addEventListener('input',function(){
-
-    document.getElementById('primaryColorText')
-        .value=this.value;
-
-});
-
-
-document.getElementById('primaryColorText')
-.addEventListener('input',function(){
-
-    if(/^#[0-9A-Fa-f]{6}$/.test(this.value)){
-
-        document.getElementById('primaryColor')
-            .value=this.value;
-
-    }
-
-});
-
-
-document.getElementById('secondaryColor')
-.addEventListener('input',function(){
-
-    document.getElementById('secondaryColorText')
-        .value=this.value;
-
-});
-
-
-document.getElementById('secondaryColorText')
-.addEventListener('input',function(){
-
-    if(/^#[0-9A-Fa-f]{6}$/.test(this.value)){
-
-        document.getElementById('secondaryColor')
-            .value=this.value;
-
-    }
-
-});
-
-
-/* =========================
-   MUSIC FILE
-========================= */
-
-document.getElementById('musicFile')
-.addEventListener('change',async function(){
-
-    const file=this.files[0];
-
-    if(!file){
-        return;
-    }
-
-    data.musicUrl=
-        await readFile(file);
-
-    document.getElementById('musicUrl')
-        .value=data.musicUrl;
-
-});
-
-
-/* =========================
-   SAVE
-========================= */
-
-document.getElementById('save')
-.addEventListener('click',function(){
-
-    readAccounts();
-
-    data.shopName=
-        getValue('shopName');
-
-    data.subtitle=
-        getValue('subtitle');
-
-    data.accountName=
-        getValue('accountName');
-
-    data.statusRight=
-        getValue('statusRight');
-
-    data.statusText=
-        getValue('statusText');
-
-    data.image=
-        getValue('image') ||
-        DEFAULTS.image;
-
-    data.intro=
-        getValue('intro');
-
-    data.copyHint=
-        getValue('copyHint');
-
-    data.paymentTitle=
-        getValue('paymentTitle');
-
-    data.wrongTransfer=
-        getValue('wrongTransfer');
-
-    data.slipText=
-        getValue('slipText');
-
-    data.footer=
-        getValue('footer');
-
-    data.musicUrl=
-        getValue('musicUrl');
-
-    data.musicEnabled=
-        document.getElementById(
-            'musicEnabled'
-        ).checked;
-
-    data.backgroundImage=
-        getValue('backgroundImage');
-
-    data.backgroundOpacity=
-        Number(
-            getValue('backgroundOpacity')
+          },
+          2500
         );
 
-    data.primaryColor=
-        getValue('primaryColor');
 
-    data.secondaryColor=
-        getValue('secondaryColor');
+      }catch(error){
 
-    data.memberEnabled=
-        document.getElementById(
-            'memberEnabled'
-        ).checked;
+        console.error(error);
 
-    data.memberUrl=
-        getValue('memberUrl') ||
-        'member.html';
+        message.textContent =
+          "เกิดข้อผิดพลาดในการบันทึกค่ะ";
 
-    data.memberAdminUrl=
-        getValue('memberAdminUrl') ||
-        'member-admin.html';
+      }
+
+    }
+  );
 
 
-    saveData();
+/* =========================================================
+   IMAGE FILE
+   ========================================================= */
 
+document
+  .getElementById("imageFile")
+  .addEventListener(
+    "change",
+    function(event){
 
-    const message=
-        document.getElementById('message');
+      const file =
+        event.target.files[0];
 
-    message.textContent=
-        'บันทึกข้อมูลเรียบร้อยแล้ว ✓';
-
-    setTimeout(()=>{
-
-        message.textContent='';
-
-    },2500);
-
-});
-
-
-/* =========================
-   RESET
-========================= */
-
-document.getElementById('reset')
-.addEventListener('click',function(){
-
-    if(!confirm(
-        'ต้องการคืนค่าข้อมูลเริ่มต้นทั้งหมดใช่ไหม?'
-    )){
+      if(!file){
         return;
-    }
-
-    data=
-        clone(DEFAULTS);
-
-    saveData();
-
-    fill();
-
-    document.getElementById('message')
-        .textContent=
-        'คืนค่าเริ่มต้นแล้ว ✓';
-
-});
+      }
 
 
-/* =========================
-   GENERATE PAYMENT LINK
-========================= */
-
-document.getElementById(
-    'generatePaymentLink'
-)
-.addEventListener('click',function(){
-
-    const amount=
-        document.getElementById(
-            'paymentAmountInput'
-        ).value.trim();
-
-    const note=
-        document.getElementById(
-            'paymentNoteInput'
-        ).value.trim();
-
-
-    if(!amount){
-
-        alert('กรุณาใส่จำนวนเงินก่อน');
-
-        return;
-
-    }
-
-
-    const params=
-        new URLSearchParams();
-
-    params.set(
-        'amount',
-        amount
-    );
-
-    if(note){
-
-        params.set(
-            'note',
-            note
-        );
-
-    }
-
-
-    const base =
-        new URL(
-            'payment.html',
-            window.location.href
-        ).href;
-
-
-    const url =
-        base +
-        '?' +
-        params.toString();
-
-
-    document.getElementById(
-        'generatedLink'
-    ).textContent=url;
-
-
-    document.getElementById(
-        'generatedLinkArea'
-    ).classList.remove('hidden');
-
-
-    document.getElementById(
-        'openGeneratedLink'
-    ).href=url;
-
-
-});
-
-
-/* =========================
-   COPY PAYMENT LINK
-========================= */
-
-document.getElementById(
-    'copyGeneratedLink'
-)
-.addEventListener('click',async function(){
-
-    const text=
-        document.getElementById(
-            'generatedLink'
-        ).textContent;
-
-    if(!text){
-        return;
-    }
-
-
-    try{
-
-        await navigator.clipboard.writeText(text);
-
-        this.textContent=
-            '✓ คัดลอกแล้ว';
-
-        setTimeout(()=>{
-
-            this.textContent=
-                'คัดลอกลิงก์';
-
-        },2000);
-
-    }catch(e){
+      if(
+        !file.type.startsWith(
+          "image/"
+        )
+      ){
 
         alert(
-            'คัดลอกอัตโนมัติไม่ได้\n\n'+
-            text
+          "กรุณาเลือกไฟล์รูปภาพค่ะ"
+        );
+
+        return;
+      }
+
+
+      const reader =
+        new FileReader();
+
+
+      reader.onload =
+        function(){
+
+          const value =
+            reader.result;
+
+
+          document.getElementById(
+            "image"
+          ).value =
+            value;
+
+
+          document.getElementById(
+            "preview"
+          ).src =
+            value;
+
+        };
+
+
+      reader.readAsDataURL(
+        file
+      );
+
+    }
+  );
+
+
+/* =========================================================
+   IMAGE URL PREVIEW
+   ========================================================= */
+
+document
+  .getElementById("image")
+  .addEventListener(
+    "input",
+    function(){
+
+      const value =
+        this.value.trim();
+
+      if(value){
+
+        document.getElementById(
+          "preview"
+        ).src =
+          value;
+
+      }
+
+    }
+  );
+
+
+/* =========================================================
+   RESET
+   ========================================================= */
+
+document
+  .getElementById("reset")
+  .addEventListener(
+    "click",
+    function(){
+
+      if(
+        !confirm(
+          "คืนค่าเริ่มต้นของข้อมูลในแบบฟอร์มใช่ไหม?"
+        )
+      ){
+
+        return;
+      }
+
+
+      fillForm(
+        defaults
+      );
+
+
+      document.getElementById(
+        "message"
+      ).textContent =
+        "คืนค่าในแบบฟอร์มแล้ว — กดบันทึกหากต้องการใช้ค่าเหล่านี้";
+
+    }
+  );
+
+
+/* =========================================================
+   PAYMENT LINK GENERATOR
+   ========================================================= */
+
+document
+  .getElementById(
+    "paymentGeneratorButton"
+  )
+  .addEventListener(
+    "click",
+    function(){
+
+      document
+        .getElementById(
+          "paymentGenerator"
+        )
+        .classList.toggle(
+          "hidden"
         );
 
     }
+  );
 
-});
+
+document
+  .getElementById(
+    "generatePayment"
+  )
+  .addEventListener(
+    "click",
+    function(){
+
+      const amount =
+        document
+          .getElementById(
+            "paymentAmount"
+          )
+          .value
+          .trim();
 
 
-/* =========================
-   START
-========================= */
+      const note =
+        document
+          .getElementById(
+            "paymentNote"
+          )
+          .value
+          .trim();
 
-fill();
+
+      if(
+        !amount ||
+        Number(amount) < 0
+      ){
+
+        alert(
+          "กรุณาใส่จำนวนเงินค่ะ"
+        );
+
+        return;
+      }
+
+
+      const url =
+        new URL(
+          "payment.html",
+          window.location.href
+        );
+
+
+      url.searchParams.set(
+        "amount",
+        amount
+      );
+
+
+      if(note){
+
+        url.searchParams.set(
+          "note",
+          note
+        );
+
+      }
+
+
+      document.getElementById(
+        "paymentLink"
+      ).value =
+        url.href;
+
+
+      document.getElementById(
+        "paymentResult"
+      ).classList.remove(
+        "hidden"
+      );
+
+    }
+  );
+
+
+document
+  .getElementById(
+    "copyPaymentLink"
+  )
+  .addEventListener(
+    "click",
+    async function(){
+
+      const input =
+        document.getElementById(
+          "paymentLink"
+        );
+
+
+      try{
+
+        await navigator.clipboard.writeText(
+          input.value
+        );
+
+      }catch(error){
+
+        input.select();
+
+        document.execCommand(
+          "copy"
+        );
+
+      }
+
+
+      this.textContent =
+        "✓ คัดลอกแล้ว";
+
+
+      setTimeout(
+        () => {
+
+          this.textContent =
+            "คัดลอกลิงก์";
+
+        },
+        1800
+      );
+
+    }
+  );
+
+
+/* =========================================================
+   WEBSITE ADMIN BUTTON
+   ========================================================= */
+
+document
+  .getElementById(
+    "websiteAdminButton"
+  )
+  .addEventListener(
+    "click",
+    function(){
+
+      window.scrollTo({
+        top:0,
+        behavior:"smooth"
+      });
+
+    }
+  );
+
+
+/* =========================================================
+   INITIAL AUTH CHECK
+   ========================================================= */
+
+async function init(){
+
+  try{
+
+    const {
+      data
+    } =
+      await supabaseClient
+        .auth
+        .getSession();
+
+
+    if(
+      data &&
+      data.session
+    ){
+
+      await showAdmin(
+        data.session
+      );
+
+    }else{
+
+      showLogin();
+
+    }
+
+
+  }catch(error){
+
+    console.error(error);
+
+    showLogin();
+
+  }
+
+}
+
+
+supabaseClient.auth.onAuthStateChange(
+  async function(
+    event,
+    session
+  ){
+
+    if(
+      event ===
+      "SIGNED_OUT"
+    ){
+
+      showLogin();
+
+      return;
+    }
+
+    if(
+      session &&
+      event ===
+      "SIGNED_IN"
+    ){
+
+      await showAdmin(
+        session
+      );
+
+    }
+
+  }
+);
+
+
+init();
 
 </script>
 
