@@ -1,1 +1,812 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
 
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Bennie Choco — Admin Login</title>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<script src="https://cdn.tailwindcss.com"></script>
+
+<link
+  href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600;700&display=swap"
+  rel="stylesheet"
+>
+
+<style>
+
+body{
+  font-family:Prompt,sans-serif;
+
+  background:
+    linear-gradient(
+      135deg,
+      #fff9fb,
+      #fcecf2
+    );
+
+  min-height:100vh;
+}
+
+.login-card{
+
+  background:#ffffffee;
+
+  backdrop-filter:blur(20px);
+  -webkit-backdrop-filter:blur(20px);
+
+  border:1px solid #ffffff;
+
+  box-shadow:
+    0 25px 70px
+    rgba(244,114,182,.20);
+
+}
+
+.field{
+
+  width:100%;
+
+  border:
+    1px solid
+    #fbcfe8;
+
+  border-radius:14px;
+
+  padding:
+    11px 13px;
+
+  outline:0;
+
+  background:#fff;
+
+  transition:.2s;
+
+}
+
+.field:focus{
+
+  border-color:#f472b6;
+
+  box-shadow:
+    0 0 0 3px
+    #fce7f3;
+
+}
+
+.label{
+
+  font-size:12px;
+
+  font-weight:600;
+
+  color:#8b5e3c;
+
+  margin-bottom:5px;
+
+  display:block;
+
+}
+
+.message{
+
+  min-height:20px;
+
+}
+
+</style>
+
+</head>
+
+
+<body class="p-4">
+
+
+<!-- =====================================================
+     LOGIN PAGE
+     ===================================================== -->
+
+<div
+  class="
+    min-h-[90vh]
+    flex
+    items-center
+    justify-center
+  "
+>
+
+  <div class="w-full max-w-md">
+
+
+    <!-- BRAND -->
+
+    <div class="text-center mb-6">
+
+      <h1
+        class="
+          text-3xl
+          font-bold
+          text-pink-500
+        "
+      >
+        bennie choco
+      </h1>
+
+      <p
+        class="
+          text-sm
+          text-brown-400
+          mt-1
+        "
+      >
+        Admin System
+      </p>
+
+    </div>
+
+
+    <!-- LOGIN CARD -->
+
+    <div
+      class="
+        login-card
+        rounded-[30px]
+        p-6
+      "
+    >
+
+      <h2
+        class="
+          text-xl
+          font-bold
+          text-brown-600
+          mb-2
+        "
+      >
+        เข้าสู่ระบบ Admin
+      </h2>
+
+
+      <p
+        class="
+          text-xs
+          text-brown-400
+          leading-relaxed
+          mb-5
+        "
+      >
+        กรุณาเข้าสู่ระบบเพื่อจัดการเว็บไซต์
+        ข้อมูลการชำระเงิน และระบบสมาชิก
+      </p>
+
+
+      <!-- LOGIN FORM -->
+
+      <form id="loginForm">
+
+
+        <!-- EMAIL -->
+
+        <div class="mb-4">
+
+          <label
+            class="label"
+            for="loginEmail"
+          >
+            อีเมล Admin
+          </label>
+
+
+          <input
+            id="loginEmail"
+            class="field"
+            type="email"
+            autocomplete="username"
+            placeholder="อีเมลที่ใช้สร้าง Supabase Auth"
+            required
+          >
+
+        </div>
+
+
+        <!-- PASSWORD -->
+
+        <div class="mb-4">
+
+          <label
+            class="label"
+            for="loginPassword"
+          >
+            รหัสผ่าน
+          </label>
+
+
+          <input
+            id="loginPassword"
+            class="field"
+            type="password"
+            autocomplete="current-password"
+            placeholder="รหัสผ่าน"
+            required
+          >
+
+        </div>
+
+
+        <!-- LOGIN BUTTON -->
+
+        <button
+          id="loginButton"
+          type="submit"
+          class="
+            w-full
+            py-3
+            rounded-2xl
+            bg-pink-500
+            hover:bg-pink-600
+            text-white
+            font-bold
+            transition
+          "
+        >
+          เข้าสู่ระบบ
+        </button>
+
+
+      </form>
+
+
+      <!-- MESSAGE -->
+
+      <div
+        id="loginMessage"
+        class="
+          message
+          text-center
+          text-xs
+          mt-4
+        "
+      ></div>
+
+
+      <!-- BACK -->
+
+      <a
+        href="index.html"
+        class="
+          block
+          text-center
+          text-xs
+          text-brown-400
+          mt-5
+        "
+      >
+        ← กลับหน้าเว็บไซต์
+      </a>
+
+
+    </div>
+
+  </div>
+
+</div>
+
+
+
+<script>
+
+/* =========================================================
+   SUPABASE
+   ========================================================= */
+
+const SUPABASE_URL =
+  "https://jlcjcfhdvrbdihzwbdhu.supabase.co";
+
+
+const SUPABASE_KEY =
+  "sb_publishable_bTlJbTM1h2Kl9Z1n7wVfaw_SRJLocBg";
+
+
+const supabaseClient =
+  window.supabase.createClient(
+    SUPABASE_URL,
+    SUPABASE_KEY,
+    {
+      auth:{
+        persistSession:true,
+        autoRefreshToken:true,
+        detectSessionInUrl:true
+      }
+    }
+  );
+
+
+
+/* =========================================================
+   ELEMENTS
+   ========================================================= */
+
+const loginForm =
+  document.getElementById(
+    "loginForm"
+  );
+
+
+const loginEmail =
+  document.getElementById(
+    "loginEmail"
+  );
+
+
+const loginPassword =
+  document.getElementById(
+    "loginPassword"
+  );
+
+
+const loginButton =
+  document.getElementById(
+    "loginButton"
+  );
+
+
+const loginMessage =
+  document.getElementById(
+    "loginMessage"
+  );
+
+
+
+/* =========================================================
+   GET NEXT PAGE
+   ========================================================= */
+
+function getNextPage(){
+
+  const params =
+    new URLSearchParams(
+      window.location.search
+    );
+
+
+  const next =
+    params.get("next");
+
+
+  /*
+     อนุญาตเฉพาะหน้าภายในระบบ Admin
+     เพื่อป้องกัน open redirect
+  */
+
+  const allowedPages = [
+    "admin.html",
+    "member-admin.html"
+  ];
+
+
+  if(
+    allowedPages.includes(next)
+  ){
+
+    return next;
+
+  }
+
+
+  return "admin.html";
+
+}
+
+
+
+/* =========================================================
+   MESSAGE
+   ========================================================= */
+
+function setMessage(
+  text,
+  success=false
+){
+
+  loginMessage.textContent =
+    text;
+
+
+  loginMessage.className =
+    "message text-center text-xs mt-4 " +
+    (
+      success
+        ? "text-green-600"
+        : "text-red-500"
+    );
+
+}
+
+
+
+/* =========================================================
+   CHECK ADMIN
+   ========================================================= */
+
+async function checkAdmin(){
+
+  try{
+
+    /*
+       ตรวจ Session ปัจจุบัน
+    */
+
+    const {
+      data,
+      error
+    } =
+      await supabaseClient
+        .auth
+        .getSession();
+
+
+    if(error){
+
+      console.error(
+        "getSession error:",
+        error
+      );
+
+      return false;
+
+    }
+
+
+    const session =
+      data?.session;
+
+
+    if(!session){
+
+      return false;
+
+    }
+
+
+    /*
+       ตรวจสิทธิ์ Admin
+       ใช้ RPC is_admin()
+       ซึ่งเป็นระบบที่ member-admin.html
+       ใช้อยู่ในปัจจุบัน
+    */
+
+    const {
+      data:isAdmin,
+      error:adminError
+    } =
+      await supabaseClient
+        .rpc("is_admin");
+
+
+    if(adminError){
+
+      console.error(
+        "Admin verification error:",
+        adminError
+      );
+
+      return false;
+
+    }
+
+
+    if(isAdmin !== true){
+
+      return false;
+
+    }
+
+
+    return true;
+
+
+  }catch(error){
+
+    console.error(
+      "checkAdmin error:",
+      error
+    );
+
+    return false;
+
+  }
+
+}
+
+
+
+/* =========================================================
+   REDIRECT
+   ========================================================= */
+
+function redirectToAdmin(){
+
+  const next =
+    getNextPage();
+
+
+  window.location.replace(
+    next
+  );
+
+}
+
+
+
+/* =========================================================
+   INITIAL CHECK
+   ========================================================= */
+
+async function init(){
+
+  /*
+     ถ้ามี Session และเป็น Admin อยู่แล้ว
+     ไม่ต้อง Login ซ้ำ
+  */
+
+  const isAdmin =
+    await checkAdmin();
+
+
+  if(isAdmin){
+
+    redirectToAdmin();
+
+  }
+
+}
+
+
+
+/* =========================================================
+   LOGIN
+   ========================================================= */
+
+loginForm.addEventListener(
+  "submit",
+  async function(event){
+
+    event.preventDefault();
+
+
+    setMessage("");
+
+
+    loginButton.disabled =
+      true;
+
+
+    loginButton.textContent =
+      "กำลังเข้าสู่ระบบ...";
+
+
+    try{
+
+      const email =
+        loginEmail.value.trim();
+
+
+      const password =
+        loginPassword.value;
+
+
+      /*
+         Supabase Auth Login
+      */
+
+      const {
+        data,
+        error
+      } =
+        await supabaseClient
+          .auth
+          .signInWithPassword({
+
+            email:
+              email,
+
+            password:
+              password
+
+          });
+
+
+      if(error){
+
+        console.error(
+          "Login error:",
+          error
+        );
+
+
+        setMessage(
+          "อีเมลหรือรหัสผ่านไม่ถูกต้องค่ะ"
+        );
+
+
+        return;
+
+      }
+
+
+      if(
+        !data ||
+        !data.session ||
+        !data.user
+      ){
+
+        setMessage(
+          "ไม่สามารถสร้าง Session ได้ค่ะ"
+        );
+
+
+        return;
+
+      }
+
+
+      /*
+         Login สำเร็จแล้ว
+         แต่ยังต้องตรวจว่าเป็น Admin
+      */
+
+      setMessage(
+        "กำลังตรวจสอบสิทธิ์ Admin...",
+        true
+      );
+
+
+      const {
+        data:isAdmin,
+        error:adminError
+      } =
+        await supabaseClient
+          .rpc("is_admin");
+
+
+      if(adminError){
+
+        console.error(
+          "Admin RPC error:",
+          adminError
+        );
+
+
+        await supabaseClient
+          .auth
+          .signOut();
+
+
+        setMessage(
+          "ไม่สามารถตรวจสอบสิทธิ์ Admin ได้ค่ะ"
+        );
+
+
+        return;
+
+      }
+
+
+      if(isAdmin !== true){
+
+        await supabaseClient
+          .auth
+          .signOut();
+
+
+        setMessage(
+          "บัญชีนี้ไม่มีสิทธิ์เข้า Admin ค่ะ"
+        );
+
+
+        return;
+
+      }
+
+
+      /*
+         ทุกอย่างผ่าน
+         ส่งไปหน้าที่ต้องการ
+      */
+
+      setMessage(
+        "เข้าสู่ระบบสำเร็จ ✓",
+        true
+      );
+
+
+      setTimeout(
+        function(){
+
+          redirectToAdmin();
+
+        },
+        300
+      );
+
+
+    }catch(error){
+
+      console.error(
+        "Unexpected login error:",
+        error
+      );
+
+
+      setMessage(
+        "เกิดข้อผิดพลาด กรุณาลองใหม่ค่ะ"
+      );
+
+
+    }finally{
+
+      loginButton.disabled =
+        false;
+
+
+      loginButton.textContent =
+        "เข้าสู่ระบบ";
+
+    }
+
+  }
+);
+
+
+
+/* =========================================================
+   AUTH STATE
+   ========================================================= */
+
+supabaseClient.auth.onAuthStateChange(
+  async function(
+    event,
+    session
+  ){
+
+    /*
+       ถ้า Session ถูกสร้างขึ้น
+       และผู้ใช้อยู่หน้า Login
+       ตรวจสิทธิ์แล้วส่งต่อ
+    */
+
+    if(
+      event === "SIGNED_IN" &&
+      session
+    ){
+
+      const isAdmin =
+        await checkAdmin();
+
+
+      if(isAdmin){
+
+        redirectToAdmin();
+
+      }
+
+    }
+
+  }
+);
+
+
+
+/* =========================================================
+   START
+   ========================================================= */
+
+init();
+
+</script>
+
+</body>
+</html>
