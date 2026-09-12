@@ -21,11 +21,11 @@ body{
     padding:0;
     width:100%;
     min-height:100%;
+    background:#FDEAF7;
 }
 
 body{
     overflow-x:hidden;
-    background:#FDEAF7;
 }
 
 
@@ -46,18 +46,21 @@ body{
 
 .home-wrap{
     position:relative;
+
     width:100%;
     max-width:1536px;
+
     line-height:0;
 }
 
 
 /* =====================================================
-   BACKGROUND
+   BACKGROUND IMAGE
    ===================================================== */
 
 .home-image{
     display:block;
+
     width:100%;
     height:auto;
 
@@ -67,135 +70,64 @@ body{
 
 
 /* =====================================================
-   CLOUD BUTTONS
+   INVISIBLE CLICK AREAS
+   วางตรงตัวอักษรในภาพ
    ===================================================== */
 
-.cloud-button{
+.click-area{
     position:absolute;
 
-    display:flex;
-    align-items:center;
-    justify-content:center;
-
-    width:30%;
-    min-height:90px;
+    display:block;
 
     transform:translate(-50%, -50%);
 
-    text-decoration:none;
+    background:transparent;
 
-    color:#8d6b83;
+    border:none;
+    outline:none;
 
-    font-family:
-        "Trebuchet MS",
-        "Arial Rounded MT Bold",
-        Arial,
-        sans-serif;
+    cursor:pointer;
 
-    font-size:clamp(18px, 2.2vw, 34px);
-    font-weight:700;
-    letter-spacing:1px;
-
-    line-height:1;
-
-    background:
-        radial-gradient(
-            circle at 25% 55%,
-            rgba(255,255,255,.98) 0 18%,
-            transparent 19%
-        ),
-        radial-gradient(
-            circle at 42% 38%,
-            rgba(255,255,255,.98) 0 23%,
-            transparent 24%
-        ),
-        radial-gradient(
-            circle at 62% 42%,
-            rgba(255,255,255,.98) 0 25%,
-            transparent 26%
-        ),
-        radial-gradient(
-            circle at 78% 58%,
-            rgba(255,255,255,.98) 0 19%,
-            transparent 20%
-        );
-
-    filter:
-        drop-shadow(0 7px 10px rgba(170,130,160,.16));
-
-    transition:
-        transform .25s ease,
-        filter .25s ease;
-}
-
-
-/* ทำให้พื้นที่ตรงกลางเมฆขาวนุ่ม ๆ */
-
-.cloud-button::before{
-    content:"";
-
-    position:absolute;
-
-    left:12%;
-    right:12%;
-    top:25%;
-    bottom:18%;
-
-    background:rgba(255,255,255,.96);
-
-    border-radius:50%;
-
-    z-index:-1;
-}
-
-
-/* ตัวหนังสือ */
-
-.cloud-button span{
-    position:relative;
-    z-index:2;
-
-    text-shadow:
-        0 1px 0 rgba(255,255,255,.9),
-        0 2px 4px rgba(130,100,125,.12);
-}
-
-
-/* Hover */
-
-.cloud-button:hover{
-    transform:translate(-50%, -50%) scale(1.06);
-
-    filter:
-        drop-shadow(0 10px 14px rgba(170,130,160,.22));
+    -webkit-tap-highlight-color:transparent;
 }
 
 
 /* =====================================================
-   ตำแหน่งปุ่ม
+   PAYMENT
    ===================================================== */
-
-/* Payment */
 
 .payment{
     left:50%;
-    top:30%;
+    top:33.5%;
+
+    width:62%;
+    height:11%;
 }
 
 
-/* Member */
+/* =====================================================
+   MEMBER
+   ===================================================== */
 
 .member{
-    left:32%;
-    top:48%;
+    left:50%;
+    top:56.2%;
+
+    width:62%;
+    height:11%;
 }
 
 
-/* Review */
+/* =====================================================
+   REVIEW
+   ===================================================== */
 
 .review{
-    left:51%;
-    top:67%;
+    left:50%;
+    top:79.2%;
+
+    width:62%;
+    height:11%;
 }
 
 
@@ -205,26 +137,25 @@ body{
 
 @media(max-width:600px){
 
-    .cloud-button{
-        width:42%;
-        min-height:65px;
-
-        font-size:clamp(15px, 5vw, 23px);
-    }
-
     .payment{
         left:50%;
-        top:30%;
+        top:33.5%;
+        width:68%;
+        height:10%;
     }
 
     .member{
-        left:32%;
-        top:48%;
+        left:50%;
+        top:56.2%;
+        width:68%;
+        height:10%;
     }
 
     .review{
-        left:51%;
-        top:67%;
+        left:50%;
+        top:79.2%;
+        width:68%;
+        height:10%;
     }
 
 }
@@ -240,53 +171,47 @@ body{
     <div class="home-wrap">
 
         <!-- =================================================
-             พื้นหลังเปล่า
+             รูปหน้า Home
              ================================================= -->
 
         <img
             class="home-image"
-            src="https://i.postimg.cc/wvbB8Kks/mi-m-ch-x-826-20260913010356.png"
+            src="https://i.postimg.cc/YSS9XN58/mi-m-ch-x-827-20260913012925.png"
             alt="Bennie Choco"
         >
 
 
         <!-- =================================================
-             PAYMENT
+             กด Payment
              ================================================= -->
 
         <a
             href="index.html"
-            class="cloud-button payment"
+            class="click-area payment"
             aria-label="Payment"
-        >
-            <span>Payment</span>
-        </a>
+        ></a>
 
 
         <!-- =================================================
-             MEMBER
+             กด Member
              ================================================= -->
 
         <a
             href="member.html"
-            class="cloud-button member"
+            class="click-area member"
             aria-label="Member"
-        >
-            <span>Member</span>
-        </a>
+        ></a>
 
 
         <!-- =================================================
-             REVIEW
+             กด Review
              ================================================= -->
 
         <a
             href="review.html"
-            class="cloud-button review"
+            class="click-area review"
             aria-label="Review"
-        >
-            <span>Review</span>
-        </a>
+        ></a>
 
     </div>
 
