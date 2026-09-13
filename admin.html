@@ -42,9 +42,143 @@ body{
   min-height:100vh;
 }
 
+/* =========================================================
+   ADMIN HEADER
+========================================================= */
+
+.admin-header{
+  background:rgba(255,255,255,.88);
+  backdrop-filter:blur(18px);
+  -webkit-backdrop-filter:blur(18px);
+  border:1px solid rgba(255,255,255,.95);
+  box-shadow:0 12px 35px rgba(244,114,182,.10);
+  border-radius:28px;
+  padding:16px 20px;
+}
+
+.admin-brand{
+  display:flex;
+  align-items:center;
+  gap:12px;
+  min-width:0;
+}
+
+.admin-logo{
+  width:48px;
+  height:48px;
+  border-radius:50%;
+  object-fit:cover;
+  background:#fff;
+  border:2px solid #fbcfe8;
+  box-shadow:0 5px 16px rgba(244,114,182,.15);
+  flex-shrink:0;
+}
+
+.admin-brand-title{
+  font-size:20px;
+  line-height:1.2;
+  font-weight:700;
+  color:#ec4899;
+}
+
+.admin-brand-subtitle{
+  font-size:11px;
+  color:#9b7b84;
+  margin-top:3px;
+}
+
+.admin-tools{
+  display:flex;
+  align-items:center;
+  gap:9px;
+  flex-wrap:wrap;
+  justify-content:flex-end;
+}
+
+/* วงกลมเครื่องมือ */
+
+.admin-tool{
+  position:relative;
+  width:44px;
+  height:44px;
+  border-radius:50%;
+  border:1px solid #fbcfe8;
+  background:#fff;
+  color:#ec4899;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  text-decoration:none;
+  transition:.2s;
+  box-shadow:0 5px 14px rgba(244,114,182,.08);
+}
+
+.admin-tool:hover{
+  transform:translateY(-2px);
+  background:#fdf2f8;
+  border-color:#f9a8d4;
+  box-shadow:0 8px 20px rgba(244,114,182,.15);
+}
+
+.admin-tool svg{
+  width:20px;
+  height:20px;
+}
+
+.admin-tool.primary{
+  background:#ec4899;
+  color:#fff;
+  border-color:#ec4899;
+}
+
+.admin-tool.primary:hover{
+  background:#db2777;
+  color:#fff;
+}
+
+.admin-tool.brown{
+  color:#8b5e3c;
+}
+
+.admin-tool.purple{
+  color:#8b5cf6;
+}
+
+/* tooltip */
+
+.admin-tool::after{
+  content:attr(data-label);
+  position:absolute;
+  left:50%;
+  top:calc(100% + 9px);
+  transform:translateX(-50%) translateY(-3px);
+  background:#4a3038;
+  color:#fff;
+  padding:5px 9px;
+  border-radius:8px;
+  font-size:10px;
+  line-height:1.2;
+  white-space:nowrap;
+  opacity:0;
+  pointer-events:none;
+  transition:.18s;
+  z-index:100;
+}
+
+.admin-tool:hover::after{
+  opacity:1;
+  transform:translateX(-50%) translateY(0);
+}
+
+
+/* =========================================================
+   GENERAL
+========================================================= */
+
 .panel{
   background:rgba(255,255,255,.90);
   backdrop-filter:blur(16px);
+  -webkit-backdrop-filter:blur(16px);
   border:1px solid rgba(255,255,255,.9);
   box-shadow:0 20px 50px rgba(244,114,182,.14);
 }
@@ -136,6 +270,180 @@ body{
 .hidden{
   display:none!important;
 }
+
+
+/* =========================================================
+   THEME
+========================================================= */
+
+.theme-section{
+  border:1px solid #fbcfe8;
+  border-radius:26px;
+  padding:18px;
+  background:
+    linear-gradient(
+      135deg,
+      rgba(255,247,251,.95),
+      rgba(255,255,255,.95)
+    );
+}
+
+.theme-grid{
+  display:grid;
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:12px;
+}
+
+.theme-card{
+  position:relative;
+  border:2px solid transparent;
+  border-radius:20px;
+  padding:13px;
+  background:#fff;
+  cursor:pointer;
+  transition:.2s;
+  text-align:left;
+}
+
+.theme-card:hover{
+  transform:translateY(-2px);
+  box-shadow:0 8px 22px rgba(0,0,0,.08);
+}
+
+.theme-card.selected{
+  border-color:#ec4899;
+  box-shadow:0 0 0 3px rgba(236,72,153,.10);
+}
+
+.theme-card-title{
+  font-size:13px;
+  font-weight:600;
+  color:#4a3038;
+  margin-bottom:8px;
+}
+
+.theme-colors{
+  display:flex;
+  gap:5px;
+}
+
+.theme-color{
+  width:28px;
+  height:28px;
+  border-radius:50%;
+  border:1px solid rgba(0,0,0,.06);
+}
+
+.theme-check{
+  position:absolute;
+  top:10px;
+  right:10px;
+  width:22px;
+  height:22px;
+  border-radius:50%;
+  background:#ec4899;
+  color:#fff;
+  display:none;
+  align-items:center;
+  justify-content:center;
+  font-size:12px;
+}
+
+.theme-card.selected .theme-check{
+  display:flex;
+}
+
+.custom-theme-box{
+  margin-top:18px;
+  border:1px dashed #f9a8d4;
+  border-radius:20px;
+  padding:16px;
+  background:#fffafd;
+}
+
+.color-row{
+  display:flex;
+  align-items:center;
+  gap:10px;
+}
+
+.color-picker{
+  width:48px;
+  height:43px;
+  padding:3px;
+  border:1px solid #f3c7da;
+  border-radius:12px;
+  background:#fff;
+  cursor:pointer;
+  flex-shrink:0;
+}
+
+.theme-preview{
+  margin-top:18px;
+  border-radius:22px;
+  overflow:hidden;
+  border:1px solid #fbcfe8;
+  background:#fff;
+}
+
+.theme-preview-top{
+  padding:18px;
+}
+
+.theme-preview-content{
+  padding:18px;
+  background:#fff;
+}
+
+.theme-preview-button{
+  display:inline-flex;
+  padding:9px 18px;
+  border-radius:999px;
+  color:#fff;
+  font-size:12px;
+  font-weight:600;
+}
+
+
+/* =========================================================
+   RESPONSIVE
+========================================================= */
+
+@media(max-width:640px){
+
+  body{
+    padding:10px!important;
+  }
+
+  .admin-header{
+    padding:14px;
+  }
+
+  .admin-brand-title{
+    font-size:17px;
+  }
+
+  .admin-logo{
+    width:43px;
+    height:43px;
+  }
+
+  .admin-tools{
+    width:100%;
+    justify-content:flex-start;
+    padding-top:4px;
+  }
+
+  .admin-tool{
+    width:42px;
+    height:42px;
+  }
+
+  .theme-grid{
+    grid-template-columns:1fr;
+  }
+
+}
 </style>
 </head>
 
@@ -143,52 +451,589 @@ body{
 
 <div class="max-w-4xl mx-auto pb-16">
 
-  <!-- HEADER -->
-  <header class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
 
-    <div>
-      <h1 class="text-2xl font-bold text-pink-500">
-        Bennie Choco Admin
-      </h1>
+  <!-- =======================================================
+       HEADER
+  ======================================================== -->
 
-      <p class="text-xs text-brown-400 mt-1">
-        จัดการข้อมูลหน้าเว็บ Payment & Checkout
-      </p>
-    </div>
+  <header class="admin-header mb-6">
 
-    <div class="flex flex-wrap gap-2">
+    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
 
-      <a
-        href="index.html"
-        class="px-4 py-2 rounded-full bg-[#8b5e3c] text-white text-sm shadow-sm"
-      >
-        ดูหน้าเว็บ
-      </a>
+      <!-- BRAND -->
 
-      <a
-        href="payment.html"
-        target="_blank"
-        class="px-4 py-2 rounded-full bg-pink-500 text-white text-sm shadow-sm"
-      >
-        เปิด Payment
-      </a>
+      <div class="admin-brand">
 
-      <a
-        href="member-admin.html"
-        class="px-4 py-2 rounded-full bg-purple-500 text-white text-sm shadow-sm"
-      >
-        Member Admin
-      </a>
+        <img
+          class="admin-logo"
+          src="https://i.postimg.cc/y6b24ph9/mi-m-ch-x-488-20260114125256.png"
+          alt="Bennie Choco Admin"
+        >
+
+        <div>
+
+          <div class="admin-brand-title">
+            Bennie Choco Admin
+          </div>
+
+          <div class="admin-brand-subtitle">
+            จัดการข้อมูลหน้าเว็บ Payment & Review & Member
+          </div>
+
+        </div>
+
+      </div>
+
+
+      <!-- TOOL BUTTONS -->
+
+      <nav class="admin-tools" aria-label="Admin tools">
+
+        <!-- หน้าเว็บ -->
+
+        <a
+          href="index.html"
+          class="admin-tool brown"
+          data-label="ดูหน้าเว็บ"
+          aria-label="ดูหน้าเว็บ"
+        >
+
+          <svg
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <path d="M3 11.5 12 4l9 7.5"></path>
+            <path d="M5 10.5V20h14v-9.5"></path>
+            <path d="M9 20v-5h6v5"></path>
+          </svg>
+
+        </a>
+
+
+        <!-- Payment -->
+
+        <a
+          href="payment.html"
+          target="_blank"
+          class="admin-tool primary"
+          data-label="เปิด Payment"
+          aria-label="เปิด Payment"
+        >
+
+          <svg
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <rect x="2.5" y="5" width="19" height="14" rx="2"></rect>
+            <path d="M2.5 10h19"></path>
+            <path d="M6 15h4"></path>
+          </svg>
+
+        </a>
+
+
+        <!-- Review Admin -->
+
+        <a
+          href="review-admin.html"
+          class="admin-tool"
+          data-label="Review Admin"
+          aria-label="Review Admin"
+        >
+
+          <svg
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <path d="M20 11.5a7.5 7.5 0 0 1-7.5 7.5H8l-4 2v-4.5A7.5 7.5 0 1 1 20 11.5Z"></path>
+            <path d="m9 11 2 2 4-4"></path>
+          </svg>
+
+        </a>
+
+
+        <!-- Member Admin -->
+
+        <a
+          href="member-admin.html"
+          class="admin-tool purple"
+          data-label="Member Admin"
+          aria-label="Member Admin"
+        >
+
+          <svg
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <circle cx="9" cy="8" r="3"></circle>
+            <path d="M3.5 20c.7-3.2 2.5-5 5.5-5s4.8 1.8 5.5 5"></path>
+            <circle cx="17" cy="9" r="2.2"></circle>
+            <path d="M15.5 15.5c2.7.3 4.3 1.7 5 4.5"></path>
+          </svg>
+
+        </a>
+
+
+        <!-- Payment Generator -->
+
+        <button
+          id="headerPaymentGenerator"
+          type="button"
+          class="admin-tool"
+          data-label="สร้างลิงก์ Payment"
+          aria-label="สร้างลิงก์ Payment"
+        >
+
+          <svg
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <path d="M10 13a5 5 0 0 0 7.1.1l2-2a5 5 0 0 0-7.1-7.1l-1.1 1.1"></path>
+            <path d="M14 11a5 5 0 0 0-7.1-.1l-2 2A5 5 0 0 0 7 20l1.1-1.1"></path>
+          </svg>
+
+        </button>
+
+      </nav>
 
     </div>
 
   </header>
 
 
-  <!-- MAIN ADMIN -->
+  <!-- =======================================================
+       MAIN ADMIN
+  ======================================================== -->
+
   <main class="panel rounded-3xl p-5 sm:p-7 space-y-7">
 
-    <!-- BASIC -->
+
+    <!-- =====================================================
+         THEME
+    ====================================================== -->
+
+    <section class="theme-section">
+
+      <div class="flex items-start justify-between gap-3 mb-4">
+
+        <div>
+
+          <h2 class="section-title">
+            🎨 ธีมสีเว็บไซต์
+          </h2>
+
+          <p class="small-help mt-1">
+            เลือกชุดสีที่เข้ากันให้ทั้งเว็บ หรือกำหนดสีเองด้วยรหัส HEX
+          </p>
+
+        </div>
+
+      </div>
+
+
+      <!-- PRESET THEMES -->
+
+      <div class="theme-grid">
+
+        <!-- PINK -->
+
+        <button
+          type="button"
+          class="theme-card"
+          data-theme="pink"
+        >
+
+          <span class="theme-check">
+            ✓
+          </span>
+
+          <div class="theme-card-title">
+            🌸 Sweet Pink
+          </div>
+
+          <div class="theme-colors">
+
+            <span
+              class="theme-color"
+              style="background:#ec4899"
+            ></span>
+
+            <span
+              class="theme-color"
+              style="background:#fbcfe8"
+            ></span>
+
+            <span
+              class="theme-color"
+              style="background:#fff8fb"
+            ></span>
+
+            <span
+              class="theme-color"
+              style="background:#8b5e3c"
+            ></span>
+
+          </div>
+
+        </button>
+
+
+        <!-- PURPLE -->
+
+        <button
+          type="button"
+          class="theme-card"
+          data-theme="purple"
+        >
+
+          <span class="theme-check">
+            ✓
+          </span>
+
+          <div class="theme-card-title">
+            💜 Lavender Dream
+          </div>
+
+          <div class="theme-colors">
+
+            <span
+              class="theme-color"
+              style="background:#8b5cf6"
+            ></span>
+
+            <span
+              class="theme-color"
+              style="background:#ddd6fe"
+            ></span>
+
+            <span
+              class="theme-color"
+              style="background:#faf8ff"
+            ></span>
+
+            <span
+              class="theme-color"
+              style="background:#5b456f"
+            ></span>
+
+          </div>
+
+        </button>
+
+
+        <!-- CHOCOLATE -->
+
+        <button
+          type="button"
+          class="theme-card"
+          data-theme="chocolate"
+        >
+
+          <span class="theme-check">
+            ✓
+          </span>
+
+          <div class="theme-card-title">
+            🍫 Chocolate Cream
+          </div>
+
+          <div class="theme-colors">
+
+            <span
+              class="theme-color"
+              style="background:#8b5e3c"
+            ></span>
+
+            <span
+              class="theme-color"
+              style="background:#e8d3c3"
+            ></span>
+
+            <span
+              class="theme-color"
+              style="background:#fffaf5"
+            ></span>
+
+            <span
+              class="theme-color"
+              style="background:#5b3944"
+            ></span>
+
+          </div>
+
+        </button>
+
+
+        <!-- ROSE -->
+
+        <button
+          type="button"
+          class="theme-card"
+          data-theme="rose"
+        >
+
+          <span class="theme-check">
+            ✓
+          </span>
+
+          <div class="theme-card-title">
+            🌹 Dusty Rose
+          </div>
+
+          <div class="theme-colors">
+
+            <span
+              class="theme-color"
+              style="background:#be7188"
+            ></span>
+
+            <span
+              class="theme-color"
+              style="background:#ead0d8"
+            ></span>
+
+            <span
+              class="theme-color"
+              style="background:#fff8fa"
+            ></span>
+
+            <span
+              class="theme-color"
+              style="background:#67434d"
+            ></span>
+
+          </div>
+
+        </button>
+
+      </div>
+
+
+      <!-- CUSTOM COLORS -->
+
+      <div class="custom-theme-box">
+
+        <div class="flex items-center justify-between gap-3 mb-4">
+
+          <div>
+
+            <div class="text-sm font-semibold text-pink-500">
+              ✨ กำหนดสีเอง
+            </div>
+
+            <div class="small-help">
+              ใส่รหัสสี เช่น #FF69B4
+            </div>
+
+          </div>
+
+        </div>
+
+
+        <div class="grid sm:grid-cols-2 gap-4">
+
+
+          <!-- PRIMARY -->
+
+          <div>
+
+            <label class="label">
+              สีหลัก
+            </label>
+
+            <div class="color-row">
+
+              <input
+                id="themePrimaryPicker"
+                class="color-picker"
+                type="color"
+                value="#ec4899"
+              >
+
+              <input
+                id="themePrimary"
+                class="field"
+                type="text"
+                value="#ec4899"
+                placeholder="#EC4899"
+                maxlength="7"
+              >
+
+            </div>
+
+          </div>
+
+
+          <!-- SECONDARY -->
+
+          <div>
+
+            <label class="label">
+              สีรอง
+            </label>
+
+            <div class="color-row">
+
+              <input
+                id="themeSecondaryPicker"
+                class="color-picker"
+                type="color"
+                value="#fbcfe8"
+              >
+
+              <input
+                id="themeSecondary"
+                class="field"
+                type="text"
+                value="#fbcfe8"
+                placeholder="#FBCFE8"
+                maxlength="7"
+              >
+
+            </div>
+
+          </div>
+
+
+          <!-- BACKGROUND -->
+
+          <div>
+
+            <label class="label">
+              สีพื้นหลัง
+            </label>
+
+            <div class="color-row">
+
+              <input
+                id="themeBackgroundPicker"
+                class="color-picker"
+                type="color"
+                value="#fff8fb"
+              >
+
+              <input
+                id="themeBackground"
+                class="field"
+                type="text"
+                value="#fff8fb"
+                placeholder="#FFF8FB"
+                maxlength="7"
+              >
+
+            </div>
+
+          </div>
+
+
+          <!-- TEXT -->
+
+          <div>
+
+            <label class="label">
+              สีตัวอักษร
+            </label>
+
+            <div class="color-row">
+
+              <input
+                id="themeTextPicker"
+                class="color-picker"
+                type="color"
+                value="#4a3038"
+              >
+
+              <input
+                id="themeText"
+                class="field"
+                type="text"
+                value="#4a3038"
+                placeholder="#4A3038"
+                maxlength="7"
+              >
+
+            </div>
+
+          </div>
+
+        </div>
+
+
+        <!-- THEME PREVIEW -->
+
+        <div class="theme-preview">
+
+          <div
+            id="themePreviewTop"
+            class="theme-preview-top"
+            style="background:#ec4899"
+          >
+
+            <div class="text-white text-sm font-semibold">
+              Bennie Choco
+            </div>
+
+            <div class="text-white/80 text-xs mt-1">
+              ตัวอย่างธีมเว็บไซต์
+            </div>
+
+          </div>
+
+          <div
+            id="themePreviewContent"
+            class="theme-preview-content"
+            style="background:#fff8fb"
+          >
+
+            <div
+              id="themePreviewText"
+              class="text-sm font-medium mb-3"
+              style="color:#4a3038"
+            >
+              ตัวอย่างข้อความบนเว็บไซต์
+            </div>
+
+            <span
+              id="themePreviewButton"
+              class="theme-preview-button"
+              style="background:#ec4899"
+            >
+              ปุ่มตัวอย่าง
+            </span>
+
+          </div>
+
+        </div>
+
+      </div>
+
+    </section>
+
+
+    <!-- =====================================================
+         BASIC
+    ====================================================== -->
+
     <section>
 
       <h2 class="section-title mb-4">
@@ -198,39 +1043,62 @@ body{
       <div class="grid md:grid-cols-2 gap-4">
 
         <div>
-          <label class="label">ชื่อเว็บ</label>
+
+          <label class="label">
+            ชื่อเว็บ
+          </label>
+
           <input
             id="shopName"
             class="field"
             type="text"
           >
+
         </div>
 
+
         <div>
-          <label class="label">ข้อความใต้ชื่อ</label>
+
+          <label class="label">
+            ข้อความใต้ชื่อ
+          </label>
+
           <input
             id="subtitle"
             class="field"
             type="text"
           >
+
         </div>
 
+
         <div>
-          <label class="label">ชื่อบัญชีร้าน</label>
+
+          <label class="label">
+            ชื่อบัญชีร้าน
+          </label>
+
           <input
             id="accountName"
             class="field"
             type="text"
           >
+
         </div>
 
+
         <div>
-          <label class="label">ข้อความสถานะด้านขวา</label>
+
+          <label class="label">
+            ข้อความสถานะด้านขวา
+          </label>
+
           <input
             id="statusRight"
             class="field"
             type="text"
           >
+
         </div>
 
       </div>
@@ -238,12 +1106,16 @@ body{
     </section>
 
 
-    <!-- PAYMENT ACCOUNTS -->
+    <!-- =====================================================
+         PAYMENT ACCOUNTS
+    ====================================================== -->
+
     <section>
 
       <div class="flex items-center justify-between gap-3 mb-4">
 
         <div>
+
           <h2 class="section-title">
             บัญชีรับเงิน
           </h2>
@@ -251,7 +1123,9 @@ body{
           <p class="small-help">
             เพิ่ม/แก้ไขช่องทางรับเงินที่จะแสดงในหน้า Payment
           </p>
+
         </div>
+
 
         <button
           id="addAccountButton"
@@ -263,12 +1137,16 @@ body{
 
       </div>
 
+
       <div id="accountsContainer"></div>
 
     </section>
 
 
-    <!-- LEGACY PAYMENT FIELDS -->
+    <!-- =====================================================
+         LEGACY PAYMENT FIELDS
+    ====================================================== -->
+
     <section>
 
       <h2 class="section-title mb-4">
@@ -278,6 +1156,7 @@ body{
       <div class="grid md:grid-cols-2 gap-4">
 
         <div>
+
           <label class="label">
             เลขบัญชีกสิกร
           </label>
@@ -288,9 +1167,12 @@ body{
             type="text"
             inputmode="numeric"
           >
+
         </div>
 
+
         <div>
+
           <label class="label">
             เบอร์ Wallet / TrueMoney
           </label>
@@ -301,9 +1183,12 @@ body{
             type="text"
             inputmode="numeric"
           >
+
         </div>
 
+
         <div>
+
           <label class="label">
             ค่าธรรมเนียม Wallet เพิ่ม
           </label>
@@ -314,6 +1199,7 @@ body{
             type="text"
             placeholder="+20 บาท"
           >
+
         </div>
 
       </div>
@@ -321,7 +1207,10 @@ body{
     </section>
 
 
-    <!-- PAYMENT IMAGE -->
+    <!-- =====================================================
+         PAYMENT IMAGE
+    ====================================================== -->
+
     <section>
 
       <h2 class="section-title mb-4">
@@ -333,6 +1222,7 @@ body{
         <div class="space-y-3">
 
           <div>
+
             <label class="label">
               URL รูป QR
             </label>
@@ -342,9 +1232,12 @@ body{
               class="field"
               type="text"
             >
+
           </div>
 
+
           <div>
+
             <label class="label">
               หรือเลือกรูปจากเครื่อง
             </label>
@@ -355,9 +1248,11 @@ body{
               type="file"
               accept="image/*"
             >
+
           </div>
 
         </div>
+
 
         <div class="preview-box">
 
@@ -374,7 +1269,10 @@ body{
     </section>
 
 
-    <!-- WEBSITE TEXT -->
+    <!-- =====================================================
+         WEBSITE TEXT
+    ====================================================== -->
+
     <section>
 
       <h2 class="section-title mb-4">
@@ -384,6 +1282,7 @@ body{
       <div class="space-y-4">
 
         <div>
+
           <label class="label">
             ข้อความสถานะ
           </label>
@@ -393,9 +1292,12 @@ body{
             class="field"
             type="text"
           >
+
         </div>
 
+
         <div>
+
           <label class="label">
             ข้อความนำ
           </label>
@@ -405,9 +1307,12 @@ body{
             class="field"
             type="text"
           >
+
         </div>
 
+
         <div>
+
           <label class="label">
             ข้อความแนะนำการคัดลอก
           </label>
@@ -417,9 +1322,12 @@ body{
             class="field"
             type="text"
           >
+
         </div>
 
+
         <div>
+
           <label class="label">
             หัวข้อช่องทางชำระเงิน
           </label>
@@ -429,9 +1337,12 @@ body{
             class="field"
             type="text"
           >
+
         </div>
 
+
         <div>
+
           <label class="label">
             ข้อความเตือนโอนเงิน
           </label>
@@ -444,9 +1355,12 @@ body{
           <p class="small-help mt-1">
             ถ้าต้องการขึ้นบรรทัดใหม่ ให้ใช้เครื่องหมาย |
           </p>
+
         </div>
 
+
         <div>
+
           <label class="label">
             ข้อความส่งสลิป
           </label>
@@ -459,9 +1373,12 @@ body{
           <p class="small-help mt-1">
             ถ้าต้องการขึ้นบรรทัดใหม่ ให้ใช้เครื่องหมาย |
           </p>
+
         </div>
 
+
         <div>
+
           <label class="label">
             Footer
           </label>
@@ -474,6 +1391,7 @@ body{
           <p class="small-help mt-1">
             ถ้าต้องการขึ้นบรรทัดใหม่ ให้ใช้เครื่องหมาย |
           </p>
+
         </div>
 
       </div>
@@ -481,7 +1399,10 @@ body{
     </section>
 
 
-    <!-- MUSIC -->
+    <!-- =====================================================
+         MUSIC
+    ====================================================== -->
+
     <section>
 
       <h2 class="section-title mb-4">
@@ -503,6 +1424,7 @@ body{
           </span>
 
         </label>
+
 
         <div>
 
@@ -528,7 +1450,10 @@ body{
     </section>
 
 
-    <!-- BACKGROUND -->
+    <!-- =====================================================
+         BACKGROUND
+    ====================================================== -->
+
     <section>
 
       <h2 class="section-title mb-4">
@@ -551,6 +1476,7 @@ body{
 
         </label>
 
+
         <div>
 
           <label class="label">
@@ -571,7 +1497,10 @@ body{
     </section>
 
 
-    <!-- MEMBER -->
+    <!-- =====================================================
+         MEMBER
+    ====================================================== -->
+
     <section>
 
       <h2 class="section-title mb-4">
@@ -595,7 +1524,10 @@ body{
     </section>
 
 
-    <!-- LINK PREVIEW -->
+    <!-- =====================================================
+         LINK PREVIEW
+    ====================================================== -->
+
     <section>
 
       <h2 class="section-title mb-4">
@@ -605,6 +1537,7 @@ body{
       <div class="space-y-4">
 
         <div>
+
           <label class="label">
             Preview Title
           </label>
@@ -614,9 +1547,12 @@ body{
             class="field"
             type="text"
           >
+
         </div>
 
+
         <div>
+
           <label class="label">
             Preview Description
           </label>
@@ -626,7 +1562,9 @@ body{
             class="field"
             type="text"
           >
+
         </div>
+
 
         <div>
 
@@ -641,6 +1579,7 @@ body{
           >
 
         </div>
+
 
         <div class="rounded-2xl border border-pink-100 bg-pink-50/50 p-4">
 
@@ -662,7 +1601,10 @@ body{
     </section>
 
 
-    <!-- PAYMENT GENERATOR -->
+    <!-- =====================================================
+         PAYMENT GENERATOR
+    ====================================================== -->
+
     <section
       id="paymentGenerator"
       class="border border-pink-100 rounded-3xl p-5 bg-pink-50/30"
@@ -671,6 +1613,7 @@ body{
       <div class="flex items-center justify-between gap-3 mb-4">
 
         <div>
+
           <h2 class="section-title">
             สร้างลิงก์ชำระเงิน
           </h2>
@@ -678,9 +1621,11 @@ body{
           <p class="small-help">
             ใส่ยอดเงินแล้วสร้างลิงก์ส่งให้ลูกค้าได้ทันที
           </p>
+
         </div>
 
       </div>
+
 
       <div class="grid md:grid-cols-2 gap-4">
 
@@ -701,6 +1646,7 @@ body{
 
         </div>
 
+
         <div>
 
           <label class="label">
@@ -718,6 +1664,7 @@ body{
 
       </div>
 
+
       <button
         id="generatePaymentLink"
         type="button"
@@ -725,6 +1672,7 @@ body{
       >
         สร้างลิงก์ชำระเงิน
       </button>
+
 
       <div
         id="paymentLinkResult"
@@ -759,7 +1707,10 @@ body{
     </section>
 
 
-    <!-- SAVE BUTTON -->
+    <!-- =====================================================
+         SAVE BUTTON
+    ====================================================== -->
+
     <section class="pt-2">
 
       <div class="flex flex-col sm:flex-row gap-3">
@@ -772,6 +1723,7 @@ body{
           บันทึกข้อมูล
         </button>
 
+
         <button
           id="reset"
           type="button"
@@ -781,6 +1733,7 @@ body{
         </button>
 
       </div>
+
 
       <div
         id="message"
@@ -828,9 +1781,6 @@ const supabaseClient =
 
 /* =========================================================
    CENTRAL DATABASE
-   site_settings
-   id = 1
-   data = JSON
 ========================================================= */
 
 const SITE_SETTINGS_TABLE =
@@ -842,7 +1792,6 @@ const SITE_SETTINGS_ID =
 
 /* =========================================================
    LOCAL STORAGE
-   ใช้เป็น cache / fallback เท่านั้น
 ========================================================= */
 
 const ADMIN_SETTINGS_STORAGE_KEY =
@@ -850,7 +1799,7 @@ const ADMIN_SETTINGS_STORAGE_KEY =
 
 
 /* =========================================================
-   DATA ตั้งต้น
+   IMAGES
 ========================================================= */
 
 const DEFAULT_QR_IMAGE =
@@ -859,6 +1808,47 @@ const DEFAULT_QR_IMAGE =
 const DEFAULT_PREVIEW_IMAGE =
   "https://i.postimg.cc/y6b24ph9/mi-m-ch-x-488-20260114125256.png";
 
+
+/* =========================================================
+   THEME PRESETS
+========================================================= */
+
+const THEME_PRESETS = {
+
+  pink:{
+    primary:"#ec4899",
+    secondary:"#fbcfe8",
+    background:"#fff8fb",
+    text:"#4a3038"
+  },
+
+  purple:{
+    primary:"#8b5cf6",
+    secondary:"#ddd6fe",
+    background:"#faf8ff",
+    text:"#5b456f"
+  },
+
+  chocolate:{
+    primary:"#8b5e3c",
+    secondary:"#e8d3c3",
+    background:"#fffaf5",
+    text:"#5b3944"
+  },
+
+  rose:{
+    primary:"#be7188",
+    secondary:"#ead0d8",
+    background:"#fff8fa",
+    text:"#67434d"
+  }
+
+};
+
+
+/* =========================================================
+   DATA ตั้งต้น
+========================================================= */
 
 const defaults = {
 
@@ -944,7 +1934,17 @@ const defaults = {
     "Payment & Checkout",
 
   previewImage:
-    DEFAULT_PREVIEW_IMAGE
+    DEFAULT_PREVIEW_IMAGE,
+
+  /* เพิ่มเฉพาะระบบธีม */
+
+  theme:{
+    preset:"pink",
+    primary:"#ec4899",
+    secondary:"#fbcfe8",
+    background:"#fff8fb",
+    text:"#4a3038"
+  }
 
 };
 
@@ -1029,6 +2029,567 @@ function clone(value){
 
 }
 
+
+/* =========================================================
+   THEME HELPERS
+========================================================= */
+
+function normalizeHex(value,fallback){
+
+  let color =
+    String(
+      value ?? ""
+    ).trim();
+
+
+  if(
+    /^#[0-9a-fA-F]{6}$/.test(color)
+  ){
+
+    return color.toLowerCase();
+
+  }
+
+
+  if(
+    /^[0-9a-fA-F]{6}$/.test(color)
+  ){
+
+    return "#" + color.toLowerCase();
+
+  }
+
+
+  return fallback;
+
+}
+
+
+function normalizeTheme(theme){
+
+  const source =
+    theme &&
+    typeof theme === "object"
+      ? theme
+      : {};
+
+
+  const preset =
+    THEME_PRESETS[
+      source.preset
+    ]
+      ? source.preset
+      : "pink";
+
+
+  const presetColors =
+    THEME_PRESETS[preset];
+
+
+  return {
+
+    preset,
+
+    primary:
+      normalizeHex(
+        source.primary,
+        presetColors.primary
+      ),
+
+    secondary:
+      normalizeHex(
+        source.secondary,
+        presetColors.secondary
+      ),
+
+    background:
+      normalizeHex(
+        source.background,
+        presetColors.background
+      ),
+
+    text:
+      normalizeHex(
+        source.text,
+        presetColors.text
+      )
+
+  };
+
+}
+
+
+/* =========================================================
+   APPLY THEME PREVIEW
+========================================================= */
+
+function updateThemePreview(){
+
+  const primary =
+    normalizeHex(
+      document.getElementById(
+        "themePrimary"
+      ).value,
+      "#ec4899"
+    );
+
+
+  const background =
+    normalizeHex(
+      document.getElementById(
+        "themeBackground"
+      ).value,
+      "#fff8fb"
+    );
+
+
+  const text =
+    normalizeHex(
+      document.getElementById(
+        "themeText"
+      ).value,
+      "#4a3038"
+    );
+
+
+  document
+    .getElementById(
+      "themePreviewTop"
+    )
+    .style.background =
+      primary;
+
+
+  document
+    .getElementById(
+      "themePreviewContent"
+    )
+    .style.background =
+      background;
+
+
+  document
+    .getElementById(
+      "themePreviewText"
+    )
+    .style.color =
+      text;
+
+
+  document
+    .getElementById(
+      "themePreviewButton"
+    )
+    .style.background =
+      primary;
+
+}
+
+
+/* =========================================================
+   SET THEME FORM
+========================================================= */
+
+function setThemeForm(theme){
+
+  const normalized =
+    normalizeTheme(theme);
+
+
+  document
+    .getElementById(
+      "themePrimary"
+    )
+    .value =
+      normalized.primary;
+
+
+  document
+    .getElementById(
+      "themeSecondary"
+    )
+    .value =
+      normalized.secondary;
+
+
+  document
+    .getElementById(
+      "themeBackground"
+    )
+    .value =
+      normalized.background;
+
+
+  document
+    .getElementById(
+      "themeText"
+    )
+    .value =
+      normalized.text;
+
+
+  document
+    .getElementById(
+      "themePrimaryPicker"
+    )
+    .value =
+      normalized.primary;
+
+
+  document
+    .getElementById(
+      "themeSecondaryPicker"
+    )
+    .value =
+      normalized.secondary;
+
+
+  document
+    .getElementById(
+      "themeBackgroundPicker"
+    )
+    .value =
+      normalized.background;
+
+
+  document
+    .getElementById(
+      "themeTextPicker"
+    )
+    .value =
+      normalized.text;
+
+
+  document
+    .querySelectorAll(
+      ".theme-card"
+    )
+    .forEach(
+      card=>{
+
+        card.classList.toggle(
+          "selected",
+          card.dataset.theme ===
+          normalized.preset
+        );
+
+      }
+    );
+
+
+  updateThemePreview();
+
+}
+
+
+/* =========================================================
+   GET THEME FORM
+========================================================= */
+
+function getThemeFromForm(){
+
+  const current =
+    normalizeTheme(
+      settings.theme
+    );
+
+
+  return {
+
+    preset:
+      current.preset,
+
+    primary:
+      normalizeHex(
+        document.getElementById(
+          "themePrimary"
+        ).value,
+        current.primary
+      ),
+
+    secondary:
+      normalizeHex(
+        document.getElementById(
+          "themeSecondary"
+        ).value,
+        current.secondary
+      ),
+
+    background:
+      normalizeHex(
+        document.getElementById(
+          "themeBackground"
+        ).value,
+        current.background
+      ),
+
+    text:
+      normalizeHex(
+        document.getElementById(
+          "themeText"
+        ).value,
+        current.text
+      )
+
+  };
+
+}
+
+
+/* =========================================================
+   THEME PRESET CLICK
+========================================================= */
+
+document
+  .querySelectorAll(
+    ".theme-card"
+  )
+  .forEach(
+    card=>{
+
+      card.addEventListener(
+        "click",
+        ()=>{
+
+          const themeName =
+            card.dataset.theme;
+
+
+          const preset =
+            THEME_PRESETS[
+              themeName
+            ];
+
+
+          if(!preset){
+
+            return;
+
+          }
+
+
+          document
+            .getElementById(
+              "themePrimary"
+            )
+            .value =
+              preset.primary;
+
+
+          document
+            .getElementById(
+              "themeSecondary"
+            )
+            .value =
+              preset.secondary;
+
+
+          document
+            .getElementById(
+              "themeBackground"
+            )
+            .value =
+              preset.background;
+
+
+          document
+            .getElementById(
+              "themeText"
+            )
+            .value =
+              preset.text;
+
+
+          document
+            .getElementById(
+              "themePrimaryPicker"
+            )
+            .value =
+              preset.primary;
+
+
+          document
+            .getElementById(
+              "themeSecondaryPicker"
+            )
+            .value =
+              preset.secondary;
+
+
+          document
+            .getElementById(
+              "themeBackgroundPicker"
+            )
+            .value =
+              preset.background;
+
+
+          document
+            .getElementById(
+              "themeTextPicker"
+            ).value =
+              preset.text;
+
+
+          settings.theme =
+            {
+              preset:themeName,
+              ...preset
+            };
+
+
+          document
+            .querySelectorAll(
+              ".theme-card"
+            )
+            .forEach(
+              item=>{
+
+                item.classList.toggle(
+                  "selected",
+                  item === card
+                );
+
+              }
+            );
+
+
+          updateThemePreview();
+
+        }
+      );
+
+    }
+  );
+
+
+/* =========================================================
+   CUSTOM HEX INPUT
+========================================================= */
+
+const themePairs = [
+
+  [
+    "themePrimary",
+    "themePrimaryPicker"
+  ],
+
+  [
+    "themeSecondary",
+    "themeSecondaryPicker"
+  ],
+
+  [
+    "themeBackground",
+    "themeBackgroundPicker"
+  ],
+
+  [
+    "themeText",
+    "themeTextPicker"
+  ]
+
+];
+
+
+themePairs.forEach(
+  ([textId,pickerId])=>{
+
+    const text =
+      document.getElementById(
+        textId
+      );
+
+    const picker =
+      document.getElementById(
+        pickerId
+      );
+
+
+    text.addEventListener(
+      "input",
+      ()=>{
+
+        const value =
+          text.value.trim();
+
+
+        if(
+          /^#[0-9a-fA-F]{6}$/.test(
+            value
+          )
+        ){
+
+          picker.value =
+            value;
+
+          settings.theme =
+            {
+              ...(settings.theme || {}),
+              preset:"custom"
+            };
+
+
+          document
+            .querySelectorAll(
+              ".theme-card"
+            )
+            .forEach(
+              card=>{
+                card.classList.remove(
+                  "selected"
+                );
+              }
+            );
+
+          updateThemePreview();
+
+        }
+
+      }
+    );
+
+
+    picker.addEventListener(
+      "input",
+      ()=>{
+
+        text.value =
+          picker.value;
+
+
+        settings.theme =
+          {
+            ...(settings.theme || {}),
+            preset:"custom"
+          };
+
+
+        document
+          .querySelectorAll(
+            ".theme-card"
+          )
+          .forEach(
+            card=>{
+              card.classList.remove(
+                "selected"
+              );
+            }
+          );
+
+
+        updateThemePreview();
+
+      }
+    );
+
+  }
+);
+
+
+/* =========================================================
+   NORMALIZE ACCOUNTS
+========================================================= */
 
 function normalizeAccounts(data){
 
@@ -1295,13 +2856,19 @@ function migrateLegacyData(data){
   }
 
 
+  result.theme =
+    normalizeTheme(
+      result.theme
+    );
+
+
   return result;
 
 }
 
 
 /* =========================================================
-   LOAD FROM LOCAL STORAGE
+   LOAD LOCAL STORAGE
 ========================================================= */
 
 function loadLocalSettings(){
@@ -1354,7 +2921,7 @@ function loadLocalSettings(){
 
 
 /* =========================================================
-   LOAD FROM SUPABASE
+   LOAD SUPABASE
 ========================================================= */
 
 async function loadCentralSettings(){
@@ -1418,18 +2985,11 @@ async function loadCentralSettings(){
 
 /* =========================================================
    LOAD SETTINGS
-   CENTRAL DATABASE FIRST
-   LOCAL STORAGE SECOND
-   DEFAULTS LAST
 ========================================================= */
 
 async function loadSettings(){
 
   try{
-
-    /*
-      1. พยายามอ่านจาก Supabase ก่อน
-    */
 
     const central =
       await loadCentralSettings();
@@ -1448,10 +3008,6 @@ async function loadSettings(){
       settings.accounts =
         clone(accounts);
 
-
-      /*
-        cache ไว้ในเครื่องด้วย
-      */
 
       try{
 
@@ -1477,11 +3033,6 @@ async function loadSettings(){
     }
 
 
-    /*
-      2. ถ้า Supabase ยังไม่มีข้อมูล
-      ใช้ localStorage
-    */
-
     const local =
       loadLocalSettings();
 
@@ -1505,11 +3056,6 @@ async function loadSettings(){
 
     }
 
-
-    /*
-      3. ถ้าไม่มีทั้งคู่
-      ใช้ defaults
-    */
 
     settings =
       migrateLegacyData(
@@ -1564,8 +3110,7 @@ async function loadSettings(){
 
 
 /* =========================================================
-   SAVE TO SUPABASE
-   ใช้ site_settings.data
+   SAVE CENTRAL DATABASE
 ========================================================= */
 
 async function saveToCentralDatabase(newData){
@@ -1650,25 +3195,16 @@ async function saveSettings(){
     message.textContent =
       "กำลังบันทึกข้อมูลกลาง...";
 
+
     message.className =
       "text-center text-sm mt-3 min-h-[22px] text-pink-500";
 
-
-    /*
-      สำคัญ:
-      บันทึก Supabase ก่อน
-      เพราะข้อมูลกลางต้องเป็นตัวหลัก
-    */
 
     const savedCentralData =
       await saveToCentralDatabase(
         newData
       );
 
-
-    /*
-      normalize หลังบันทึก
-    */
 
     settings =
       migrateLegacyData(
@@ -1686,11 +3222,6 @@ async function saveSettings(){
       clone(accounts);
 
 
-    /*
-      เก็บ cache ในเครื่อง
-      หลังจาก Supabase บันทึกสำเร็จแล้วเท่านั้น
-    */
-
     localStorage.setItem(
       ADMIN_SETTINGS_STORAGE_KEY,
       JSON.stringify(settings)
@@ -1702,6 +3233,7 @@ async function saveSettings(){
 
     message.textContent =
       "บันทึกข้อมูลแล้ว ✓";
+
 
     message.className =
       "text-center text-sm mt-3 min-h-[22px] text-green-600";
@@ -1860,6 +3392,10 @@ function getAccountsFromForm(){
 }
 
 
+/* =========================================================
+   GET FORM DATA
+========================================================= */
+
 function getFormData(){
 
   const formAccounts =
@@ -2012,7 +3548,12 @@ function getFormData(){
 
     previewImage:
       getValue("previewImage") ||
-      defaults.previewImage
+      defaults.previewImage,
+
+    /* ธีมใหม่ */
+
+    theme:
+      getThemeFromForm()
 
   };
 
@@ -2060,65 +3601,78 @@ function fillForm(data){
     data.shopName
   );
 
+
   setValue(
     "subtitle",
     data.subtitle
   );
+
 
   setValue(
     "accountName",
     data.accountName
   );
 
+
   setValue(
     "kbank",
     data.kbank
   );
+
 
   setValue(
     "trueMoney",
     data.trueMoney
   );
 
+
   setValue(
     "statusRight",
     data.statusRight
   );
+
 
   setValue(
     "statusText",
     data.statusText
   );
 
+
   setValue(
     "intro",
     data.intro
   );
+
 
   setValue(
     "copyHint",
     data.copyHint
   );
 
+
   setValue(
     "paymentTitle",
     data.paymentTitle
   );
+
 
   setValue(
     "wrongTransfer",
     data.wrongTransfer
   );
 
+
   setValue(
     "slipText",
     data.slipText
   );
 
+
   setValue(
     "footer",
     data.footer
   );
+
 
   setValue(
     "image",
@@ -2126,30 +3680,36 @@ function fillForm(data){
     defaults.image
   );
 
+
   setValue(
     "walletExtraFee",
     data.walletExtraFee
   );
+
 
   setValue(
     "musicUrl",
     data.musicUrl
   );
 
+
   setValue(
     "backgroundUrl",
     data.backgroundUrl
   );
+
 
   setValue(
     "previewTitle",
     data.previewTitle
   );
 
+
   setValue(
     "previewDescription",
     data.previewDescription
   );
+
 
   setValue(
     "previewImage",
@@ -2163,10 +3723,12 @@ function fillForm(data){
     data.musicEnabled
   );
 
+
   setChecked(
     "backgroundEnabled",
     data.backgroundEnabled
   );
+
 
   setChecked(
     "memberEnabled",
@@ -2185,6 +3747,11 @@ function fillForm(data){
 
 
   updateSharePreview();
+
+
+  setThemeForm(
+    data.theme
+  );
 
 }
 
@@ -2442,6 +4009,7 @@ function updateImagePreview(){
       "image"
     );
 
+
   const preview =
     document.getElementById(
       "preview"
@@ -2563,6 +4131,7 @@ function updateSharePreview(){
       "previewImage"
     );
 
+
   const preview =
     document.getElementById(
       "previewShareImage"
@@ -2644,11 +4213,6 @@ document
 
       try{
 
-        /*
-          Reset ก็ต้องบันทึกค่าใหม่ลง Supabase
-          เพื่อให้ทุกเครื่องเปลี่ยนตามกัน
-        */
-
         const resetData =
           migrateLegacyData(
             defaults
@@ -2690,6 +4254,7 @@ document
 
         message.textContent =
           "คืนค่าเริ่มต้นแล้ว ✓";
+
 
         message.className =
           "text-center text-sm mt-3 min-h-[22px] text-green-600";
@@ -2778,6 +4343,20 @@ function openPaymentGenerator(){
 
 
 /* =========================================================
+   HEADER PAYMENT BUTTON
+========================================================= */
+
+document
+  .getElementById(
+    "headerPaymentGenerator"
+  )
+  .addEventListener(
+    "click",
+    openPaymentGenerator
+  );
+
+
+/* =========================================================
    GENERATE PAYMENT LINK
 ========================================================= */
 
@@ -2813,11 +4392,13 @@ document
           "กรุณาใส่จำนวนเงินก่อน"
         );
 
+
         document
           .getElementById(
             "paymentAmount"
           )
           .focus();
+
 
         return;
 
@@ -2942,6 +4523,7 @@ document
       }catch(error){
 
         input.select();
+
         input.setSelectionRange(
           0,
           input.value.length
