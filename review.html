@@ -141,22 +141,45 @@
             ความรู้สึกโดยรวม
           </p>
 
-          <div class="flex gap-3">
+          <div class="grid grid-cols-2 gap-3">
 
+            <!-- HAPPY -->
             <button
               type="button"
               id="moodHappy"
-              class="mood-btn flex-1 rounded-2xl border border-pink-200 bg-pink-50 px-4 py-3 text-pink-600"
+              class="mood-btn rounded-2xl border border-pink-200 bg-pink-50 px-4 py-3 text-pink-600"
             >
-              😊 ประทับใจ
+              😍 ประทับใจ
             </button>
 
+
+            <!-- NEUTRAL -->
             <button
               type="button"
-              id="moodSad"
-              class="mood-btn flex-1 rounded-2xl border border-gray-200 bg-gray-50 px-4 py-3 text-gray-600"
+              id="moodNeutral"
+              class="mood-btn rounded-2xl border border-gray-200 bg-gray-50 px-4 py-3 text-gray-600"
             >
-              😐 เฉย ๆ
+              🫤 เฉย ๆ
+            </button>
+
+
+            <!-- PLUS 1 -->
+            <button
+              type="button"
+              id="moodPlus"
+              class="mood-btn rounded-2xl border border-green-200 bg-green-50 px-4 py-3 text-green-600"
+            >
+              ➕ Plus 1
+            </button>
+
+
+            <!-- MINUS 1 -->
+            <button
+              type="button"
+              id="moodMinus"
+              class="mood-btn rounded-2xl border border-red-200 bg-red-50 px-4 py-3 text-red-600"
+            >
+              ➖ Minus 1
             </button>
 
           </div>
@@ -309,8 +332,14 @@ const detailInput =
 const moodHappy =
   document.getElementById("moodHappy");
 
-const moodSad =
-  document.getElementById("moodSad");
+const moodNeutral =
+  document.getElementById("moodNeutral");
+
+const moodPlus =
+  document.getElementById("moodPlus");
+
+const moodMinus =
+  document.getElementById("moodMinus");
 
 const submitBtn =
   document.getElementById("submitBtn");
@@ -334,17 +363,29 @@ function setMood(mood) {
   selectedMood = mood;
 
   moodHappy.classList.remove("active");
-  moodSad.classList.remove("active");
+  moodNeutral.classList.remove("active");
+  moodPlus.classList.remove("active");
+  moodMinus.classList.remove("active");
+
 
   if (mood === "happy") {
 
     moodHappy.classList.add("active");
 
-  } else {
+  } else if (mood === "neutral") {
 
-    moodSad.classList.add("active");
+    moodNeutral.classList.add("active");
+
+  } else if (mood === "plus") {
+
+    moodPlus.classList.add("active");
+
+  } else if (mood === "minus") {
+
+    moodMinus.classList.add("active");
 
   }
+
 }
 
 
@@ -354,9 +395,21 @@ moodHappy.addEventListener(
 );
 
 
-moodSad.addEventListener(
+moodNeutral.addEventListener(
   "click",
-  () => setMood("sad")
+  () => setMood("neutral")
+);
+
+
+moodPlus.addEventListener(
+  "click",
+  () => setMood("plus")
+);
+
+
+moodMinus.addEventListener(
+  "click",
+  () => setMood("minus")
 );
 
 
@@ -554,12 +607,6 @@ reviewForm.addEventListener(
       );
 
 
-      /*
-        สำคัญ:
-        รอบนี้จะแสดง Error จริงจาก Supabase
-        เพื่อให้รู้ว่าติดตรงไหน
-      */
-
       showMessage(
         "ส่งรีวิวไม่สำเร็จ: " +
         (
@@ -633,6 +680,7 @@ async function loadReviews() {
 
       reviewsList.innerHTML = `
         <div class="bg-white rounded-3xl border border-pink-100 p-8 text-center">
+
           <div class="text-4xl mb-3">
             💕
           </div>
@@ -640,6 +688,7 @@ async function loadReviews() {
           <p class="text-gray-400">
             ยังไม่มีรีวิวที่เผยแพร่ค่ะ
           </p>
+
         </div>
       `;
 
@@ -651,10 +700,25 @@ async function loadReviews() {
       approved
         .map(review => {
 
-          const mood =
-            review.mood === "happy"
-              ? "😊"
-              : "😐";
+          let mood = "🫤";
+
+          if (review.mood === "happy") {
+
+            mood = "😍";
+
+          } else if (review.mood === "neutral") {
+
+            mood = "🫤";
+
+          } else if (review.mood === "plus") {
+
+            mood = "➕";
+
+          } else if (review.mood === "minus") {
+
+            mood = "➖";
+
+          }
 
 
           const date =
