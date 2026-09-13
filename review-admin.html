@@ -1,0 +1,1956 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>จัดการรีวิว | Bennie Choco Admin</title>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<style>
+*{
+  box-sizing:border-box;
+}
+
+html,
+body{
+  margin:0;
+  padding:0;
+  font-family:
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    Tahoma,
+    Arial,
+    sans-serif;
+  background:#f7f5f2;
+  color:#302b28;
+}
+
+body{
+  min-height:100vh;
+}
+
+/* =========================
+   HEADER
+========================= */
+
+.header{
+  position:sticky;
+  top:0;
+  z-index:50;
+
+  background:#ffffff;
+  border-bottom:1px solid #ebe6e1;
+
+  padding:18px 24px;
+
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:16px;
+}
+
+.header-left{
+  display:flex;
+  align-items:center;
+  gap:14px;
+}
+
+.logo{
+  width:44px;
+  height:44px;
+  border-radius:12px;
+
+  background:#302b28;
+  color:#ffffff;
+
+  display:flex;
+  align-items:center;
+  justify-content:center;
+
+  font-weight:800;
+  font-size:16px;
+}
+
+.header-title{
+  margin:0;
+  font-size:20px;
+  font-weight:800;
+}
+
+.header-subtitle{
+  margin:3px 0 0;
+  color:#8b817a;
+  font-size:13px;
+}
+
+.header-actions{
+  display:flex;
+  gap:8px;
+  align-items:center;
+}
+
+/* =========================
+   BUTTON
+========================= */
+
+button{
+  font-family:inherit;
+}
+
+.btn{
+  border:0;
+  border-radius:10px;
+  padding:10px 15px;
+  cursor:pointer;
+
+  font-size:14px;
+  font-weight:700;
+
+  transition:
+    transform .15s ease,
+    opacity .15s ease,
+    background .15s ease;
+}
+
+.btn:hover{
+  transform:translateY(-1px);
+}
+
+.btn:active{
+  transform:translateY(0);
+}
+
+.btn:disabled{
+  opacity:.5;
+  cursor:not-allowed;
+  transform:none;
+}
+
+.btn-light{
+  background:#f1eeeb;
+  color:#403934;
+}
+
+.btn-dark{
+  background:#302b28;
+  color:#fff;
+}
+
+.btn-green{
+  background:#e7f5eb;
+  color:#24713b;
+}
+
+.btn-red{
+  background:#fae8e8;
+  color:#a52f2f;
+}
+
+.btn-orange{
+  background:#fff1df;
+  color:#9a5b17;
+}
+
+/* =========================
+   PAGE
+========================= */
+
+.container{
+  width:min(1180px, calc(100% - 32px));
+  margin:0 auto;
+  padding:28px 0 60px;
+}
+
+/* =========================
+   SUMMARY
+========================= */
+
+.summary{
+  display:grid;
+  grid-template-columns:
+    repeat(3, minmax(0, 1fr));
+
+  gap:14px;
+  margin-bottom:24px;
+}
+
+.summary-card{
+  background:#fff;
+  border:1px solid #ebe6e1;
+  border-radius:16px;
+  padding:20px;
+}
+
+.summary-label{
+  color:#8b817a;
+  font-size:13px;
+  margin-bottom:8px;
+}
+
+.summary-number{
+  font-size:30px;
+  line-height:1;
+  font-weight:800;
+}
+
+/* =========================
+   FILTER
+========================= */
+
+.toolbar{
+  background:#fff;
+  border:1px solid #ebe6e1;
+  border-radius:16px;
+
+  padding:14px;
+
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:12px;
+
+  margin-bottom:18px;
+}
+
+.filters{
+  display:flex;
+  gap:8px;
+  flex-wrap:wrap;
+}
+
+.filter-btn{
+  border:1px solid #e4ded9;
+  background:#fff;
+  color:#6d625b;
+
+  border-radius:999px;
+  padding:9px 15px;
+
+  cursor:pointer;
+
+  font-size:13px;
+  font-weight:700;
+}
+
+.filter-btn.active{
+  background:#302b28;
+  border-color:#302b28;
+  color:#fff;
+}
+
+.refresh-btn{
+  flex-shrink:0;
+}
+
+/* =========================
+   REVIEW LIST
+========================= */
+
+.reviews{
+  display:flex;
+  flex-direction:column;
+  gap:14px;
+}
+
+.review-card{
+  background:#fff;
+  border:1px solid #ebe6e1;
+  border-radius:18px;
+
+  padding:20px;
+
+  box-shadow:
+    0 4px 18px rgba(48,43,40,.04);
+}
+
+.review-top{
+  display:flex;
+  justify-content:space-between;
+  align-items:flex-start;
+  gap:16px;
+}
+
+.review-person{
+  min-width:0;
+}
+
+.review-name{
+  font-size:17px;
+  font-weight:800;
+  margin:0 0 5px;
+}
+
+.review-service{
+  color:#8b817a;
+  font-size:13px;
+}
+
+.review-status{
+  flex-shrink:0;
+
+  border-radius:999px;
+  padding:6px 10px;
+
+  font-size:12px;
+  font-weight:800;
+}
+
+.status-pending{
+  background:#fff1df;
+  color:#9a5b17;
+}
+
+.status-approved{
+  background:#e7f5eb;
+  color:#24713b;
+}
+
+.review-body{
+  margin-top:16px;
+  padding-top:16px;
+  border-top:1px solid #f0ece8;
+}
+
+.review-detail{
+  white-space:pre-wrap;
+  word-break:break-word;
+
+  line-height:1.65;
+  font-size:15px;
+
+  color:#453d38;
+}
+
+.review-meta{
+  display:flex;
+  align-items:center;
+  gap:14px;
+
+  margin-top:15px;
+
+  color:#8b817a;
+  font-size:13px;
+}
+
+.review-mood{
+  display:inline-flex;
+  align-items:center;
+  gap:5px;
+}
+
+.review-date{
+  margin-left:auto;
+}
+
+.review-actions{
+  display:flex;
+  flex-wrap:wrap;
+  gap:8px;
+
+  margin-top:18px;
+  padding-top:16px;
+
+  border-top:1px solid #f0ece8;
+}
+
+/* =========================
+   EMPTY
+========================= */
+
+.empty{
+  background:#fff;
+  border:1px solid #ebe6e1;
+  border-radius:18px;
+
+  padding:55px 20px;
+  text-align:center;
+
+  color:#8b817a;
+}
+
+.empty-icon{
+  font-size:34px;
+  margin-bottom:10px;
+}
+
+.empty-title{
+  color:#403934;
+  font-weight:800;
+  margin-bottom:5px;
+}
+
+.empty-text{
+  font-size:13px;
+}
+
+/* =========================
+   LOADING
+========================= */
+
+.loading{
+  background:#fff;
+  border:1px solid #ebe6e1;
+  border-radius:18px;
+
+  padding:50px 20px;
+  text-align:center;
+
+  color:#8b817a;
+}
+
+.spinner{
+  width:28px;
+  height:28px;
+
+  border:3px solid #e7e2de;
+  border-top-color:#302b28;
+
+  border-radius:50%;
+
+  animation:spin .8s linear infinite;
+
+  margin:0 auto 12px;
+}
+
+@keyframes spin{
+  to{
+    transform:rotate(360deg);
+  }
+}
+
+/* =========================
+   TOAST
+========================= */
+
+.toast{
+  position:fixed;
+
+  left:50%;
+  bottom:24px;
+
+  transform:
+    translate(-50%, 20px);
+
+  opacity:0;
+  pointer-events:none;
+
+  background:#302b28;
+  color:#fff;
+
+  border-radius:12px;
+
+  padding:12px 18px;
+
+  font-size:14px;
+  font-weight:700;
+
+  box-shadow:
+    0 10px 30px rgba(0,0,0,.18);
+
+  transition:
+    opacity .2s ease,
+    transform .2s ease;
+
+  z-index:100;
+}
+
+.toast.show{
+  opacity:1;
+  transform:translate(-50%, 0);
+}
+
+/* =========================
+   ERROR
+========================= */
+
+.error-box{
+  background:#fff0f0;
+  border:1px solid #f0caca;
+  color:#a52f2f;
+
+  border-radius:14px;
+  padding:16px;
+
+  margin-bottom:18px;
+
+  display:none;
+}
+
+.error-box.show{
+  display:block;
+}
+
+/* =========================
+   MOBILE
+========================= */
+
+@media(max-width:700px){
+
+  .header{
+    padding:14px 16px;
+  }
+
+  .header-title{
+    font-size:17px;
+  }
+
+  .header-subtitle{
+    font-size:12px;
+  }
+
+  .header-actions .btn{
+    padding:9px 11px;
+    font-size:12px;
+  }
+
+  .container{
+    width:min(100% - 20px, 1180px);
+    padding-top:18px;
+  }
+
+  .summary{
+    grid-template-columns:1fr;
+  }
+
+  .toolbar{
+    flex-direction:column;
+    align-items:stretch;
+  }
+
+  .filters{
+    width:100%;
+  }
+
+  .filter-btn{
+    flex:1;
+  }
+
+  .refresh-btn{
+    width:100%;
+  }
+
+  .review-top{
+    flex-direction:column;
+    gap:10px;
+  }
+
+  .review-status{
+    align-self:flex-start;
+  }
+
+  .review-meta{
+    flex-wrap:wrap;
+  }
+
+  .review-date{
+    margin-left:0;
+    width:100%;
+  }
+
+  .review-actions{
+    display:grid;
+    grid-template-columns:1fr;
+  }
+
+  .review-actions .btn{
+    width:100%;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<!-- =========================
+     HEADER
+========================= -->
+
+<header class="header">
+
+  <div class="header-left">
+
+    <div class="logo">
+      BC
+    </div>
+
+    <div>
+      <h1 class="header-title">
+        จัดการรีวิว
+      </h1>
+
+      <p class="header-subtitle">
+        Bennie Choco Admin
+      </p>
+    </div>
+
+  </div>
+
+  <div class="header-actions">
+
+    <button
+      type="button"
+      class="btn btn-light"
+      id="backButton"
+    >
+      ← กลับ Admin
+    </button>
+
+    <button
+      type="button"
+      class="btn btn-dark"
+      id="logoutButton"
+    >
+      ออกจากระบบ
+    </button>
+
+  </div>
+
+</header>
+
+
+<main class="container">
+
+  <!-- ERROR -->
+
+  <div
+    id="errorBox"
+    class="error-box"
+  ></div>
+
+
+  <!-- SUMMARY -->
+
+  <section class="summary">
+
+    <div class="summary-card">
+
+      <div class="summary-label">
+        รีวิวทั้งหมด
+      </div>
+
+      <div
+        class="summary-number"
+        id="totalCount"
+      >
+        0
+      </div>
+
+    </div>
+
+
+    <div class="summary-card">
+
+      <div class="summary-label">
+        รอตรวจสอบ
+      </div>
+
+      <div
+        class="summary-number"
+        id="pendingCount"
+      >
+        0
+      </div>
+
+    </div>
+
+
+    <div class="summary-card">
+
+      <div class="summary-label">
+        อนุมัติแล้ว
+      </div>
+
+      <div
+        class="summary-number"
+        id="approvedCount"
+      >
+        0
+      </div>
+
+    </div>
+
+  </section>
+
+
+  <!-- TOOLBAR -->
+
+  <section class="toolbar">
+
+    <div class="filters">
+
+      <button
+        type="button"
+        class="filter-btn active"
+        data-filter="pending"
+      >
+        ⏳ รอตรวจ
+      </button>
+
+      <button
+        type="button"
+        class="filter-btn"
+        data-filter="approved"
+      >
+        ✅ อนุมัติแล้ว
+      </button>
+
+      <button
+        type="button"
+        class="filter-btn"
+        data-filter="all"
+      >
+        📋 ทั้งหมด
+      </button>
+
+    </div>
+
+
+    <button
+      type="button"
+      class="btn btn-light refresh-btn"
+      id="refreshButton"
+    >
+      ↻ รีเฟรช
+    </button>
+
+  </section>
+
+
+  <!-- REVIEWS -->
+
+  <section
+    id="reviewsContainer"
+    class="reviews"
+  >
+
+    <div class="loading">
+
+      <div class="spinner"></div>
+
+      กำลังโหลดรีวิว...
+
+    </div>
+
+  </section>
+
+</main>
+
+
+<!-- TOAST -->
+
+<div
+  id="toast"
+  class="toast"
+></div>
+
+
+<script>
+
+/* =====================================================
+   SUPABASE CONFIG
+===================================================== */
+
+const SUPABASE_URL =
+  "https://jlcjcfhdvrbdihzwbdhu.supabase.co";
+
+const SUPABASE_KEY =
+  "sb_publishable_bTlJbTM1h2Kl9Z1n7wVfaw_SRJLocBg";
+
+
+const supabaseClient =
+  window.supabase.createClient(
+    SUPABASE_URL,
+    SUPABASE_KEY
+  );
+
+
+/* =====================================================
+   STATE
+===================================================== */
+
+let reviews = [];
+
+let currentFilter = "pending";
+
+
+/* =====================================================
+   ELEMENTS
+===================================================== */
+
+const reviewsContainer =
+  document.getElementById(
+    "reviewsContainer"
+  );
+
+const totalCount =
+  document.getElementById(
+    "totalCount"
+  );
+
+const pendingCount =
+  document.getElementById(
+    "pendingCount"
+  );
+
+const approvedCount =
+  document.getElementById(
+    "approvedCount"
+  );
+
+const toast =
+  document.getElementById(
+    "toast"
+  );
+
+const errorBox =
+  document.getElementById(
+    "errorBox"
+  );
+
+
+/* =====================================================
+   TOAST
+===================================================== */
+
+function showToast(message){
+
+  toast.textContent = message;
+
+  toast.classList.add("show");
+
+  clearTimeout(
+    showToast.timer
+  );
+
+  showToast.timer =
+    setTimeout(
+      ()=>{
+        toast.classList.remove(
+          "show"
+        );
+      },
+      2200
+    );
+}
+
+
+/* =====================================================
+   ERROR
+===================================================== */
+
+function showError(message){
+
+  errorBox.textContent =
+    message;
+
+  errorBox.classList.add(
+    "show"
+  );
+}
+
+
+function hideError(){
+
+  errorBox.textContent = "";
+
+  errorBox.classList.remove(
+    "show"
+  );
+}
+
+
+/* =====================================================
+   ESCAPE HTML
+===================================================== */
+
+function escapeHtml(value){
+
+  if(value === null ||
+     value === undefined){
+
+    return "";
+  }
+
+  return String(value)
+    .replaceAll("&","&amp;")
+    .replaceAll("<","&lt;")
+    .replaceAll(">","&gt;")
+    .replaceAll('"',"&quot;")
+    .replaceAll("'","&#039;");
+}
+
+
+/* =====================================================
+   FORMAT DATE
+===================================================== */
+
+function formatDate(value){
+
+  if(!value){
+    return "-";
+  }
+
+  const date =
+    new Date(value);
+
+  if(
+    Number.isNaN(
+      date.getTime()
+    )
+  ){
+    return "-";
+  }
+
+  return date.toLocaleString(
+    "th-TH",
+    {
+      year:"numeric",
+      month:"short",
+      day:"numeric",
+      hour:"2-digit",
+      minute:"2-digit"
+    }
+  );
+}
+
+
+/* =====================================================
+   MOOD
+===================================================== */
+
+function getMood(mood){
+
+  const moods = {
+
+    happy:{
+      emoji:"😍",
+      text:"ประทับใจ"
+    },
+
+    neutral:{
+      emoji:"🫤",
+      text:"เฉย ๆ"
+    },
+
+    plus:{
+      emoji:"➕",
+      text:"Plus 1"
+    },
+
+    minus:{
+      emoji:"➖",
+      text:"Minus 1"
+    }
+
+  };
+
+  return (
+    moods[mood] ||
+    {
+      emoji:"💬",
+      text:mood || "-"
+    }
+  );
+}
+
+
+/* =====================================================
+   ADMIN AUTH
+===================================================== */
+
+async function requireAdmin(){
+
+  hideError();
+
+  try{
+
+    const {
+      data:{
+        session
+      },
+      error
+    } =
+      await supabaseClient
+        .auth
+        .getSession();
+
+
+    if(error){
+
+      console.error(
+        "getSession error:",
+        error
+      );
+
+      window.location.replace(
+        "admin-login.html?next=review-admin.html"
+      );
+
+      return false;
+    }
+
+
+    if(!session){
+
+      window.location.replace(
+        "admin-login.html?next=review-admin.html"
+      );
+
+      return false;
+    }
+
+
+    const user =
+      session.user;
+
+
+    /*
+      ตรวจจาก admin_users ก่อน
+      ให้ทำงานในแนวเดียวกับ admin.html
+    */
+
+    const {
+      data,
+      error:
+        adminError
+    } =
+      await supabaseClient
+        .from("admin_users")
+        .select("*")
+        .eq(
+          "user_id",
+          user.id
+        )
+        .maybeSingle();
+
+
+    if(
+      !adminError &&
+      data
+    ){
+
+      return true;
+    }
+
+
+    /*
+      ถ้าไม่เจอใน admin_users
+      ให้ลอง RPC is_admin()
+    */
+
+    const {
+      data:
+        rpcData,
+      error:
+        rpcError
+    } =
+      await supabaseClient
+        .rpc("is_admin");
+
+
+    if(
+      rpcError ||
+      rpcData !== true
+    ){
+
+      await supabaseClient
+        .auth
+        .signOut();
+
+
+      alert(
+        "บัญชีนี้ไม่มีสิทธิ์เข้า Admin"
+      );
+
+
+      window.location.replace(
+        "admin-login.html?next=review-admin.html"
+      );
+
+      return false;
+    }
+
+
+    return true;
+
+  }catch(error){
+
+    console.error(
+      "requireAdmin error:",
+      error
+    );
+
+
+    window.location.replace(
+      "admin-login.html?next=review-admin.html"
+    );
+
+    return false;
+  }
+}
+
+
+/* =====================================================
+   LOAD REVIEWS
+===================================================== */
+
+async function loadReviews(){
+
+  hideError();
+
+  reviewsContainer.innerHTML = `
+    <div class="loading">
+      <div class="spinner"></div>
+      กำลังโหลดรีวิว...
+    </div>
+  `;
+
+
+  try{
+
+    const {
+      data,
+      error
+    } =
+      await supabaseClient
+        .from("reviews")
+        .select(
+          "id,name,service,detail,mood,status,created_at"
+        )
+        .order(
+          "created_at",
+          {
+            ascending:false
+          }
+        );
+
+
+    if(error){
+
+      console.error(
+        "loadReviews error:",
+        error
+      );
+
+      showError(
+        "ไม่สามารถโหลดรีวิวได้: " +
+        error.message
+      );
+
+      reviewsContainer.innerHTML = `
+        <div class="empty">
+          <div class="empty-icon">⚠️</div>
+          <div class="empty-title">
+            โหลดรีวิวไม่สำเร็จ
+          </div>
+          <div class="empty-text">
+            กรุณาลองกดรีเฟรชอีกครั้ง
+          </div>
+        </div>
+      `;
+
+      return;
+    }
+
+
+    reviews =
+      Array.isArray(data)
+        ? data
+        : [];
+
+
+    updateSummary();
+
+    renderReviews();
+
+  }catch(error){
+
+    console.error(
+      "Unexpected load error:",
+      error
+    );
+
+    showError(
+      "เกิดข้อผิดพลาดในการโหลดรีวิว"
+    );
+
+    reviewsContainer.innerHTML = `
+      <div class="empty">
+        <div class="empty-icon">⚠️</div>
+        <div class="empty-title">
+          เกิดข้อผิดพลาด
+        </div>
+      </div>
+    `;
+  }
+}
+
+
+/* =====================================================
+   SUMMARY
+===================================================== */
+
+function updateSummary(){
+
+  const total =
+    reviews.length;
+
+
+  const pending =
+    reviews.filter(
+      review =>
+        review.status ===
+        "pending"
+    ).length;
+
+
+  const approved =
+    reviews.filter(
+      review =>
+        review.status ===
+        "approved"
+    ).length;
+
+
+  totalCount.textContent =
+    total;
+
+  pendingCount.textContent =
+    pending;
+
+  approvedCount.textContent =
+    approved;
+}
+
+
+/* =====================================================
+   FILTER
+===================================================== */
+
+function getFilteredReviews(){
+
+  if(
+    currentFilter ===
+    "pending"
+  ){
+
+    return reviews.filter(
+      review =>
+        review.status ===
+        "pending"
+    );
+  }
+
+
+  if(
+    currentFilter ===
+    "approved"
+  ){
+
+    return reviews.filter(
+      review =>
+        review.status ===
+        "approved"
+    );
+  }
+
+
+  return reviews;
+}
+
+
+/* =====================================================
+   RENDER REVIEWS
+===================================================== */
+
+function renderReviews(){
+
+  const filtered =
+    getFilteredReviews();
+
+
+  if(
+    filtered.length === 0
+  ){
+
+    let title =
+      "ยังไม่มีรีวิว";
+
+    let text =
+      "ตอนนี้ยังไม่มีข้อมูลในหมวดนี้";
+
+
+    if(
+      currentFilter ===
+      "pending"
+    ){
+
+      title =
+        "ไม่มีรีวิวที่รอตรวจ";
+
+      text =
+        "รีวิวที่ลูกค้าส่งเข้ามาจะปรากฏที่นี่";
+    }
+
+
+    if(
+      currentFilter ===
+      "approved"
+    ){
+
+      title =
+        "ยังไม่มีรีวิวที่อนุมัติ";
+
+      text =
+        "เมื่อกดอนุมัติ รีวิวจะมาอยู่ในหมวดนี้";
+    }
+
+
+    reviewsContainer.innerHTML = `
+      <div class="empty">
+
+        <div class="empty-icon">
+          ✨
+        </div>
+
+        <div class="empty-title">
+          ${escapeHtml(title)}
+        </div>
+
+        <div class="empty-text">
+          ${escapeHtml(text)}
+        </div>
+
+      </div>
+    `;
+
+    return;
+  }
+
+
+  reviewsContainer.innerHTML =
+    filtered
+      .map(
+        review =>
+          createReviewCard(
+            review
+          )
+      )
+      .join("");
+
+
+  attachReviewActions();
+}
+
+
+/* =====================================================
+   CREATE REVIEW CARD
+===================================================== */
+
+function createReviewCard(review){
+
+  const mood =
+    getMood(
+      review.mood
+    );
+
+
+  const isPending =
+    review.status ===
+    "pending";
+
+
+  const statusText =
+    isPending
+      ? "รอตรวจ"
+      : "อนุมัติแล้ว";
+
+
+  const statusClass =
+    isPending
+      ? "status-pending"
+      : "status-approved";
+
+
+  return `
+
+    <article
+      class="review-card"
+      data-review-id="${escapeHtml(review.id)}"
+    >
+
+      <div class="review-top">
+
+        <div class="review-person">
+
+          <h2 class="review-name">
+            ${escapeHtml(
+              review.name ||
+              "ไม่ระบุชื่อ"
+            )}
+          </h2>
+
+          <div class="review-service">
+            บริการ:
+            ${escapeHtml(
+              review.service ||
+              "-"
+            )}
+          </div>
+
+        </div>
+
+
+        <div
+          class="review-status ${statusClass}"
+        >
+          ${statusText}
+        </div>
+
+      </div>
+
+
+      <div class="review-body">
+
+        <div class="review-detail">
+          ${escapeHtml(
+            review.detail ||
+            "-"
+          )}
+        </div>
+
+
+        <div class="review-meta">
+
+          <div class="review-mood">
+            <span>
+              ${mood.emoji}
+            </span>
+
+            <span>
+              ${escapeHtml(
+                mood.text
+              )}
+            </span>
+          </div>
+
+
+          <div class="review-date">
+            ${formatDate(
+              review.created_at
+            )}
+          </div>
+
+        </div>
+
+      </div>
+
+
+      <div class="review-actions">
+
+        ${
+          isPending
+            ? `
+              <button
+                type="button"
+                class="btn btn-green"
+                data-action="approve"
+                data-id="${escapeHtml(review.id)}"
+              >
+                ✓ อนุมัติรีวิว
+              </button>
+            `
+            : `
+              <button
+                type="button"
+                class="btn btn-orange"
+                data-action="pending"
+                data-id="${escapeHtml(review.id)}"
+              >
+                ↶ ซ่อนรีวิว
+              </button>
+            `
+        }
+
+
+        <button
+          type="button"
+          class="btn btn-red"
+          data-action="delete"
+          data-id="${escapeHtml(review.id)}"
+        >
+          🗑️ ลบรีวิว
+        </button>
+
+      </div>
+
+    </article>
+  `;
+}
+
+
+/* =====================================================
+   ATTACH ACTIONS
+===================================================== */
+
+function attachReviewActions(){
+
+  const buttons =
+    reviewsContainer.querySelectorAll(
+      "[data-action]"
+    );
+
+
+  buttons.forEach(
+    button => {
+
+      button.addEventListener(
+        "click",
+        async ()=>{
+
+          const action =
+            button.dataset.action;
+
+          const id =
+            button.dataset.id;
+
+
+          if(
+            action ===
+            "approve"
+          ){
+
+            await updateReviewStatus(
+              id,
+              "approved"
+            );
+
+            return;
+          }
+
+
+          if(
+            action ===
+            "pending"
+          ){
+
+            await updateReviewStatus(
+              id,
+              "pending"
+            );
+
+            return;
+          }
+
+
+          if(
+            action ===
+            "delete"
+          ){
+
+            await deleteReview(
+              id
+            );
+
+          }
+
+        }
+      );
+
+    }
+  );
+}
+
+
+/* =====================================================
+   UPDATE STATUS
+===================================================== */
+
+async function updateReviewStatus(
+  id,
+  status
+){
+
+  const review =
+    reviews.find(
+      item =>
+        String(item.id) ===
+        String(id)
+    );
+
+
+  if(!review){
+    return;
+  }
+
+
+  let confirmText =
+    "ต้องการเปลี่ยนสถานะรีวิวนี้หรือไม่?";
+
+
+  if(
+    status ===
+    "approved"
+  ){
+
+    confirmText =
+      "ต้องการอนุมัติรีวิวนี้ใช่ไหม?";
+  }
+
+
+  if(
+    status ===
+    "pending"
+  ){
+
+    confirmText =
+      "ต้องการซ่อนรีวิวนี้กลับไปเป็นรอตรวจใช่ไหม?";
+  }
+
+
+  if(
+    !confirm(
+      confirmText
+    )
+  ){
+
+    return;
+  }
+
+
+  try{
+
+    const {
+      error
+    } =
+      await supabaseClient
+        .from("reviews")
+        .update({
+          status:status
+        })
+        .eq(
+          "id",
+          id
+        );
+
+
+    if(error){
+
+      console.error(
+        "update status error:",
+        error
+      );
+
+      alert(
+        "ไม่สามารถเปลี่ยนสถานะได้\n\n" +
+        error.message
+      );
+
+      return;
+    }
+
+
+    review.status =
+      status;
+
+
+    updateSummary();
+
+    renderReviews();
+
+
+    if(
+      status ===
+      "approved"
+    ){
+
+      showToast(
+        "อนุมัติรีวิวแล้ว ✓"
+      );
+
+    }else{
+
+      showToast(
+        "ซ่อนรีวิวแล้ว"
+      );
+    }
+
+
+  }catch(error){
+
+    console.error(
+      error
+    );
+
+    alert(
+      "เกิดข้อผิดพลาด"
+    );
+  }
+}
+
+
+/* =====================================================
+   DELETE REVIEW
+===================================================== */
+
+async function deleteReview(id){
+
+  const review =
+    reviews.find(
+      item =>
+        String(item.id) ===
+        String(id)
+    );
+
+
+  if(!review){
+    return;
+  }
+
+
+  const name =
+    review.name ||
+    "รีวิวนี้";
+
+
+  const confirmed =
+    confirm(
+      "ต้องการลบรีวิวของ " +
+      name +
+      " ใช่ไหม?\n\n" +
+      "การลบจะไม่สามารถย้อนกลับได้"
+    );
+
+
+  if(!confirmed){
+    return;
+  }
+
+
+  try{
+
+    const {
+      error
+    } =
+      await supabaseClient
+        .from("reviews")
+        .delete()
+        .eq(
+          "id",
+          id
+        );
+
+
+    if(error){
+
+      console.error(
+        "delete review error:",
+        error
+      );
+
+      alert(
+        "ไม่สามารถลบรีวิวได้\n\n" +
+        error.message
+      );
+
+      return;
+    }
+
+
+    reviews =
+      reviews.filter(
+        item =>
+          String(item.id) !==
+          String(id)
+      );
+
+
+    updateSummary();
+
+    renderReviews();
+
+
+    showToast(
+      "ลบรีวิวแล้ว"
+    );
+
+
+  }catch(error){
+
+    console.error(
+      error
+    );
+
+    alert(
+      "เกิดข้อผิดพลาดในการลบรีวิว"
+    );
+  }
+}
+
+
+/* =====================================================
+   FILTER BUTTONS
+===================================================== */
+
+document
+  .querySelectorAll(
+    ".filter-btn"
+  )
+  .forEach(
+    button => {
+
+      button.addEventListener(
+        "click",
+        ()=>{
+
+          currentFilter =
+            button.dataset.filter;
+
+
+          document
+            .querySelectorAll(
+              ".filter-btn"
+            )
+            .forEach(
+              item =>
+                item.classList.remove(
+                  "active"
+                )
+            );
+
+
+          button.classList.add(
+            "active"
+          );
+
+
+          renderReviews();
+
+        }
+      );
+
+    }
+  );
+
+
+/* =====================================================
+   REFRESH
+===================================================== */
+
+document
+  .getElementById(
+    "refreshButton"
+  )
+  .addEventListener(
+    "click",
+    async ()=>{
+
+      const button =
+        document.getElementById(
+          "refreshButton"
+        );
+
+
+      button.disabled =
+        true;
+
+      button.textContent =
+        "กำลังโหลด...";
+
+
+      await loadReviews();
+
+
+      button.disabled =
+        false;
+
+      button.textContent =
+        "↻ รีเฟรช";
+
+    }
+  );
+
+
+/* =====================================================
+   BACK TO ADMIN
+===================================================== */
+
+document
+  .getElementById(
+    "backButton"
+  )
+  .addEventListener(
+    "click",
+    ()=>{
+
+      window.location.href =
+        "admin.html";
+
+    }
+  );
+
+
+/* =====================================================
+   LOGOUT
+===================================================== */
+
+document
+  .getElementById(
+    "logoutButton"
+  )
+  .addEventListener(
+    "click",
+    async ()=>{
+
+      const confirmed =
+        confirm(
+          "ต้องการออกจากระบบใช่ไหม?"
+        );
+
+
+      if(!confirmed){
+        return;
+      }
+
+
+      await supabaseClient
+        .auth
+        .signOut();
+
+
+      window.location.replace(
+        "admin-login.html"
+      );
+
+    }
+  );
+
+
+/* =====================================================
+   INIT
+===================================================== */
+
+async function init(){
+
+  const allowed =
+    await requireAdmin();
+
+
+  if(!allowed){
+    return;
+  }
+
+
+  await loadReviews();
+}
+
+
+init();
+
+</script>
+
+</body>
+</html>
