@@ -1,0 +1,1094 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>รีวิวจากลูกค้า | Bennie Choco</title>
+
+  <meta
+    name="description"
+    content="ตัวอย่างรีวิวและความประทับใจจากลูกค้า Bennie Choco"
+  >
+
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      margin: 0;
+      font-family:
+        -apple-system,
+        BlinkMacSystemFont,
+        "Segoe UI",
+        "Noto Sans Thai",
+        "Tahoma",
+        sans-serif;
+      color: #4a3038;
+      background:
+        radial-gradient(circle at 10% 10%, rgba(255, 214, 232, .75), transparent 28%),
+        radial-gradient(circle at 90% 15%, rgba(251, 207, 232, .7), transparent 25%),
+        linear-gradient(180deg, #fff8fb 0%, #fff 55%, #fff8fb 100%);
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    button {
+      font: inherit;
+    }
+
+    .page {
+      position: relative;
+      min-height: 100vh;
+      overflow: hidden;
+    }
+
+    /* =========================
+       Floating decorations
+    ========================= */
+
+    .decor {
+      position: fixed;
+      pointer-events: none;
+      z-index: 0;
+      user-select: none;
+    }
+
+    .decor.one {
+      top: 90px;
+      left: 4%;
+      font-size: 25px;
+      opacity: .45;
+      transform: rotate(-15deg);
+    }
+
+    .decor.two {
+      top: 190px;
+      right: 5%;
+      font-size: 22px;
+      opacity: .4;
+      transform: rotate(15deg);
+    }
+
+    .decor.three {
+      top: 55%;
+      left: 2%;
+      font-size: 18px;
+      opacity: .35;
+    }
+
+    .decor.four {
+      top: 65%;
+      right: 3%;
+      font-size: 28px;
+      opacity: .3;
+    }
+
+    .container {
+      width: min(1080px, calc(100% - 32px));
+      margin: 0 auto;
+      position: relative;
+      z-index: 1;
+    }
+
+    /* =========================
+       Header
+    ========================= */
+
+    header {
+      text-align: center;
+      padding: 54px 0 28px;
+    }
+
+    .brand {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 16px;
+      border-radius: 999px;
+      background: rgba(255,255,255,.8);
+      border: 1px solid #f3c7da;
+      box-shadow: 0 8px 25px rgba(155, 123, 132, .08);
+      color: #8b5e3c;
+      font-size: 14px;
+      font-weight: 700;
+      letter-spacing: .3px;
+      margin-bottom: 20px;
+    }
+
+    h1 {
+      margin: 0;
+      color: #4a3038;
+      font-size: clamp(30px, 6vw, 50px);
+      line-height: 1.15;
+      letter-spacing: -1px;
+      font-weight: 800;
+    }
+
+    .subtitle {
+      max-width: 650px;
+      margin: 15px auto 0;
+      color: #9b7b84;
+      font-size: 15px;
+      line-height: 1.8;
+    }
+
+    .heart-line {
+      margin: 20px auto 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      color: #f472b6;
+      font-size: 14px;
+    }
+
+    .heart-line::before,
+    .heart-line::after {
+      content: "";
+      width: 55px;
+      height: 1px;
+      background: #f3c7da;
+    }
+
+    /* =========================
+       Summary
+    ========================= */
+
+    .summary {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 14px;
+      margin: 10px 0 34px;
+    }
+
+    .summary-card {
+      background: rgba(255,255,255,.86);
+      border: 1px solid #f3c7da;
+      border-radius: 20px;
+      padding: 18px;
+      text-align: center;
+      box-shadow: 0 10px 30px rgba(155, 123, 132, .07);
+    }
+
+    .summary-number {
+      display: block;
+      color: #db2777;
+      font-size: 25px;
+      font-weight: 800;
+      margin-bottom: 3px;
+    }
+
+    .summary-label {
+      color: #9b7b84;
+      font-size: 12px;
+    }
+
+    /* =========================
+       Review section
+    ========================= */
+
+    .section-title {
+      text-align: center;
+      margin: 8px 0 22px;
+    }
+
+    .section-title h2 {
+      margin: 0;
+      font-size: 22px;
+      color: #4a3038;
+    }
+
+    .section-title p {
+      margin: 6px 0 0;
+      color: #9b7b84;
+      font-size: 13px;
+    }
+
+    .reviews {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 18px;
+      padding-bottom: 35px;
+    }
+
+    .review-card {
+      position: relative;
+      background: rgba(255,255,255,.95);
+      border: 1px solid #f3c7da;
+      border-radius: 24px;
+      padding: 23px;
+      box-shadow:
+        0 12px 35px rgba(155, 123, 132, .08),
+        0 2px 8px rgba(155, 123, 132, .03);
+      transition:
+        transform .2s ease,
+        box-shadow .2s ease;
+    }
+
+    .review-card:hover {
+      transform: translateY(-3px);
+      box-shadow:
+        0 18px 40px rgba(155, 123, 132, .12),
+        0 3px 10px rgba(155, 123, 132, .04);
+    }
+
+    .review-top {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 17px;
+    }
+
+    .customer {
+      display: flex;
+      align-items: center;
+      gap: 11px;
+      min-width: 0;
+    }
+
+    .avatar {
+      width: 44px;
+      height: 44px;
+      flex: 0 0 44px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background:
+        linear-gradient(135deg, #fbcfe8, #fdf2f8);
+      border: 1px solid #f3c7da;
+      color: #db2777;
+      font-size: 19px;
+      font-weight: 800;
+    }
+
+    .customer-info {
+      min-width: 0;
+    }
+
+    .customer-name {
+      font-weight: 800;
+      color: #4a3038;
+      font-size: 15px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .service {
+      margin-top: 3px;
+      color: #9b7b84;
+      font-size: 12px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .mood {
+      min-width: 40px;
+      height: 40px;
+      border-radius: 14px;
+      background: #fff7fb;
+      border: 1px solid #fbcfe8;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 21px;
+    }
+
+    .review-text {
+      color: #5d444c;
+      font-size: 14px;
+      line-height: 1.85;
+      white-space: pre-wrap;
+      word-break: break-word;
+    }
+
+    .review-bottom {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      margin-top: 20px;
+      padding-top: 13px;
+      border-top: 1px dashed #f3c7da;
+    }
+
+    .approved {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      color: #9b7b84;
+      font-size: 11px;
+    }
+
+    .approved-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: #8bc48b;
+    }
+
+    .date {
+      color: #b79da5;
+      font-size: 11px;
+    }
+
+    /* =========================
+       Loading / empty / error
+    ========================= */
+
+    .state-box {
+      grid-column: 1 / -1;
+      background: rgba(255,255,255,.9);
+      border: 1px solid #f3c7da;
+      border-radius: 24px;
+      padding: 45px 20px;
+      text-align: center;
+      color: #9b7b84;
+    }
+
+    .state-icon {
+      font-size: 35px;
+      margin-bottom: 10px;
+    }
+
+    .state-title {
+      color: #4a3038;
+      font-weight: 800;
+      margin-bottom: 5px;
+    }
+
+    .state-text {
+      font-size: 13px;
+      line-height: 1.7;
+    }
+
+    /* =========================
+       Copy section
+    ========================= */
+
+    .credit-box {
+      margin: 8px auto 45px;
+      max-width: 700px;
+      padding: 25px;
+      text-align: center;
+      border-radius: 25px;
+      border: 1px solid #f3c7da;
+      background:
+        linear-gradient(
+          135deg,
+          rgba(255,255,255,.96),
+          rgba(255,247,251,.96)
+        );
+      box-shadow: 0 12px 35px rgba(155, 123, 132, .08);
+    }
+
+    .credit-box h3 {
+      margin: 0;
+      color: #4a3038;
+      font-size: 18px;
+    }
+
+    .credit-box p {
+      margin: 8px 0 17px;
+      color: #9b7b84;
+      font-size: 13px;
+      line-height: 1.7;
+    }
+
+    .copy-btn {
+      border: 0;
+      cursor: pointer;
+      padding: 12px 20px;
+      border-radius: 999px;
+      background: #ec4899;
+      color: white;
+      font-weight: 700;
+      font-size: 13px;
+      box-shadow: 0 8px 20px rgba(236, 72, 153, .2);
+      transition:
+        background .2s ease,
+        transform .2s ease;
+    }
+
+    .copy-btn:hover {
+      background: #db2777;
+      transform: translateY(-1px);
+    }
+
+    .copy-btn:active {
+      transform: translateY(0);
+    }
+
+    /* =========================
+       Footer
+    ========================= */
+
+    footer {
+      padding: 0 0 35px;
+      text-align: center;
+      color: #b79da5;
+      font-size: 11px;
+      line-height: 1.7;
+    }
+
+    .footer-brand {
+      color: #8b5e3c;
+      font-weight: 800;
+    }
+
+    /* =========================
+       Toast
+    ========================= */
+
+    .toast {
+      position: fixed;
+      left: 50%;
+      bottom: 25px;
+      transform: translate(-50%, 20px);
+      background: #4a3038;
+      color: white;
+      padding: 11px 17px;
+      border-radius: 999px;
+      font-size: 12px;
+      opacity: 0;
+      pointer-events: none;
+      transition: all .25s ease;
+      z-index: 100;
+      box-shadow: 0 10px 25px rgba(74,48,56,.2);
+      white-space: nowrap;
+    }
+
+    .toast.show {
+      opacity: 1;
+      transform: translate(-50%, 0);
+    }
+
+    /* =========================
+       Responsive
+    ========================= */
+
+    @media (max-width: 700px) {
+      .container {
+        width: min(100% - 22px, 560px);
+      }
+
+      header {
+        padding-top: 38px;
+      }
+
+      .summary {
+        gap: 8px;
+      }
+
+      .summary-card {
+        padding: 14px 8px;
+        border-radius: 16px;
+      }
+
+      .summary-number {
+        font-size: 21px;
+      }
+
+      .summary-label {
+        font-size: 10px;
+      }
+
+      .reviews {
+        grid-template-columns: 1fr;
+        gap: 13px;
+      }
+
+      .review-card {
+        padding: 19px;
+        border-radius: 20px;
+      }
+
+      .review-text {
+        font-size: 13px;
+        line-height: 1.8;
+      }
+
+      .credit-box {
+        padding: 21px 17px;
+        margin-bottom: 35px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+<div class="page">
+
+  <div class="decor one">♡</div>
+  <div class="decor two">✦</div>
+  <div class="decor three">♡</div>
+  <div class="decor four">✧</div>
+
+  <main class="container">
+
+    <!-- Header -->
+    <header>
+
+      <div class="brand">
+        🍫 Bennie Choco
+      </div>
+
+      <h1>
+        รีวิวจากลูกค้า
+      </h1>
+
+      <p class="subtitle">
+        รวมความประทับใจจากลูกค้าที่เคยใช้บริการ
+        <br>
+        ขอบคุณทุกข้อความที่ส่งต่อกำลังใจให้ Bennie Choco ♡
+      </p>
+
+      <div class="heart-line">
+        ✦ รีวิว & ความประทับใจ ✦
+      </div>
+
+    </header>
+
+
+    <!-- Summary -->
+    <section class="summary">
+
+      <div class="summary-card">
+        <span
+          class="summary-number"
+          id="reviewCount"
+        >
+          —
+        </span>
+
+        <span class="summary-label">
+          รีวิวที่เผยแพร่
+        </span>
+      </div>
+
+      <div class="summary-card">
+        <span class="summary-number">
+          ♡
+        </span>
+
+        <span class="summary-label">
+          ขอบคุณที่ไว้ใจเรา
+        </span>
+      </div>
+
+      <div class="summary-card">
+        <span class="summary-number">
+          ✦
+        </span>
+
+        <span class="summary-label">
+          ความประทับใจจากลูกค้า
+        </span>
+      </div>
+
+    </section>
+
+
+    <!-- Reviews -->
+    <section>
+
+      <div class="section-title">
+        <h2>
+          ความคิดเห็นจากลูกค้า
+        </h2>
+
+        <p>
+          รีวิวที่ได้รับอนุญาตและเผยแพร่บนหน้านี้
+        </p>
+      </div>
+
+      <div
+        id="reviews"
+        class="reviews"
+      >
+
+        <div class="state-box">
+
+          <div class="state-icon">
+            ♡
+          </div>
+
+          <div class="state-title">
+            กำลังโหลดรีวิว...
+          </div>
+
+          <div class="state-text">
+            รอสักครู่นะคะ
+          </div>
+
+        </div>
+
+      </div>
+
+    </section>
+
+
+    <!-- Credit -->
+    <section class="credit-box">
+
+      <h3>
+        อยากดูรีวิวของเราใช่ไหมคะ? ♡
+      </h3>
+
+      <p>
+        สามารถส่งหน้านี้ให้เพื่อนหรือคนที่กำลังสนใจบริการ
+        เพื่อดูตัวอย่างความคิดเห็นจากลูกค้าที่เคยใช้บริการได้เลย
+      </p>
+
+      <button
+        type="button"
+        class="copy-btn"
+        id="copyLinkBtn"
+      >
+        🔗 คัดลอกลิงก์หน้านี้
+      </button>
+
+    </section>
+
+
+    <footer>
+      <div>
+        <span class="footer-brand">
+          Bennie Choco
+        </span>
+        · Customer Reviews
+      </div>
+
+      <div>
+        ขอบคุณที่แวะมาอ่านรีวิวของเรานะคะ ♡
+      </div>
+    </footer>
+
+  </main>
+
+</div>
+
+
+<div
+  id="toast"
+  class="toast"
+>
+  คัดลอกลิงก์แล้ว ♡
+</div>
+
+
+<script>
+
+  /* ==========================================
+     SUPABASE
+  ========================================== */
+
+  const SUPABASE_URL =
+    "https://jlcjcfhdvrbdihzwbdhu.supabase.co";
+
+  const SUPABASE_KEY =
+    "sb_publishable_bTlJbTM1h2Kl9Z1n7wVfaw_SRJLocBg";
+
+
+  /* ==========================================
+     ELEMENTS
+  ========================================== */
+
+  const reviewsEl =
+    document.getElementById("reviews");
+
+  const reviewCountEl =
+    document.getElementById("reviewCount");
+
+  const copyLinkBtn =
+    document.getElementById("copyLinkBtn");
+
+  const toastEl =
+    document.getElementById("toast");
+
+
+  /* ==========================================
+     HELPERS
+  ========================================== */
+
+  function escapeHtml(value) {
+
+    return String(value ?? "")
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;")
+      .replace(/'/g, "&#039;");
+
+  }
+
+
+  function getMood(mood) {
+
+    const moods = {
+
+      happy: "😍",
+
+      neutral: "🫤",
+
+      plus: "➕",
+
+      minus: "➖"
+
+    };
+
+    return moods[mood] || "♡";
+
+  }
+
+
+  function formatDate(dateValue) {
+
+    if (!dateValue) {
+      return "";
+    }
+
+    const date = new Date(dateValue);
+
+    if (Number.isNaN(date.getTime())) {
+      return "";
+    }
+
+    return date.toLocaleDateString(
+      "th-TH",
+      {
+        year: "numeric",
+        month: "short",
+        day: "numeric"
+      }
+    );
+
+  }
+
+
+  function getInitial(name) {
+
+    const text =
+      String(name || "B").trim();
+
+    return text
+      ? text.charAt(0).toUpperCase()
+      : "B";
+
+  }
+
+
+  /* ==========================================
+     LOAD REVIEWS
+  ========================================== */
+
+  async function loadReviews() {
+
+    reviewsEl.innerHTML = `
+      <div class="state-box">
+
+        <div class="state-icon">
+          ♡
+        </div>
+
+        <div class="state-title">
+          กำลังโหลดรีวิว...
+        </div>
+
+        <div class="state-text">
+          รอสักครู่นะคะ
+        </div>
+
+      </div>
+    `;
+
+
+    try {
+
+      const url =
+        SUPABASE_URL +
+        "/rest/v1/reviews" +
+        "?select=id,name,service,detail,mood,status,created_at" +
+        "&status=eq.approved" +
+        "&order=created_at.desc";
+
+
+      const response =
+        await fetch(
+          url,
+          {
+            method: "GET",
+
+            headers: {
+              "apikey": SUPABASE_KEY,
+              "Authorization":
+                "Bearer " + SUPABASE_KEY
+            }
+          }
+        );
+
+
+      if (!response.ok) {
+
+        throw new Error(
+          "HTTP " + response.status
+        );
+
+      }
+
+
+      const reviews =
+        await response.json();
+
+
+      reviewCountEl.textContent =
+        reviews.length;
+
+
+      if (!reviews.length) {
+
+        reviewsEl.innerHTML = `
+          <div class="state-box">
+
+            <div class="state-icon">
+              ♡
+            </div>
+
+            <div class="state-title">
+              ยังไม่มีรีวิวที่เผยแพร่
+            </div>
+
+            <div class="state-text">
+              เมื่อมีรีวิวที่ได้รับการอนุมัติแล้ว
+              รีวิวจะแสดงที่หน้านี้ค่ะ
+            </div>
+
+          </div>
+        `;
+
+        return;
+
+      }
+
+
+      reviewsEl.innerHTML =
+        reviews
+          .map(review => {
+
+            const name =
+              escapeHtml(
+                review.name || "ลูกค้า"
+              );
+
+            const service =
+              escapeHtml(
+                review.service || "บริการ"
+              );
+
+            const detail =
+              escapeHtml(
+                review.detail || ""
+              );
+
+            const mood =
+              getMood(review.mood);
+
+            const date =
+              formatDate(
+                review.created_at
+              );
+
+            const initial =
+              escapeHtml(
+                getInitial(review.name)
+              );
+
+
+            return `
+
+              <article class="review-card">
+
+                <div class="review-top">
+
+                  <div class="customer">
+
+                    <div class="avatar">
+                      ${initial}
+                    </div>
+
+                    <div class="customer-info">
+
+                      <div class="customer-name">
+                        ${name}
+                      </div>
+
+                      <div class="service">
+                        ${service}
+                      </div>
+
+                    </div>
+
+                  </div>
+
+
+                  <div
+                    class="mood"
+                    aria-label="ความรู้สึก"
+                  >
+                    ${mood}
+                  </div>
+
+                </div>
+
+
+                <div class="review-text">
+                  ${detail}
+                </div>
+
+
+                <div class="review-bottom">
+
+                  <div class="approved">
+
+                    <span class="approved-dot"></span>
+
+                    รีวิวที่เผยแพร่แล้ว
+
+                  </div>
+
+                  <div class="date">
+                    ${date}
+                  </div>
+
+                </div>
+
+              </article>
+
+            `;
+
+          })
+          .join("");
+
+
+    } catch (error) {
+
+      console.error(
+        "Load reviews error:",
+        error
+      );
+
+
+      reviewCountEl.textContent =
+        "—";
+
+
+      reviewsEl.innerHTML = `
+        <div class="state-box">
+
+          <div class="state-icon">
+            ♡
+          </div>
+
+          <div class="state-title">
+            ไม่สามารถโหลดรีวิวได้
+          </div>
+
+          <div class="state-text">
+            กรุณาลองเปิดหน้านี้ใหม่อีกครั้งค่ะ
+          </div>
+
+        </div>
+      `;
+
+    }
+
+  }
+
+
+  /* ==========================================
+     COPY LINK
+  ========================================== */
+
+  function showToast() {
+
+    toastEl.classList.add("show");
+
+    setTimeout(() => {
+
+      toastEl.classList.remove("show");
+
+    }, 2200);
+
+  }
+
+
+  copyLinkBtn.addEventListener(
+    "click",
+    async () => {
+
+      const url =
+        window.location.href;
+
+
+      try {
+
+        await navigator.clipboard.writeText(
+          url
+        );
+
+        showToast();
+
+      } catch (error) {
+
+        const textarea =
+          document.createElement("textarea");
+
+        textarea.value =
+          url;
+
+        textarea.style.position =
+          "fixed";
+
+        textarea.style.opacity =
+          "0";
+
+        document.body.appendChild(
+          textarea
+        );
+
+        textarea.select();
+
+        document.execCommand(
+          "copy"
+        );
+
+        textarea.remove();
+
+        showToast();
+
+      }
+
+    }
+  );
+
+
+  /* ==========================================
+     START
+  ========================================== */
+
+  loadReviews();
+
+</script>
+
+</body>
+</html>
